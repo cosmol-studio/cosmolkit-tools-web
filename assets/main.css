@@ -1,0 +1,19 @@
+body {
+    margin: 0;
+}
+* {
+    box-sizing: border-box;
+}
+
+.uu-backdrop {
+    background-image:
+        linear-gradient(rgba(59, 130, 246, 0.055) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(96, 165, 250, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, #0c1c3c, #050d1b);
+    background-size:
+        72px 72px,
+        72px 72px,
+        100% 100%,
+        100% 100%,
+        100% 100%;
+}

@@ -1,0 +1,46 @@
+name: Rust
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    name: Build (CF) & Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions-rs/toolchain@v1.0.6
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+          target: wasm32-unknown-unknown
+
+      - uses: cargo-bins/cargo-binstall@main
+      - name: Install Dioxus-CLI
+        run: |
+          cargo binstall -y dioxus-cli
+
+      - uses: Swatinem/rust-cache@v2
+      - name: Dioxus Build
+        run: |
+          dx bundle -r --platform web --verbose --out-dir ./deploy/web --no-default-features --debug-symbols false
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifact
+          path: ./deploy
+
+      - name: Deploy to Cloudflare
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy ./deploy/web/public/ --project-name=cosmolkit-tools-web
