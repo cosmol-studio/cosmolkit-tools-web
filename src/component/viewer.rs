@@ -28,7 +28,7 @@ impl Logger for WasmLogger {
 }
 
 pub struct Viewer {
-    pub app: Arc<Mutex<Option<App<WasmLogger>>>>,
+    _app: Arc<Mutex<Option<App<WasmLogger>>>>,
     pub _runner: WebRunner,
 }
 
@@ -39,10 +39,16 @@ pub async fn init_render(scene: Scene, canvas: HtmlCanvasElement) -> Result<View
 
     let web_options = WebOptions {
         should_stop_propagation: Box::new(|event| {
-            !matches!(event, cosmol_viewer_core::eframe::egui::Event::MouseWheel { .. })
+            !matches!(
+                event,
+                cosmol_viewer_core::eframe::egui::Event::MouseWheel { .. }
+            )
         }),
         should_prevent_default: Box::new(|event| {
-            !matches!(event, cosmol_viewer_core::eframe::egui::Event::MouseWheel { .. })
+            !matches!(
+                event,
+                cosmol_viewer_core::eframe::egui::Event::MouseWheel { .. }
+            )
         }),
         ..WebOptions::default()
     };
@@ -52,7 +58,7 @@ pub async fn init_render(scene: Scene, canvas: HtmlCanvasElement) -> Result<View
             canvas,
             web_options,
             Box::new(move |cc| {
-                let mut guard = app_.lock().unwrap();
+                let mut guard = app_.lock().unwrap_or_else(|error| error.into_inner());
                 *guard = Some(App::new(cc, &scene, WasmLogger));
                 Ok(Box::new(AppWrapper(app_.clone())))
             }),
@@ -61,19 +67,19 @@ pub async fn init_render(scene: Scene, canvas: HtmlCanvasElement) -> Result<View
         .map_err(|err| JsValue::from_str(&format!("embedded viewer start failed: {err:?}")));
 
     Ok(Viewer {
-        app,
+        _app: app,
         _runner: runner,
     })
 }
 
 #[cfg(target_arch = "wasm32")]
-pub async fn get_viewer(scene: Scene, HOME_CANVAS_ID: &str) -> Result<Viewer, JsValue> {
+pub async fn get_viewer(scene: Scene, canvas_id: &str) -> Result<Viewer, JsValue> {
     let window = web_sys::window().ok_or_else(|| JsValue::from_str("window is not available"))?;
     let document = window
         .document()
         .ok_or_else(|| JsValue::from_str("document is not available"))?;
     let canvas = document
-        .get_element_by_id(HOME_CANVAS_ID)
+        .get_element_by_id(canvas_id)
         .ok_or_else(|| JsValue::from_str("docking-canvas is not found"))?
         .dyn_into::<HtmlCanvasElement>()?;
 

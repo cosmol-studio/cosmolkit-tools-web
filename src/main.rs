@@ -1,5 +1,7 @@
 mod component;
+mod page;
 mod route;
+use component::ToastProvider;
 use dioxus::prelude::*;
 use route::Route;
 
@@ -15,9 +17,11 @@ fn main() {
 #[component]
 fn App() -> Element {
     rsx! {
-        document::Link { rel: "icon", href: FAVICON }
-        document::Link { rel: "stylesheet", href: MAIN_CSS }
-        document::Link { rel: "stylesheet", href: TAILWIND_CSS }
-        Router::<Route> {}
+        ToastProvider {
+            document::Link { rel: "icon", href: FAVICON }
+            document::Link { rel: "stylesheet", href: MAIN_CSS }
+            document::Link { rel: "stylesheet", href: TAILWIND_CSS }
+            Router::<Route> {}
+        }
     }
 }

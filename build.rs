@@ -27,7 +27,7 @@ fn build_home_scene() -> Scene {
     let mol = Molecule::from_cosmolkit(&cosmolkit_mol)
         .unwrap()
         .centered()
-        .enable_outline(0.1);
+        .set_outline(true, "#ffffff", 0.05);
 
     let mut scene = Scene::new();
     scene.set_scale(0.99);

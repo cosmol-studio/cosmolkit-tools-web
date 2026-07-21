@@ -1,6 +1,9 @@
 use dioxus::prelude::*;
 
-use crate::component::{Home, Navbar};
+use crate::{
+    component::Navbar,
+    page::{CheckPains, FormatConverter, Home, SmilesToSvg, ToolDirectory},
+};
 
 #[derive(Debug, Clone, Routable, PartialEq)]
 #[rustfmt::skip]
@@ -8,6 +11,12 @@ pub enum Route {
     #[layout(Navbar)]
     #[route("/")]
     Home {},
-    // #[route("/blog/:id")]
-    // Blog { id: i32 },
+    #[route("/tools")]
+    ToolDirectory {},
+    #[route("/tools/smiles-to-svg")]
+    SmilesToSvg {},
+    #[route("/tools/format-converter")]
+    FormatConverter {},
+    #[route("/tools/check-pains")]
+    CheckPains {},
 }

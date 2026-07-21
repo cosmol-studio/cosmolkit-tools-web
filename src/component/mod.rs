@@ -1,14 +1,12 @@
-pub mod navbar;
-pub use navbar::Navbar;
+pub(crate) mod icon;
+pub(crate) mod navbar;
+pub(crate) mod toast;
 
-pub mod home;
-pub use home::Home;
-
-pub mod icon;
-pub use icon::MdiIcon;
-
-#[cfg(not(target_arch = "wasm32"))]
-mod empty_viewer;
+pub(crate) use icon::MdiIcon;
+pub(crate) use navbar::Navbar;
+pub(crate) use toast::{ToastManager, ToastProvider};
 
 #[cfg(target_arch = "wasm32")]
 mod viewer;
+#[cfg(target_arch = "wasm32")]
+pub(crate) use viewer::{Viewer, WasmLogger, get_viewer};

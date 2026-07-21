@@ -8,16 +8,24 @@ build = "build.rs"
 [dependencies]
 # cosmol_viewer_core = { path = "../cosmol_viewer/crates/core" }
 # cosmolkit = { path = "../cosmolkit/crates/cosmolkit" }
-cosmol_viewer_core = "0.2.21"
+cosmol_viewer_core = "0.2.22"
+cosmolkit = "0.2.9"
 dioxus = { version = "0.7.9", features = ["router"] }
 postcard = { version = "1.1.3", default-features = false, features = ["use-std"] }
-wasm-bindgen = "0.2.122"
-wasm-bindgen-futures = "0.4.72"
-web-sys = "0.3.99"
+web-time = "1.1.0"
+wasm-bindgen = "0.2.126"
+wasm-bindgen-futures = "0.4.76"
+web-sys = { version = "0.3.103", features = ["Clipboard", "Document", "HtmlCanvasElement", "Navigator", "Window"] }
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+gloo-timers = { version = "0.3.0", features = ["futures"] }
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+tokio = { version = "1.49.0", features = ["time"] }
 
 [build-dependencies]
-cosmol_viewer_core = "0.2.21"
-cosmolkit = "0.2.7"
+cosmol_viewer_core = "0.2.22"
+cosmolkit = "0.2.9"
 postcard = { version = "1.1.3", default-features = false, features = ["use-std"] }
 
 [features]
