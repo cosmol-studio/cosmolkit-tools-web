@@ -2,7 +2,10 @@ use dioxus::prelude::*;
 
 use crate::{
     component::Navbar,
-    page::{CheckPains, FormatConverter, Home, SmilesToSvg, ToolDirectory},
+    page::{
+        CheckPains, ConformerGenerator, FormatConverter, Home, InchiTool, SmilesToSvg,
+        ToolDirectory,
+    },
 };
 
 #[derive(Debug, Clone, Routable, PartialEq)]
@@ -17,6 +20,10 @@ pub enum Route {
     SmilesToSvg {},
     #[route("/tools/format-converter")]
     FormatConverter {},
+    #[route("/tools/conformer-generator")]
+    ConformerGenerator {},
+    #[route("/tools/inchi")]
+    InchiTool {},
     #[route("/tools/check-pains")]
     CheckPains {},
 }

@@ -28,8 +28,23 @@ impl Logger for WasmLogger {
 }
 
 pub struct Viewer {
-    _app: Arc<Mutex<Option<App<WasmLogger>>>>,
+    app: Arc<Mutex<Option<App<WasmLogger>>>>,
     pub _runner: WebRunner,
+}
+
+impl Viewer {
+    pub fn update_scene(&self, scene: &Scene) -> Result<(), String> {
+        let mut guard = self
+            .app
+            .lock()
+            .map_err(|_| "Could not lock the embedded viewer.".to_string())?;
+        let app = guard
+            .as_mut()
+            .ok_or_else(|| "The embedded viewer is not ready yet.".to_string())?;
+        app.update_scene(scene);
+        app.ctx.request_repaint();
+        Ok(())
+    }
 }
 
 pub async fn init_render(scene: Scene, canvas: HtmlCanvasElement) -> Result<Viewer, JsValue> {
@@ -67,7 +82,7 @@ pub async fn init_render(scene: Scene, canvas: HtmlCanvasElement) -> Result<View
         .map_err(|err| JsValue::from_str(&format!("embedded viewer start failed: {err:?}")));
 
     Ok(Viewer {
-        _app: app,
+        app,
         _runner: runner,
     })
 }

@@ -18,8 +18,8 @@ pub fn ToolDirectory() -> Element {
                         }
                     }
                     div { class: "flex shrink-0 items-center gap-3 text-xs",
-                        span { class: "rounded-md border border-[#285b4d] bg-[#0d2923] px-2.5 py-1.5 font-semibold text-[#8ee0c4]", "2 available" }
-                        span { class: "text-[#718299]", "3 tools" }
+                        span { class: "rounded-md border border-[#285b4d] bg-[#0d2923] px-2.5 py-1.5 font-semibold text-[#8ee0c4]", "4 available" }
+                        span { class: "text-[#718299]", "5 tools" }
                     }
                 }
 
@@ -63,6 +63,50 @@ pub fn ToolDirectory() -> Element {
                             }
                         }
                         div { class: "mt-auto flex items-center justify-between border-t border-white/8 pt-4 text-xs font-semibold text-[#8cc596]",
+                            span { "Open tool" }
+                            span { class: "text-base transition-transform group-hover:translate-x-1", ">" }
+                        }
+                    }
+
+                    Link {
+                        class: "group flex min-h-[292px] flex-col rounded-lg border border-[#4b4568] bg-[#0b1727] p-5 no-underline shadow-[0_16px_40px_rgba(0,0,0,0.16)] transition-colors hover:border-[#8d7bd0] hover:bg-[#0d1b2d]",
+                        to: crate::route::Route::ConformerGenerator {},
+                        div { class: "flex items-start justify-between gap-4",
+                            div { class: "grid h-16 w-16 shrink-0 place-items-center rounded-lg border border-[#8d7bd080] bg-[#1c1930] p-2.5",
+                                img { class: "h-full w-full object-contain", src: MOLECULE_SVG, alt: "Molecular structure" }
+                            }
+                            span { class: "rounded-[5px] border border-[#285b4d] bg-[#0d2923] px-2 py-1 text-[10px] font-bold text-[#8ee0c4]", "AVAILABLE" }
+                        }
+                        div { class: "mt-6",
+                            span { class: "text-[10px] font-bold text-[#ab9de0]", "3D COORDINATES" }
+                            h2 { class: "mt-2 mb-2 text-lg font-bold text-white", "Conformer generator" }
+                            p { class: "m-0 text-[13px] leading-5 text-[#9caabd]",
+                                "Generate deterministic 3D coordinates with ETKDG and export SDF or PDB."
+                            }
+                        }
+                        div { class: "mt-auto flex items-center justify-between border-t border-white/8 pt-4 text-xs font-semibold text-[#b7a9eb]",
+                            span { "Open tool" }
+                            span { class: "text-base transition-transform group-hover:translate-x-1", ">" }
+                        }
+                    }
+
+                    Link {
+                        class: "group flex min-h-[292px] flex-col rounded-lg border border-[#315266] bg-[#0b1727] p-5 no-underline shadow-[0_16px_40px_rgba(0,0,0,0.16)] transition-colors hover:border-[#55a6c8] hover:bg-[#0d1b2d]",
+                        to: crate::route::Route::InchiTool {},
+                        div { class: "flex items-start justify-between gap-4",
+                            div { class: "grid h-16 w-16 shrink-0 place-items-center rounded-lg border border-[#55a6c880] bg-[#102431] p-2.5",
+                                img { class: "h-full w-full object-contain", src: SDF_SVG, alt: "Molecular identifier" }
+                            }
+                            span { class: "rounded-[5px] border border-[#285b4d] bg-[#0d2923] px-2 py-1 text-[10px] font-bold text-[#8ee0c4]", "AVAILABLE" }
+                        }
+                        div { class: "mt-6",
+                            span { class: "text-[10px] font-bold text-[#72bddb]", "CHEMICAL IDENTIFIERS" }
+                            h2 { class: "mt-2 mb-2 text-lg font-bold text-white", "InChI workspace" }
+                            p { class: "m-0 text-[13px] leading-5 text-[#9caabd]",
+                                "Generate InChI and InChIKey values or recover structures from standard InChI."
+                            }
+                        }
+                        div { class: "mt-auto flex items-center justify-between border-t border-white/8 pt-4 text-xs font-semibold text-[#86c8e2]",
                             span { "Open tool" }
                             span { class: "text-base transition-transform group-hover:translate-x-1", ">" }
                         }

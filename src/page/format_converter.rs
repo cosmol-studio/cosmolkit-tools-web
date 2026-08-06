@@ -467,7 +467,7 @@ pub fn FormatConverter() -> Element {
                         }
                         a {
                             class: "inline-flex shrink-0 items-center gap-2 rounded-md border border-[#23344a] bg-[#0c1828] px-[11px] py-2 text-xs font-semibold text-[#b8c5d6] no-underline hover:border-[#438ee9] hover:text-white",
-                            href: "https://docs.rs/cosmolkit/latest/cosmolkit/",
+                            href: "https://crates.io/crates/cosmolkit",
                             target: "_blank",
                             rel: "noreferrer",
                             "COSMolKit {cosmolkit_version} / Rust / WASM"
