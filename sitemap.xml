@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://tools.cosmol.org/</loc></url>
+  <url><loc>https://tools.cosmol.org/tools</loc></url>
+  <url><loc>https://tools.cosmol.org/tools/smiles-to-svg</loc></url>
+  <url><loc>https://tools.cosmol.org/tools/format-converter</loc></url>
+  <url><loc>https://tools.cosmol.org/tools/conformer-generator</loc></url>
+  <url><loc>https://tools.cosmol.org/tools/inchi</loc></url>
+  <url><loc>https://tools.cosmol.org/ecosystem</loc></url>
+</urlset>

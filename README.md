@@ -23,3 +23,22 @@ python scripts/test_python_examples.py
 ```
 
 The script checks the package version declared in `Cargo.toml`, every Format Converter input/output combination, and the SMILES to SVG file example.
+
+## SEO and static generation
+
+Production uses Dioxus 0.7 static site generation so each public route contains its title, description, canonical URL, Open Graph metadata, H1, and page text before WebAssembly loads:
+
+```bash
+dx build --release --web --ssg --debug-symbols false
+mkdir -p deploy/web/public
+cp -R target/dx/cosmolkit-tools-web/release/web/public/. deploy/web/public/
+cp robots.txt deploy/web/public/robots.txt
+cp sitemap.xml deploy/web/public/sitemap.xml
+python scripts/check_ssg_output.py deploy/web/public
+```
+
+Route metadata is declared explicitly with the small `Seo` component at the top of each page. The `static_routes` server function supplies Dioxus with the routes to prerender; the generated `deploy/web/public` directory remains a static site and is deployed directly to Cloudflare Pages.
+
+Dioxus CLI 0.7.10 performs prerendering through `dx build --ssg`; `dx bundle --ssg` currently does not invoke the SSG step. Keep the CLI and Dioxus dependency on the same version.
+
+When a tool becomes public, add its route and page, provide unique `Seo` metadata, add its production URL to `sitemap.xml` and `tests/seo.rs`, then add the expected generated title to `scripts/check_ssg_output.py`. Keep unfinished routes such as Check PAINS out of the sitemap until their core capability is usable.

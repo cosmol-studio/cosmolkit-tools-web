@@ -1,7 +1,7 @@
 use cosmolkit::Molecule;
 use dioxus::prelude::*;
 
-use crate::component::{MdiIcon, ToastManager, icon::MDI_OPEN_IN_NEW};
+use crate::component::{MdiIcon, Seo, ToastManager, icon::MDI_OPEN_IN_NEW};
 
 const DEFAULT_SMILES: &str = "Cn1c(=O)c2c(ncn2C)n(C)c1=O";
 const EXAMPLES: [(&str, &str); 4] = [
@@ -139,7 +139,11 @@ pub fn SmilesToSvg() -> Element {
     let python_code = python_example(&smiles(), width(), height());
 
     rsx! {
-        document::Title { "SMILES to SVG | COSMolkit Tools" }
+        Seo {
+            title: "SMILES to SVG — Molecular Structure Renderer | COSMolKit",
+            description: "Render 2D molecular structures from SMILES as SVG directly in your browser using COSMolKit and WebAssembly.",
+            canonical: "https://tools.cosmol.org/tools/smiles-to-svg",
+        }
         div {
             class: "uu-backdrop m-0 pt-[74px]",
             main{
@@ -317,6 +321,14 @@ pub fn SmilesToSvg() -> Element {
                             }
 
                         }
+                    }
+                }
+
+                section { class: "mt-10 border-t border-[#213147] pt-8",
+                    span { class: "text-xs font-bold text-[#4b96ff]", "BROWSER-LOCAL DEPICTION" }
+                    h2 { class: "mb-2 mt-2 text-xl font-bold text-slate-50", "From SMILES to a scalable molecular drawing" }
+                    p { class: "m-0 max-w-[820px] text-sm leading-6 text-[#9caabd]",
+                        "COSMolKit parses the SMILES, generates 2D coordinates, and renders the molecular structure as SVG on this device. The resulting vector graphic can be copied or downloaded without uploading the molecule to a server."
                     }
                 }
 

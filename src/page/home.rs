@@ -1,4 +1,6 @@
 use dioxus::prelude::*;
+
+use crate::{component::Seo, route::Route};
 pub const HOME_CANVAS_ID: &str = "home-canvas";
 
 #[cfg(target_arch = "wasm32")]
@@ -49,6 +51,11 @@ pub fn Home() -> Element {
         });
     });
     rsx! {
+        Seo {
+            title: "COSMolKit Tools — Browser-Native Cheminformatics",
+            description: "Free browser-based molecular and cheminformatics tools powered by COSMolKit, Rust and WebAssembly. Convert molecular formats, render structures, generate 3D conformers and work with standard InChI locally in your browser.",
+            canonical: "https://tools.cosmol.org/",
+        }
         div {
             class: "h-[1000px] uu-backdrop m-0 pt-[74px]",
             main{
@@ -81,13 +88,10 @@ pub fn Home() -> Element {
                                 "Explore Tools"
                             }
                             Link {
-                                class: "",
+                                class: "rounded border border-white px-4 py-2 text-white no-underline",
                                 to: "https://kit.cosmol.org",
                                 new_tab: true,
-                                button {
-                                    class: "text-white px-4 py-2 rounded cursor-pointer border border-white",
-                                    "View Docs"
-                                }
+                                "View Docs"
                             }
                         }
                     }
@@ -106,9 +110,9 @@ pub fn Home() -> Element {
                         "Featured Tools"
                     }
                     div {
-                        class: "w-full flex gap-4",
+                        class: "w-full flex flex-wrap gap-4",
                         div {
-                            class: "w-[270px] bg-[#ffffff04] rounded-xl flex flex-col px-[10px] py-[10px] border border-[#ffffff14]",
+                            class: "w-[calc(25%-12px)] bg-[#ffffff04] rounded-xl flex flex-col px-[10px] py-[10px] border border-[#ffffff14] max-[1100px]:w-[calc(50%-8px)] max-[640px]:w-full",
                             div{
                                 class: "w-full h-100px flex space-between mb-2",
                                 div {
@@ -137,7 +141,7 @@ pub fn Home() -> Element {
                             }
                         }
                         div {
-                            class: "w-[270px] bg-[#ffffff04] rounded-xl flex flex-col px-[10px] py-[10px] border border-[#ffffff14]",
+                            class: "w-[calc(25%-12px)] bg-[#ffffff04] rounded-xl flex flex-col px-[10px] py-[10px] border border-[#ffffff14] max-[1100px]:w-[calc(50%-8px)] max-[640px]:w-full",
                             div{
                                 class: "w-full h-100px flex space-between mb-2",
                                 div {
@@ -166,7 +170,7 @@ pub fn Home() -> Element {
                             }
                         }
                         div {
-                            class: "w-[270px] bg-[#ffffff04] rounded-xl flex flex-col px-[10px] py-[10px] border border-[#ffffff14]",
+                            class: "w-[calc(25%-12px)] bg-[#ffffff04] rounded-xl flex flex-col px-[10px] py-[10px] border border-[#ffffff14] max-[1100px]:w-[calc(50%-8px)] max-[640px]:w-full",
                             div{
                                 class: "w-full h-100px flex space-between mb-2",
                                 div {
@@ -180,17 +184,46 @@ pub fn Home() -> Element {
                                     class: "h-[100px] w-[180px] pl-[5px] justify-center flex flex-col",
                                     span {
                                         class: "block font-bold mb-2 text-white text-base",
-                                        "Check PAINS"
+                                        "Conformer generator"
                                     }
                                     span {
                                         class: "block leading-tight opacity-75 text-sm text-white",
-                                        "Check if the molecule is a PAINS compound."
+                                        "Generate deterministic 3D molecular coordinates."
                                     }
                                 }
                             }
                             Link {
                                 class: "w-full text-white text-center py-1.5 rounded-lg border border-[#1f93de50] border-[1.5px] cursor-pointer hover:bg-[#3082FF80]",
-                                to: crate::route::Route::CheckPains {},
+                                to: Route::ConformerGenerator {},
+                                "Open"
+                            }
+                        }
+                        div {
+                            class: "w-[calc(25%-12px)] bg-[#ffffff04] rounded-xl flex flex-col px-[10px] py-[10px] border border-[#ffffff14] max-[1100px]:w-[calc(50%-8px)] max-[640px]:w-full",
+                            div {
+                                class: "w-full h-100px flex space-between mb-2",
+                                div {
+                                    class: "h-[60px] w-[60px] m-[10px] mt-[20px] border-[1.5px] border-[#55a6c8] rounded-xl",
+                                    img {
+                                        class: "w-[80%] h-[80%] m-[10%]",
+                                        src: SDF_SVG,
+                                    }
+                                }
+                                div {
+                                    class: "h-[100px] w-[180px] pl-[5px] justify-center flex flex-col",
+                                    span {
+                                        class: "block font-bold mb-2 text-white text-base",
+                                        "InChI workspace"
+                                    }
+                                    span {
+                                        class: "block leading-tight opacity-75 text-sm text-white",
+                                        "Generate identifiers or recover molecular structures."
+                                    }
+                                }
+                            }
+                            Link {
+                                class: "w-full text-white text-center py-1.5 rounded-lg border border-[#55a6c850] border-[1.5px] cursor-pointer hover:bg-[#55a6c880]",
+                                to: Route::InchiTool {},
                                 "Open"
                             }
                         }

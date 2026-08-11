@@ -2,7 +2,7 @@ use cosmol_viewer_core::{scene::Scene, shapes::Molecule as ViewerMolecule};
 use cosmolkit::{EmbedParameters, Molecule, io::molblock};
 use dioxus::prelude::*;
 
-use crate::component::{MdiIcon, ToastManager, icon::MDI_OPEN_IN_NEW};
+use crate::component::{MdiIcon, Seo, ToastManager, icon::MDI_OPEN_IN_NEW};
 #[cfg(target_arch = "wasm32")]
 use crate::component::{Viewer, get_viewer};
 
@@ -317,7 +317,11 @@ pub fn ConformerGenerator() -> Element {
     let current_output = result().and_then(Result::ok);
 
     rsx! {
-        document::Title { "3D conformer generator | COSMolkit Tools" }
+        Seo {
+            title: "SMILES to 3D Conformer — Browser ETKDG Generator | COSMolKit",
+            description: "Generate ETKDG 3D molecular conformers from SMILES directly in your browser, preview them in 3D and export molecular structures with COSMolKit.",
+            canonical: "https://tools.cosmol.org/tools/conformer-generator",
+        }
         div { class: "min-h-screen uu-backdrop m-0 pt-[74px]",
             main { class: "mx-auto w-full max-w-6xl px-0 py-5 font-sans text-[#e8edf5] max-[820px]:px-3.5 max-[820px]:pb-[30px]",
                 section { class: "w-full",
@@ -465,6 +469,14 @@ pub fn ConformerGenerator() -> Element {
                                 } else { "Generated coordinates will appear here." }
                             }
                         }
+                    }
+                }
+
+                section { class: "mt-10 border-t border-[#213147] pt-8",
+                    span { class: "text-xs font-bold text-[#4b96ff]", "3D CONFORMER WORKFLOW" }
+                    h2 { class: "mb-2 mt-2 text-xl font-bold text-slate-50", "Generate coordinates from SMILES in the browser" }
+                    p { class: "m-0 max-w-[860px] text-sm leading-6 text-[#9caabd]",
+                        "Choose ETKDG v3, ETKDG v2, or KDG to generate one 3D conformer from SMILES. Adding explicit hydrogens is recommended for all-atom geometry. Generation runs locally in single-threaded WebAssembly, and the resulting structure can be exported as SDF V3000 or PDB."
                     }
                 }
             }

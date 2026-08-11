@@ -32,20 +32,73 @@ pub fn Navbar() -> Element {
                         to: Route::ToolDirectory {},
                         "Tools",
                     }
-                    Link {
-                        class: "whitespace-nowrap text-sm font-semibold text-[#9baabd] no-underline hover:text-white max-[800px]:text-xs",
-                        to: "https://kit.cosmol.org",
-                        new_tab: true,
-                        "Docs",
+                    div {
+                        class: "group relative",
+                        button {
+                            r#type: "button",
+                            class: "inline-flex cursor-pointer items-center gap-[5px] whitespace-nowrap bg-transparent text-sm font-semibold text-[#9baabd] outline-none hover:text-white focus:text-white max-[800px]:text-xs",
+                            aria_label: "Open COSMol documentation",
+                            "Docs"
+                            MdiIcon { size: 15, path: MDI_OPEN_IN_NEW }
+                        }
+                        div {
+                            class: "invisible absolute top-full left-0 w-[300px] translate-y-1 pt-3 opacity-0 transition-all group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100 max-[560px]:fixed max-[560px]:top-[67px] max-[560px]:right-3.5 max-[560px]:left-auto max-[560px]:w-[min(300px,calc(100vw-28px))]",
+                            div {
+                                class: "rounded-md border border-[#2a3b52] bg-[#0c1828] p-2 shadow-[0_16px_38px_rgba(0,0,0,0.32)]",
+                                span { class: "block px-2.5 pb-2 pt-1 text-[10px] font-bold tracking-[0.08em] text-[#718299]", "COSMOL DOCUMENTATION" }
+                                a {
+                                    class: "block rounded-[5px] px-2.5 py-2.5 text-left no-underline hover:bg-[#13253b]",
+                                    href: "https://kit.cosmol.org/", target: "_blank", rel: "noreferrer",
+                                    span { class: "block text-xs font-bold text-white", "COSMolKit" }
+                                    span { class: "mt-0.5 block text-[11px] text-[#8495aa]", "Python API and toolkit documentation" }
+                                }
+                                a {
+                                    class: "block rounded-[5px] px-2.5 py-2.5 text-left no-underline hover:bg-[#13253b]",
+                                    href: "https://cosmol-studio.github.io/COSMol-viewer/", target: "_blank", rel: "noreferrer",
+                                    span { class: "block text-xs font-bold text-white", "COSMol-viewer" }
+                                    span { class: "mt-0.5 block text-[11px] text-[#8495aa]", "Viewer API and integration documentation" }
+                                }
+                            }
+                        }
                     }
                     Link {
-                        class: "inline-flex items-center gap-[5px] whitespace-nowrap text-sm font-semibold text-[#9baabd] no-underline hover:text-white max-[800px]:text-xs",
-                        new_tab: true,
-                        to: "https://github.com/cosmol-studio/cosmolkit-tools-web",
-                        span { class: "max-[480px]:hidden", "Github" }
-                        MdiIcon {
-                            size: 15,
-                            path: MDI_OPEN_IN_NEW,
+                        class: "whitespace-nowrap text-sm font-semibold text-[#9baabd] no-underline hover:text-white max-[800px]:text-xs",
+                        to: Route::Ecosystem {},
+                        "Ecosystem",
+                    }
+                    div {
+                        class: "group relative",
+                        button {
+                            r#type: "button",
+                            class: "inline-flex cursor-pointer items-center gap-[5px] whitespace-nowrap bg-transparent text-sm font-semibold text-[#9baabd] outline-none hover:text-white focus:text-white max-[800px]:text-xs",
+                            aria_label: "Open COSMol GitHub projects",
+                            "Github"
+                            MdiIcon { size: 15, path: MDI_OPEN_IN_NEW }
+                        }
+                        div {
+                            class: "invisible absolute top-full right-0 w-[300px] translate-y-1 pt-3 opacity-0 transition-all group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100 max-[560px]:fixed max-[560px]:top-[67px] max-[560px]:right-3.5 max-[560px]:w-[min(300px,calc(100vw-28px))]",
+                            div {
+                                class: "rounded-md border border-[#2a3b52] bg-[#0c1828] p-2 shadow-[0_16px_38px_rgba(0,0,0,0.32)]",
+                                span { class: "block px-2.5 pb-2 pt-1 text-[10px] font-bold tracking-[0.08em] text-[#718299]", "COSMOL GITHUB" }
+                                a {
+                                    class: "block rounded-[5px] px-2.5 py-2.5 text-left no-underline hover:bg-[#13253b]",
+                                    href: "https://github.com/cosmol-studio/COSMolKit", target: "_blank", rel: "noreferrer",
+                                    span { class: "block text-xs font-bold text-white", "COSMolKit" }
+                                    span { class: "mt-0.5 block text-[11px] text-[#8495aa]", "Core chemistry toolkit" }
+                                }
+                                a {
+                                    class: "block rounded-[5px] px-2.5 py-2.5 text-left no-underline hover:bg-[#13253b]",
+                                    href: "https://github.com/cosmol-studio/COSMol-viewer", target: "_blank", rel: "noreferrer",
+                                    span { class: "block text-xs font-bold text-white", "COSMol-viewer" }
+                                    span { class: "mt-0.5 block text-[11px] text-[#8495aa]", "Rust and WebAssembly viewer" }
+                                }
+                                a {
+                                    class: "block rounded-[5px] px-2.5 py-2.5 text-left no-underline hover:bg-[#13253b]",
+                                    href: "https://github.com/cosmol-studio/cosmolkit-tools-web", target: "_blank", rel: "noreferrer",
+                                    span { class: "block text-xs font-bold text-white", "cosmolkit-tools-web" }
+                                    span { class: "mt-0.5 block text-[11px] text-[#8495aa]", "Browser tools and examples" }
+                                }
+                            }
                         }
                     }
                 }
@@ -53,5 +106,16 @@ pub fn Navbar() -> Element {
         }
 
         Outlet::<Route> {}
+
+        footer {
+            class: "border-t border-white/8 bg-[#081321] px-6 py-5 font-sans text-xs text-[#718299] max-[640px]:px-3.5",
+            div {
+                class: "mx-auto flex w-full max-w-6xl flex-wrap items-center gap-x-5 gap-y-2",
+                span { class: "font-semibold text-[#9caabd]", "Powered by COSMolKit" }
+                a { class: "text-[#7ab5ff] no-underline hover:text-white", href: "https://github.com/cosmol-studio/COSMolKit", target: "_blank", rel: "noreferrer", "GitHub" }
+                a { class: "text-[#7ab5ff] no-underline hover:text-white", href: "https://kit.cosmol.org/", target: "_blank", rel: "noreferrer", "Python documentation" }
+                a { class: "text-[#7ab5ff] no-underline hover:text-white", href: "https://crates.io/crates/cosmolkit", target: "_blank", rel: "noreferrer", "crates.io" }
+            }
+        }
     }
 }

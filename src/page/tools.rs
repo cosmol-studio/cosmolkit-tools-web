@@ -1,20 +1,26 @@
 use dioxus::prelude::*;
 
+use crate::component::Seo;
+
 const MOLECULE_SVG: Asset = asset!("/assets/benzene.svg");
 const SDF_SVG: Asset = asset!("/assets/sdf.svg");
 
 #[component]
 pub fn ToolDirectory() -> Element {
     rsx! {
-        document::Title { "Tools | COSMolkit Tools" }
+        Seo {
+            title: "Free Molecular & Cheminformatics Tools — COSMolKit",
+            description: "Browser-based cheminformatics tools for molecular format conversion, 2D structure rendering, ETKDG conformer generation and standard InChI workflows, powered by COSMolKit.",
+            canonical: "https://tools.cosmol.org/tools",
+        }
         div { class: "min-h-screen uu-backdrop m-0 pt-[74px]",
             main { class: "mx-auto w-full max-w-6xl px-6 py-10 font-sans text-[#e8edf5] max-[640px]:px-3.5 max-[640px]:py-7",
                 header { class: "flex items-end justify-between gap-8 border-b border-white/10 pb-7 max-[700px]:flex-col max-[700px]:items-start max-[700px]:gap-4",
                     div {
                         span { class: "text-xs font-bold text-[#4b96ff]", "TOOL DIRECTORY" }
-                        h1 { class: "mt-2 mb-2 text-[32px] leading-tight font-bold text-white max-[640px]:text-[27px]", "Tools" }
+                        h1 { class: "mt-2 mb-2 text-[32px] leading-tight font-bold text-white max-[640px]:text-[27px]", "Free Browser-Based Cheminformatics Tools" }
                         p { class: "m-0 max-w-[650px] text-[15px] leading-6 text-[#9caabd]",
-                            "Browser-native molecular utilities powered by the COSMolKit Rust core."
+                            "These molecular tools run locally in your browser using COSMolKit, Rust, and WebAssembly."
                         }
                     }
                     div { class: "flex shrink-0 items-center gap-3 text-xs",
@@ -37,7 +43,7 @@ pub fn ToolDirectory() -> Element {
                             span { class: "text-[10px] font-bold text-[#4b96ff]", "MOLECULE DEPICTION" }
                             h2 { class: "mt-2 mb-2 text-lg font-bold text-white", "SMILES to SVG" }
                             p { class: "m-0 text-[13px] leading-5 text-[#9caabd]",
-                                "Render SMILES as scalable 2D molecular graphics and export production-ready SVG."
+                                "Render 2D molecular structures from SMILES and export scalable SVG files."
                             }
                         }
                         div { class: "mt-auto flex items-center justify-between border-t border-white/8 pt-4 text-xs font-semibold text-[#7ab5ff]",
@@ -59,7 +65,7 @@ pub fn ToolDirectory() -> Element {
                             span { class: "text-[10px] font-bold text-[#86ad72]", "MOLECULAR I/O" }
                             h2 { class: "mt-2 mb-2 text-lg font-bold text-white", "Format converter" }
                             p { class: "m-0 text-[13px] leading-5 text-[#9caabd]",
-                                "Read six common molecular formats and export SMILES, MOL, SDF, PDB, or SVG."
+                                "Convert supported molecular file and notation formats into SMILES, MOL, SDF, PDB, or SVG."
                             }
                         }
                         div { class: "mt-auto flex items-center justify-between border-t border-white/8 pt-4 text-xs font-semibold text-[#8cc596]",
@@ -81,7 +87,7 @@ pub fn ToolDirectory() -> Element {
                             span { class: "text-[10px] font-bold text-[#ab9de0]", "3D COORDINATES" }
                             h2 { class: "mt-2 mb-2 text-lg font-bold text-white", "Conformer generator" }
                             p { class: "m-0 text-[13px] leading-5 text-[#9caabd]",
-                                "Generate deterministic 3D coordinates with ETKDG and export SDF or PDB."
+                                "Generate ETKDG 3D conformers from SMILES and export SDF or PDB structures."
                             }
                         }
                         div { class: "mt-auto flex items-center justify-between border-t border-white/8 pt-4 text-xs font-semibold text-[#b7a9eb]",
@@ -103,7 +109,7 @@ pub fn ToolDirectory() -> Element {
                             span { class: "text-[10px] font-bold text-[#72bddb]", "CHEMICAL IDENTIFIERS" }
                             h2 { class: "mt-2 mb-2 text-lg font-bold text-white", "InChI workspace" }
                             p { class: "m-0 text-[13px] leading-5 text-[#9caabd]",
-                                "Generate InChI and InChIKey values or recover structures from standard InChI."
+                                "Generate standard InChI and InChIKey values or parse InChI back to molecular structures."
                             }
                         }
                         div { class: "mt-auto flex items-center justify-between border-t border-white/8 pt-4 text-xs font-semibold text-[#86c8e2]",

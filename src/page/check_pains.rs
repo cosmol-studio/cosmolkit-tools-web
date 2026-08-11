@@ -1,6 +1,8 @@
 use cosmolkit::Molecule;
 use dioxus::prelude::*;
 
+use crate::component::Seo;
+
 const DEFAULT_SMILES: &str = "O=C(C=Cc1ccc(O)cc1)c2ccc(O)cc2";
 const EXAMPLES: [(&str, &str); 4] = [
     ("Curcumin fragment", DEFAULT_SMILES),
@@ -61,7 +63,11 @@ pub fn CheckPains() -> Element {
     let cosmolkit_version = cosmolkit::version();
 
     rsx! {
-        document::Title { "Check PAINS | COSMolkit Tools" }
+        Seo {
+            title: "Check PAINS — Implementation Status | COSMolKit",
+            description: "Preview molecular structures for a future COSMolKit PAINS screening workflow. PAINS matching remains unavailable until validated core support is implemented.",
+            canonical: "https://tools.cosmol.org/tools/check-pains",
+        }
         div { class: "min-h-screen uu-backdrop m-0 pt-[74px]",
             main { class: "mx-auto w-full max-w-6xl px-0 py-5 font-sans text-[#e8edf5] max-[800px]:px-3.5 max-[800px]:pb-[30px]",
                 section {

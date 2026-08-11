@@ -11,7 +11,23 @@ const MAIN_CSS: Asset = asset!("/assets/main.css");
 const TAILWIND_CSS: Asset = asset!("/assets/tailwind.css");
 
 fn main() {
-    dioxus::launch(App);
+    dioxus::LaunchBuilder::new()
+        .with_cfg(server_only! {
+            dioxus::server::ServeConfig::builder()
+                .incremental(
+                    dioxus::server::IncrementalRendererConfig::new()
+                        .static_dir(
+                            std::env::current_exe()
+                                .expect("current executable path")
+                                .parent()
+                                .expect("server executable directory")
+                                .join("public"),
+                        )
+                        .clear_cache(false),
+                )
+                .enable_out_of_order_streaming()
+        })
+        .launch(App);
 }
 
 #[component]

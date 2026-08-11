@@ -1,7 +1,7 @@
 use cosmolkit::{Molecule, inchi_to_inchi_key, mol_from_inchi, mol_to_inchi};
 use dioxus::prelude::*;
 
-use crate::component::{MdiIcon, ToastManager, icon::MDI_OPEN_IN_NEW};
+use crate::component::{MdiIcon, Seo, ToastManager, icon::MDI_OPEN_IN_NEW};
 
 const DEFAULT_SMILES: &str = "CC(=O)Oc1ccccc1C(=O)O";
 const DEFAULT_INCHI: &str = "InChI=1S/C9H8O4/c1-6(10)13-8-5-3-2-4-7(8)9(11)12/h2-5H,1H3,(H,11,12)";
@@ -167,7 +167,11 @@ pub fn InchiTool() -> Element {
     let cosmolkit_version = cosmolkit::version();
 
     rsx! {
-        document::Title { "InChI | COSMolkit Tools" }
+        Seo {
+            title: "InChI Converter — InChI, InChIKey & Molecular Structure | COSMolKit",
+            description: "Convert SMILES to standard InChI and InChIKey or parse InChI back to molecular structures using COSMolKit's pure Rust InChI implementation directly in your browser.",
+            canonical: "https://tools.cosmol.org/tools/inchi",
+        }
         div { class: "min-h-screen uu-backdrop m-0 pt-[74px]",
             main { class: "mx-auto w-full max-w-6xl px-0 py-5 font-sans text-[#e8edf5] max-[800px]:px-3.5 max-[800px]:pb-[30px]",
                 section { class: "w-full",
@@ -306,6 +310,14 @@ pub fn InchiTool() -> Element {
                                 },
                             }
                         }
+                    }
+                }
+
+                section { class: "mt-10 border-t border-[#213147] pt-8",
+                    span { class: "text-xs font-bold text-[#4b96ff]", "SUPPORTED INCHI WORKFLOWS" }
+                    h2 { class: "mb-2 mt-2 text-xl font-bold text-slate-50", "Identifiers and molecular structures" }
+                    p { class: "m-0 max-w-[860px] text-sm leading-6 text-[#9caabd]",
+                        "This tool supports SMILES to standard InChI, SMILES to InChIKey, InChI to a molecular structure, and InChI to InChIKey. Processing stays on this device and uses COSMolKit's pure-Rust InChI engine."
                     }
                 }
             }
