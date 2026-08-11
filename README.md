@@ -29,7 +29,7 @@ The script checks the package version declared in `Cargo.toml`, every Format Con
 Production uses Dioxus 0.7 static site generation so each public route contains its title, description, canonical URL, Open Graph metadata, H1, and page text before WebAssembly loads:
 
 ```bash
-dx build --release --web --ssg --debug-symbols false
+dx build --release --web --ssg --features ssg --force-sequential --debug-symbols false
 mkdir -p deploy/web/public
 cp -R target/dx/cosmolkit-tools-web/release/web/public/. deploy/web/public/
 cp robots.txt deploy/web/public/robots.txt
@@ -38,6 +38,8 @@ python scripts/check_ssg_output.py deploy/web/public
 ```
 
 Route metadata is declared explicitly with the small `Seo` component at the top of each page. The `static_routes` server function supplies Dioxus with the routes to prerender; the generated `deploy/web/public` directory remains a static site and is deployed directly to Cloudflare Pages.
+
+The `ssg` feature enables Dioxus fullstack support only for the production prerender build. Normal `dx serve --web` development builds only the browser client and does not compile or start a native server. The production command builds sequentially so the client bundle is complete before the native renderer writes the final prerendered HTML.
 
 Dioxus CLI 0.7.10 performs prerendering through `dx build --ssg`; `dx bundle --ssg` currently does not invoke the SSG step. Keep the CLI and Dioxus dependency on the same version.
 

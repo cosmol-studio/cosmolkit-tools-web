@@ -30,6 +30,7 @@ pub enum Route {
     CheckPains {},
 }
 
+#[cfg(feature = "ssg")]
 #[server(endpoint = "static_routes", output = server_fn::codec::Json)]
 async fn static_routes() -> Result<Vec<String>, ServerFnError> {
     Ok(Route::static_routes()

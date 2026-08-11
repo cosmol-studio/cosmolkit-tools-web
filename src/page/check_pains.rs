@@ -101,7 +101,7 @@ pub fn CheckPains() -> Element {
                                 }
                             }
                             button { r#type: "button", class: "mb-3 h-[42px] w-full cursor-pointer rounded-md border border-[#30435b] bg-[#101e30] text-[13px] font-bold text-[#d5e2f1] hover:border-[#438ee9] hover:text-white", onclick: move |_| preview.set(preview_smiles(&smiles())), "Preview molecule" }
-                            button { r#type: "button", class: "h-[42px] w-full cursor-not-allowed rounded-md border border-[#554a2e] bg-[#282315] text-[13px] font-bold text-[#8f8057] opacity-75", disabled: true, title: "PAINS matching is not available in COSMolKit Core 0.2.9", "Check PAINS" }
+                            button { r#type: "button", class: "h-[42px] w-full cursor-not-allowed rounded-md border border-[#554a2e] bg-[#282315] text-[13px] font-bold text-[#8f8057] opacity-75", disabled: true, title: "PAINS matching is not available in COSMolKit Core {cosmolkit_version}", "Check PAINS" }
                             p { class: "mb-0 mt-[13px] text-center text-[11px] leading-5 text-[#8d805f]", "Screening remains disabled until COSMolKit Core provides a validated PAINS matcher." }
                         }
 

@@ -30,7 +30,7 @@ jobs:
       - uses: Swatinem/rust-cache@v2
       - name: Dioxus Build
         run: |
-          dx build -r --web --ssg --verbose --debug-symbols false
+          dx build -r --web --ssg --features ssg --force-sequential --debug-symbols false
           mkdir -p deploy/web/public
           cp -R target/dx/cosmolkit-tools-web/release/web/public/. deploy/web/public/
           cp robots.txt deploy/web/public/robots.txt

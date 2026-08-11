@@ -10,6 +10,7 @@ const MAIN_CSS: Asset = asset!("/assets/main.css");
 // const HEADER_SVG: Asset = asset!("/assets/header.svg");
 const TAILWIND_CSS: Asset = asset!("/assets/tailwind.css");
 
+#[cfg(feature = "ssg")]
 fn main() {
     dioxus::LaunchBuilder::new()
         .with_cfg(server_only! {
@@ -28,6 +29,11 @@ fn main() {
                 .enable_out_of_order_streaming()
         })
         .launch(App);
+}
+
+#[cfg(not(feature = "ssg"))]
+fn main() {
+    dioxus::launch(App);
 }
 
 #[component]
