@@ -357,7 +357,20 @@ pub fn ConformerGenerator() -> Element {
                                 label { class: "mb-[9px] block text-[13px] font-bold text-[#dce5f0]", "Examples" }
                                 div { class: "flex flex-wrap gap-[7px]",
                                     for (name, value) in EXAMPLES {
-                                        button { r#type: "button", class: "cursor-pointer rounded-[5px] border border-[#2b3d54] bg-[#101e30] px-[9px] py-1.5 text-xs text-[#adbbcc] hover:border-[#438ee9] hover:text-[#eaf3ff]", onclick: move |_| smiles.set(value.to_string()), "{name}" }
+                                        button {
+                                            r#type: "button",
+                                            disabled: busy(),
+                                            class: "cursor-pointer rounded-[5px] border border-[#2b3d54] bg-[#101e30] px-[9px] py-1.5 text-xs text-[#adbbcc] hover:border-[#438ee9] hover:text-[#eaf3ff] disabled:cursor-wait disabled:opacity-50",
+                                            onclick: move |_| {
+                                                let selected = value.to_string();
+                                                smiles.set(selected.clone());
+                                                #[cfg(target_arch = "wasm32")]
+                                                start_generation(selected, preset(), seed(), add_hydrogens(), busy, result, viewer, toast);
+                                                #[cfg(not(target_arch = "wasm32"))]
+                                                start_generation(selected, preset(), seed(), add_hydrogens(), busy, result, toast);
+                                            },
+                                            "{name}"
+                                        }
                                     }
                                 }
                             }
