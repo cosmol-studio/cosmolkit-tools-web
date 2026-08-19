@@ -39,11 +39,40 @@ fn main() {
 #[component]
 fn App() -> Element {
     rsx! {
+        span { id: "wasm-ready", hidden: true }
+        InitialLoader {}
         ToastProvider {
             document::Link { rel: "icon", href: FAVICON }
             document::Link { rel: "stylesheet", href: MAIN_CSS }
             document::Link { rel: "stylesheet", href: TAILWIND_CSS }
             Router::<Route> {}
+        }
+    }
+}
+
+#[component]
+fn InitialLoader() -> Element {
+    #[allow(unused_mut)]
+    let mut visible = use_signal(|| cfg!(target_arch = "wasm32") || cfg!(feature = "ssg"));
+
+    #[cfg(target_arch = "wasm32")]
+    use_effect(move || visible.set(false));
+
+    if !visible() {
+        return rsx! {};
+    }
+
+    rsx! {
+        div {
+            id: "initial-loader",
+            role: "status",
+            aria_live: "polite",
+            aria_label: "Loading COSMolKit Tools",
+            div { class: "initial-loader-content",
+                p { class: "initial-loader-brand", span { "COSMolKit" } " Tools" }
+                p { class: "initial-loader-status", "Loading browser workspace" }
+                span { class: "initial-loader-progress", aria_hidden: "true" }
+            }
         }
     }
 }

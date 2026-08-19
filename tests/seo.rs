@@ -95,3 +95,29 @@ fn seo_component_emits_standard_and_open_graph_tags() {
         assert!(source.contains(marker), "SEO component is missing {marker}");
     }
 }
+
+#[test]
+fn initial_html_contains_a_self_removing_loading_state() {
+    let template = fs::read_to_string("index.html").expect("initial HTML template should exist");
+    let app = fs::read_to_string("src/main.rs").expect("app source should exist");
+    let main_start = template
+        .find("<div id=\"main\">")
+        .expect("missing main mount");
+    let loader = template
+        .find("<div id=\"initial-template-loader\"")
+        .expect("missing initial loader");
+
+    assert!(
+        loader > main_start,
+        "loader must be inside the Dioxus mount"
+    );
+    assert!(template.contains("<title>{app_title}</title>"));
+    assert!(template.contains("prefers-reduced-motion: reduce"));
+    assert!(!template.contains("<script"));
+    assert!(template.contains("body:has(#wasm-ready) #initial-template-loader"));
+    assert!(!template.contains("initial-loader-molecule"));
+    assert!(app.contains("id: \"wasm-ready\""));
+    assert!(app.contains("InitialLoader {}"));
+    assert!(!app.contains("initial-loader-molecule"));
+    assert!(app.contains("use_effect(move || visible.set(false))"));
+}

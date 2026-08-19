@@ -1156,18 +1156,18 @@ dependencies = [
 
 [[package]]
 name = "cosmolkit"
-version = "0.2.11"
+version = "0.2.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6908106a9925049331c573c646e9150ebcb084abaa0f078eecb4a226a2c114e4"
+checksum = "f15198a70ea4ef35f913b6846f2102288ae3d4b5de998895b88831473e56766e"
 dependencies = [
  "cosmolkit-core",
 ]
 
 [[package]]
 name = "cosmolkit-core"
-version = "0.2.11"
+version = "0.2.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d063cc58025a768b481190cd3944dcd21ffb27fd20e07d36461fc6ac60a0eff6"
+checksum = "597d656c124acc0ac538a7e8f3710bf2765f2c4b50d0564d58a7433cb5b3b70a"
 dependencies = [
  "cosmolkit-inchi",
  "cosmolkit-macros",
@@ -1188,9 +1188,9 @@ dependencies = [
 
 [[package]]
 name = "cosmolkit-inchi"
-version = "0.2.11"
+version = "0.2.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bb5625c80b3e26054ca1de7b16f21dda25842b57d7618e8b2c52d81c7258f94e"
+checksum = "4fd1b687c0aeec3568eeade884caee4896b01320eb19b18762da31d71e5d8955"
 dependencies = [
  "bytemuck",
  "hexf-parse",
@@ -1199,9 +1199,9 @@ dependencies = [
 
 [[package]]
 name = "cosmolkit-macros"
-version = "0.2.11"
+version = "0.2.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a77a2f7868c0ce14c688ce7a7dd0e2d1b15970dfe1f22d2cd079e09461324696"
+checksum = "901ab871dfc80f2a2a6525c3f391aa48399126031d45aa62ce208ec81dbb7615"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1210,9 +1210,9 @@ dependencies = [
 
 [[package]]
 name = "cosmolkit-ringdecomposer"
-version = "0.2.11"
+version = "0.2.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dc96f51b55739719d835ae5b37f7e552a8d65c076b4ee039350aed8eda7389a3"
+checksum = "074e031fd537cc77f221eb76c4e6d82760d3fd4e4c0d1de5ea5fd2c84fcd29c3"
 dependencies = [
  "thiserror 2.0.20",
 ]
@@ -3521,9 +3521,9 @@ dependencies = [
 
 [[package]]
 name = "http-body-util"
-version = "0.1.4"
+version = "0.1.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e9f41fd6a08e4d4ec69df65976da761afd5ad5e58a9d4acb46bd1c953a9e3ff2"
+checksum = "23169fe34a5fbcdd3f3862e78fb9b6fccd5f02a6dc6f732547005d45631ce71c"
 dependencies = [
  "bytes",
  "futures-core",
@@ -4153,7 +4153,7 @@ dependencies = [
  "bitflags 2.13.1",
  "libc",
  "plain",
- "redox_syscall 0.9.1",
+ "redox_syscall 0.9.2",
 ]
 
 [[package]]
@@ -5981,9 +5981,9 @@ dependencies = [
 
 [[package]]
 name = "redox_syscall"
-version = "0.9.1"
+version = "0.9.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "07507be7b4a5f9f26eeb41eeaebb1f5a7ff29dfb29739facc21d35bf8b11c21e"
+checksum = "f1c93da5bb2c5d4e6c0ef7abeead62c89169a0a4882bfb83ac892f2423aea2fe"
 dependencies = [
  "bitflags 2.13.1",
 ]
