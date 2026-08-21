@@ -7,10 +7,10 @@ SITE_ORIGIN = "https://tools.cosmol.org"
 PAGES = {
     "/": "COSMolKit Tools — Browser-Native Cheminformatics",
     "/tools": "Free Molecular & Cheminformatics Tools — COSMolKit",
-    "/tools/smiles-to-svg": "SMILES to SVG — Molecular Structure Renderer | COSMolKit",
-    "/tools/format-converter": "Molecular Format Converter — SMILES, SDF, MOL2, PDB, mmCIF | COSMolKit",
-    "/tools/conformer-generator": "SMILES to 3D Conformer — Browser ETKDG Generator | COSMolKit",
-    "/tools/inchi": "InChI Converter — InChI, InChIKey & Molecular Structure | COSMolKit",
+    "/smiles-to-svg": "SMILES to SVG — Molecular Structure Renderer | COSMolKit",
+    "/format-converter": "Molecular Format Converter — SDF, SMILES, MOL2, PDB | COSMolKit",
+    "/conformer-generator": "SMILES to 3D Conformer — Browser ETKDG Generator | COSMolKit",
+    "/inchi": "InChI Converter — InChI, InChIKey & Molecular Structure | COSMolKit",
     "/ecosystem": "COSMol Ecosystem — COSMolKit, Viewer & Browser Tools",
 }
 
@@ -77,7 +77,7 @@ def main():
         if not parser.h1.strip():
             failures.append(f"{route}: missing prerendered H1")
 
-    for static_name in ("robots.txt", "sitemap.xml"):
+    for static_name in ("robots.txt", "sitemap.xml", "_redirects"):
         if not (public_dir / static_name).exists():
             failures.append(f"missing deployed static file: {static_name}")
 

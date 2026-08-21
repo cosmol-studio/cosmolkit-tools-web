@@ -66,7 +66,7 @@ pub fn CheckPains() -> Element {
         Seo {
             title: "Check PAINS — Implementation Status | COSMolKit",
             description: "Preview molecular structures for a future COSMolKit PAINS screening workflow. PAINS matching remains unavailable until validated core support is implemented.",
-            canonical: "https://tools.cosmol.org/tools/check-pains",
+            canonical: "https://tools.cosmol.org/check-pains",
         }
         div { class: "min-h-screen uu-backdrop m-0 pt-[74px]",
             main { class: "mx-auto w-full max-w-6xl px-0 py-5 font-sans text-[#e8edf5] max-[800px]:px-3.5 max-[800px]:pb-[30px]",

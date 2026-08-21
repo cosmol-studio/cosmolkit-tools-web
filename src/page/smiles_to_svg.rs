@@ -141,8 +141,8 @@ pub fn SmilesToSvg() -> Element {
     rsx! {
         Seo {
             title: "SMILES to SVG — Molecular Structure Renderer | COSMolKit",
-            description: "Render 2D molecular structures from SMILES as SVG directly in your browser using COSMolKit and WebAssembly.",
-            canonical: "https://tools.cosmol.org/tools/smiles-to-svg",
+            description: "Free browser SMILES renderer and chemical structure drawing tool. Convert SMILES to a scalable SVG molecule image locally with COSMolKit and WebAssembly.",
+            canonical: "https://tools.cosmol.org/smiles-to-svg",
         }
         div {
             class: "uu-backdrop m-0 pt-[74px]",
@@ -326,9 +326,9 @@ pub fn SmilesToSvg() -> Element {
 
                 section { class: "mt-10 border-t border-[#213147] pt-8",
                     span { class: "text-xs font-bold text-[#4b96ff]", "BROWSER-LOCAL DEPICTION" }
-                    h2 { class: "mb-2 mt-2 text-xl font-bold text-slate-50", "From SMILES to a scalable molecular drawing" }
+                    h2 { class: "mb-2 mt-2 text-xl font-bold text-slate-50", "Convert SMILES to an SVG molecular structure" }
                     p { class: "m-0 max-w-[820px] text-sm leading-6 text-[#9caabd]",
-                        "COSMolKit parses the SMILES, generates 2D coordinates, and renders the molecular structure as SVG on this device. The resulting vector graphic can be copied or downloaded without uploading the molecule to a server."
+                        "COSMolKit parses the SMILES, generates 2D coordinates, and renders the molecular structure as SVG on this device. This browser-local SMILES visualizer and molecule drawing tool produces a vector graphic that can be copied or downloaded without uploading the structure to a server."
                     }
                 }
 

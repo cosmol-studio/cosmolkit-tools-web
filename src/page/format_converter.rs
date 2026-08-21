@@ -456,9 +456,9 @@ pub fn FormatConverter() -> Element {
 
     rsx! {
         Seo {
-            title: "Molecular Format Converter — SMILES, SDF, MOL2, PDB, mmCIF | COSMolKit",
-            description: "Convert molecular structures between SMILES, MOL, SDF, MOL2, PDB, mmCIF and other supported formats locally in your browser with COSMolKit.",
-            canonical: "https://tools.cosmol.org/tools/format-converter",
+            title: "Molecular Format Converter — SDF, SMILES, MOL2, PDB | COSMolKit",
+            description: "Convert SDF to SMILES, SMILES to SDF, MOL2 to PDB, PDB to SMILES, mmCIF and XYZ files, or molecular structures to SVG locally with COSMolKit.",
+            canonical: "https://tools.cosmol.org/format-converter",
         }
         div { class: "min-h-screen uu-backdrop m-0 pt-[74px]",
             main { class: "mx-auto w-full max-w-6xl px-0 py-5 font-sans text-[#e8edf5] max-[800px]:px-3.5 max-[800px]:pb-[30px]",
@@ -466,8 +466,8 @@ pub fn FormatConverter() -> Element {
                     div { class: "mb-6 flex items-end justify-between gap-8 max-[800px]:flex-col max-[800px]:items-start max-[800px]:gap-4",
                         div {
                             Link { class: "text-[13px] font-semibold text-[#7ab5ff] no-underline hover:text-[#b4d6ff]", to: crate::route::Route::ToolDirectory {}, "Back to tools" }
-                            h1 { class: "mb-1.5 mt-2.5 text-[32px] leading-[1.2] font-bold text-slate-50 max-[800px]:text-[27px]", "Format converter" }
-                            p { class: "m-0 max-w-[680px] text-[15px] leading-[1.6] text-[#9caabd]", "Convert molecular records locally while preserving the chemical graph and available coordinates." }
+                            h1 { class: "mb-1.5 mt-2.5 text-[32px] leading-[1.2] font-bold text-slate-50 max-[800px]:text-[27px]", "Molecular format converter" }
+                            p { class: "m-0 max-w-[720px] text-[15px] leading-[1.6] text-[#9caabd]", "Convert between SMILES, SDF, MOL, MOL2, PDB, mmCIF, XYZ, and SVG locally while preserving the chemical graph and available coordinates." }
                         }
                         a {
                             class: "inline-flex shrink-0 items-center gap-2 rounded-md border border-[#23344a] bg-[#0c1828] px-[11px] py-2 text-xs font-semibold text-[#b8c5d6] no-underline hover:border-[#438ee9] hover:text-white",
@@ -711,6 +711,27 @@ pub fn FormatConverter() -> Element {
                         div {
                             h3 { class: "mb-2 mt-0 text-sm font-bold text-[#dce5f0]", "Output formats" }
                             p { class: "m-0 text-sm leading-6 text-[#9caabd]", "SMILES; MOL V2000/V3000; SDF V2000/V3000; PDB; SVG depiction." }
+                        }
+                    }
+                    div { class: "mt-7 border-t border-white/8 pt-6",
+                        h3 { class: "mb-3 mt-0 text-base font-bold text-[#dce5f0]", "Common molecular file conversions" }
+                        div { class: "grid grid-cols-2 gap-x-8 gap-y-4 max-[700px]:grid-cols-1",
+                            p { class: "m-0 text-sm leading-6 text-[#9caabd]",
+                                strong { class: "font-semibold text-[#cbd7e5]", "Convert files to SMILES: " }
+                                "SDF to SMILES, MOL to SMILES, MOL2 to SMILES, PDB to SMILES, mmCIF to SMILES, and XYZ to SMILES."
+                            }
+                            p { class: "m-0 text-sm leading-6 text-[#9caabd]",
+                                strong { class: "font-semibold text-[#cbd7e5]", "Export from SMILES: " }
+                                "SMILES to SDF V2000/V3000, SMILES to MOL V2000/V3000, SMILES to PDB, and SMILES to SVG."
+                            }
+                            p { class: "m-0 text-sm leading-6 text-[#9caabd]",
+                                strong { class: "font-semibold text-[#cbd7e5]", "Convert molecular structure files: " }
+                                "MOL2 to SDF, MOL2 to PDB, SDF to MOL, SDF to PDB, PDB to SDF, mmCIF to PDB, and XYZ to SDF."
+                            }
+                            p { class: "m-0 text-sm leading-6 text-[#9caabd]",
+                                strong { class: "font-semibold text-[#cbd7e5]", "Create a 2D structure image: " }
+                                "Render SMILES, MOL, SDF, MOL2, PDB, mmCIF, or XYZ input as a scalable SVG molecular depiction."
+                            }
                         }
                     }
                 }

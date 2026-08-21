@@ -3,13 +3,10 @@ use std::{collections::HashSet, fs, path::Path};
 const FINISHED_ROUTES: [(&str, &str); 7] = [
     ("/", "src/page/home.rs"),
     ("/tools", "src/page/tools.rs"),
-    ("/tools/smiles-to-svg", "src/page/smiles_to_svg.rs"),
-    ("/tools/format-converter", "src/page/format_converter.rs"),
-    (
-        "/tools/conformer-generator",
-        "src/page/conformer_generator.rs",
-    ),
-    ("/tools/inchi", "src/page/inchi.rs"),
+    ("/smiles-to-svg", "src/page/smiles_to_svg.rs"),
+    ("/format-converter", "src/page/format_converter.rs"),
+    ("/conformer-generator", "src/page/conformer_generator.rs"),
+    ("/inchi", "src/page/inchi.rs"),
     ("/ecosystem", "src/page/ecosystem.rs"),
 ];
 
@@ -30,6 +27,26 @@ fn robots_allows_crawling_and_references_the_production_sitemap() {
 }
 
 #[test]
+fn legacy_tool_routes_redirect_to_root_level_urls() {
+    let redirects = fs::read_to_string("_redirects").expect("Cloudflare redirects should exist");
+
+    for (old_route, new_route) in [
+        ("/tools/smiles-to-svg", "/smiles-to-svg"),
+        ("/tools/format-converter", "/format-converter"),
+        ("/tools/conformer-generator", "/conformer-generator"),
+        ("/tools/inchi", "/inchi"),
+        ("/tools/check-pains", "/check-pains"),
+    ] {
+        let rule = format!("{old_route} {new_route} 301");
+        assert_eq!(
+            redirects.lines().filter(|line| *line == rule).count(),
+            1,
+            "missing unique permanent redirect: {rule}"
+        );
+    }
+}
+
+#[test]
 fn sitemap_contains_each_finished_route_once_and_excludes_pains() {
     let sitemap = fs::read_to_string("sitemap.xml").expect("sitemap.xml should exist");
     let mut expected_urls = HashSet::new();
@@ -44,7 +61,8 @@ fn sitemap_contains_each_finished_route_once_and_excludes_pains() {
         );
     }
 
-    assert!(!sitemap.contains("/tools/check-pains"));
+    assert!(!sitemap.contains("/check-pains"));
+    assert!(!sitemap.contains("https://tools.cosmol.org/tools/"));
     for url in sitemap
         .split("<loc>")
         .skip(1)
@@ -58,7 +76,7 @@ fn sitemap_contains_each_finished_route_once_and_excludes_pains() {
 #[test]
 fn every_public_route_declares_complete_metadata() {
     let mut pages = FINISHED_ROUTES.to_vec();
-    pages.push(("/tools/check-pains", "src/page/check_pains.rs"));
+    pages.push(("/check-pains", "src/page/check_pains.rs"));
 
     for (route, source_path) in pages {
         assert!(Path::new(source_path).exists(), "missing {source_path}");
@@ -93,6 +111,58 @@ fn seo_component_emits_standard_and_open_graph_tags() {
         "property: \"og:type\"",
     ] {
         assert!(source.contains(marker), "SEO component is missing {marker}");
+    }
+}
+
+#[test]
+fn public_tools_expose_supported_search_terms() {
+    let source = fs::read_to_string("src/page/format_converter.rs")
+        .expect("format converter source should exist");
+
+    for conversion in [
+        "SDF to SMILES",
+        "SMILES to SDF",
+        "MOL2 to SDF",
+        "PDB to SDF",
+        "mmCIF to SMILES",
+        "XYZ to SMILES",
+        "SMILES to SVG",
+    ] {
+        assert!(
+            source.contains(conversion),
+            "format converter is missing the supported search term {conversion}"
+        );
+    }
+
+    for (source_path, search_terms) in [
+        (
+            "src/page/smiles_to_svg.rs",
+            &[
+                "SMILES renderer",
+                "chemical structure drawing",
+                "SMILES visualizer",
+            ][..],
+        ),
+        (
+            "src/page/conformer_generator.rs",
+            &["SMILES to 3D", "ETKDG v3", "SMILES to PDB"][..],
+        ),
+        (
+            "src/page/inchi.rs",
+            &[
+                "SMILES to InChI",
+                "InChI to canonical SMILES",
+                "InChIKey generator",
+            ][..],
+        ),
+    ] {
+        let source = fs::read_to_string(source_path).expect("tool page source should exist");
+        for search_term in search_terms {
+            assert!(
+                source.contains(search_term),
+                "{source_path} is missing the supported search term {search_term}"
+            );
+        }
     }
 }
 

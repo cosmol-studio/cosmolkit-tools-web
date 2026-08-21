@@ -53,7 +53,7 @@ pub fn Home() -> Element {
     rsx! {
         Seo {
             title: "COSMolKit Tools — Browser-Native Cheminformatics",
-            description: "Free browser-based molecular and cheminformatics tools powered by COSMolKit, Rust and WebAssembly. Convert molecular formats, render structures, generate 3D conformers and work with standard InChI locally in your browser.",
+            description: "Free browser-based cheminformatics tools for molecular format conversion, SMILES rendering, SVG structures, 3D conformer generation, InChI, and InChIKey workflows.",
             canonical: "https://tools.cosmol.org/",
         }
         div {
@@ -159,7 +159,7 @@ pub fn Home() -> Element {
                                     }
                                     span {
                                         class: "block leading-tight opacity-75 text-sm text-white",
-                                        "Convert between common molecular formats."
+                                        "Convert SDF, SMILES, MOL2, PDB, mmCIF, and XYZ."
                                     }
                                 }
                             }
@@ -184,7 +184,7 @@ pub fn Home() -> Element {
                                     class: "h-[100px] w-[180px] pl-[5px] justify-center flex flex-col",
                                     span {
                                         class: "block font-bold mb-2 text-white text-base",
-                                        "Conformer generator"
+                                        "SMILES to 3D"
                                     }
                                     span {
                                         class: "block leading-tight opacity-75 text-sm text-white",
@@ -213,7 +213,7 @@ pub fn Home() -> Element {
                                     class: "h-[100px] w-[180px] pl-[5px] justify-center flex flex-col",
                                     span {
                                         class: "block font-bold mb-2 text-white text-base",
-                                        "InChI workspace"
+                                        "InChI converter"
                                     }
                                     span {
                                         class: "block leading-tight opacity-75 text-sm text-white",

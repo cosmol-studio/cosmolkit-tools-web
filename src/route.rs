@@ -18,15 +18,15 @@ pub enum Route {
     ToolDirectory {},
     #[route("/ecosystem")]
     Ecosystem {},
-    #[route("/tools/smiles-to-svg")]
+    #[route("/smiles-to-svg")]
     SmilesToSvg {},
-    #[route("/tools/format-converter")]
+    #[route("/format-converter")]
     FormatConverter {},
-    #[route("/tools/conformer-generator")]
+    #[route("/conformer-generator")]
     ConformerGenerator {},
-    #[route("/tools/inchi")]
+    #[route("/inchi")]
     InchiTool {},
-    #[route("/tools/check-pains")]
+    #[route("/check-pains")]
     CheckPains {},
 }
 

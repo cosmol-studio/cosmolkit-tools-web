@@ -34,10 +34,11 @@ mkdir -p deploy/web/public
 cp -R target/dx/cosmolkit-tools-web/release/web/public/. deploy/web/public/
 cp robots.txt deploy/web/public/robots.txt
 cp sitemap.xml deploy/web/public/sitemap.xml
+cp _redirects deploy/web/public/_redirects
 python scripts/check_ssg_output.py deploy/web/public
 ```
 
-Route metadata is declared explicitly with the small `Seo` component at the top of each page. The `static_routes` server function supplies Dioxus with the routes to prerender; the generated `deploy/web/public` directory remains a static site and is deployed directly to Cloudflare Pages.
+Route metadata is declared explicitly with the small `Seo` component at the top of each page. The `static_routes` server function supplies Dioxus with the routes to prerender; the generated `deploy/web/public` directory remains a static site and is deployed directly to Cloudflare Pages. Legacy tool URLs under `/tools/...` are permanently redirected to the current root-level tool routes through `_redirects`.
 
 The `ssg` feature enables Dioxus fullstack support only for the production prerender build. Normal `dx serve --web` development builds only the browser client and does not compile or start a native server. The production command builds sequentially so the client bundle is complete before the native renderer writes the final prerendered HTML.
 

@@ -10,7 +10,7 @@ pub fn ToolDirectory() -> Element {
     rsx! {
         Seo {
             title: "Free Molecular & Cheminformatics Tools — COSMolKit",
-            description: "Browser-based cheminformatics tools for molecular format conversion, 2D structure rendering, ETKDG conformer generation and standard InChI workflows, powered by COSMolKit.",
+            description: "Free browser tools for molecular format conversion, SMILES rendering, 2D SVG structures, ETKDG 3D conformers, InChI conversion, and InChIKey generation.",
             canonical: "https://tools.cosmol.org/tools",
         }
         div { class: "min-h-screen uu-backdrop m-0 pt-[74px]",
@@ -63,9 +63,9 @@ pub fn ToolDirectory() -> Element {
                         }
                         div { class: "mt-6",
                             span { class: "text-[10px] font-bold text-[#86ad72]", "MOLECULAR I/O" }
-                            h2 { class: "mt-2 mb-2 text-lg font-bold text-white", "Format converter" }
+                            h2 { class: "mt-2 mb-2 text-lg font-bold text-white", "Molecular format converter" }
                             p { class: "m-0 text-[13px] leading-5 text-[#9caabd]",
-                                "Convert supported molecular file and notation formats into SMILES, MOL, SDF, PDB, or SVG."
+                                "Convert SDF to SMILES, SMILES to SDF, MOL2 to PDB, mmCIF files, XYZ coordinates, and more."
                             }
                         }
                         div { class: "mt-auto flex items-center justify-between border-t border-white/8 pt-4 text-xs font-semibold text-[#8cc596]",
@@ -85,7 +85,7 @@ pub fn ToolDirectory() -> Element {
                         }
                         div { class: "mt-6",
                             span { class: "text-[10px] font-bold text-[#ab9de0]", "3D COORDINATES" }
-                            h2 { class: "mt-2 mb-2 text-lg font-bold text-white", "Conformer generator" }
+                            h2 { class: "mt-2 mb-2 text-lg font-bold text-white", "SMILES to 3D conformer" }
                             p { class: "m-0 text-[13px] leading-5 text-[#9caabd]",
                                 "Generate ETKDG 3D conformers from SMILES and export SDF or PDB structures."
                             }
@@ -107,7 +107,7 @@ pub fn ToolDirectory() -> Element {
                         }
                         div { class: "mt-6",
                             span { class: "text-[10px] font-bold text-[#72bddb]", "CHEMICAL IDENTIFIERS" }
-                            h2 { class: "mt-2 mb-2 text-lg font-bold text-white", "InChI workspace" }
+                            h2 { class: "mt-2 mb-2 text-lg font-bold text-white", "InChI and InChIKey converter" }
                             p { class: "m-0 text-[13px] leading-5 text-[#9caabd]",
                                 "Generate standard InChI and InChIKey values or parse InChI back to molecular structures."
                             }

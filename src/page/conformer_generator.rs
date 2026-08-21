@@ -319,8 +319,8 @@ pub fn ConformerGenerator() -> Element {
     rsx! {
         Seo {
             title: "SMILES to 3D Conformer — Browser ETKDG Generator | COSMolKit",
-            description: "Generate ETKDG 3D molecular conformers from SMILES directly in your browser, preview them in 3D and export molecular structures with COSMolKit.",
-            canonical: "https://tools.cosmol.org/tools/conformer-generator",
+            description: "Convert SMILES to a 3D molecular conformer with ETKDG v2, ETKDG v3, or KDG. Preview the 3D molecule and export SDF or PDB coordinates locally.",
+            canonical: "https://tools.cosmol.org/conformer-generator",
         }
         div { class: "min-h-screen uu-backdrop m-0 pt-[74px]",
             main { class: "mx-auto w-full max-w-6xl px-0 py-5 font-sans text-[#e8edf5] max-[820px]:px-3.5 max-[820px]:pb-[30px]",
@@ -487,9 +487,9 @@ pub fn ConformerGenerator() -> Element {
 
                 section { class: "mt-10 border-t border-[#213147] pt-8",
                     span { class: "text-xs font-bold text-[#4b96ff]", "3D CONFORMER WORKFLOW" }
-                    h2 { class: "mb-2 mt-2 text-xl font-bold text-slate-50", "Generate coordinates from SMILES in the browser" }
+                    h2 { class: "mb-2 mt-2 text-xl font-bold text-slate-50", "Convert SMILES to a 3D conformer in the browser" }
                     p { class: "m-0 max-w-[860px] text-sm leading-6 text-[#9caabd]",
-                        "Choose ETKDG v3, ETKDG v2, or KDG to generate one 3D conformer from SMILES. Adding explicit hydrogens is recommended for all-atom geometry. Generation runs locally in single-threaded WebAssembly, and the resulting structure can be exported as SDF V3000 or PDB."
+                        "Choose ETKDG v3, ETKDG v2, or KDG to generate one 3D conformer from SMILES. Adding explicit hydrogens is recommended for all-atom geometry. This browser 3D molecule generator runs locally in single-threaded WebAssembly and supports SMILES to SDF V3000 and SMILES to PDB export workflows."
                     }
                 }
             }

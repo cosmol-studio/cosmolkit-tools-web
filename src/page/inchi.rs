@@ -169,8 +169,8 @@ pub fn InchiTool() -> Element {
     rsx! {
         Seo {
             title: "InChI Converter — InChI, InChIKey & Molecular Structure | COSMolKit",
-            description: "Convert SMILES to standard InChI and InChIKey or parse InChI back to molecular structures using COSMolKit's pure Rust InChI implementation directly in your browser.",
-            canonical: "https://tools.cosmol.org/tools/inchi",
+            description: "Free InChI converter and InChIKey generator. Convert SMILES to InChI or InChIKey, InChI to SMILES or a molecular structure, and InChI to InChIKey locally.",
+            canonical: "https://tools.cosmol.org/inchi",
         }
         div { class: "min-h-screen uu-backdrop m-0 pt-[74px]",
             main { class: "mx-auto w-full max-w-6xl px-0 py-5 font-sans text-[#e8edf5] max-[800px]:px-3.5 max-[800px]:pb-[30px]",
@@ -315,9 +315,9 @@ pub fn InchiTool() -> Element {
 
                 section { class: "mt-10 border-t border-[#213147] pt-8",
                     span { class: "text-xs font-bold text-[#4b96ff]", "SUPPORTED INCHI WORKFLOWS" }
-                    h2 { class: "mb-2 mt-2 text-xl font-bold text-slate-50", "Identifiers and molecular structures" }
+                    h2 { class: "mb-2 mt-2 text-xl font-bold text-slate-50", "SMILES, InChI, InChIKey, and molecular structures" }
                     p { class: "m-0 max-w-[860px] text-sm leading-6 text-[#9caabd]",
-                        "This tool supports SMILES to standard InChI, SMILES to InChIKey, InChI to a molecular structure, and InChI to InChIKey. Processing stays on this device and uses COSMolKit's pure-Rust InChI engine."
+                        "This tool supports SMILES to standard InChI, SMILES to InChIKey, InChI to canonical SMILES and a molecular structure, and InChI to InChIKey. It works as a browser-local InChI converter and InChIKey generator using COSMolKit's pure-Rust InChI engine."
                     }
                 }
             }
