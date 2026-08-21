@@ -1,3 +1,5 @@
+#![cfg_attr(feature = "wasm-split", allow(non_snake_case))]
+
 mod component;
 mod page;
 mod route;
@@ -10,7 +12,7 @@ const MAIN_CSS: Asset = asset!("/assets/main.css");
 // const HEADER_SVG: Asset = asset!("/assets/header.svg");
 const TAILWIND_CSS: Asset = asset!("/assets/tailwind.css");
 
-#[cfg(feature = "ssg")]
+#[cfg(all(feature = "ssg", not(target_arch = "wasm32")))]
 fn main() {
     dioxus::LaunchBuilder::new()
         .with_cfg(server_only! {
@@ -31,8 +33,18 @@ fn main() {
         .launch(App);
 }
 
-#[cfg(not(feature = "ssg"))]
+#[cfg(any(not(feature = "ssg"), target_arch = "wasm32"))]
 fn main() {
+    #[cfg(all(target_arch = "wasm32", feature = "wasm-split"))]
+    if let Some(root) = web_sys::window()
+        .and_then(|window| window.document())
+        .and_then(|document| document.get_element_by_id("main"))
+    {
+        // Dioxus 0.7.10 route splitting cannot hydrate SSG output yet. Keep the
+        // prerendered document for crawlers, then mount the split client cleanly.
+        root.set_inner_html("");
+    }
+
     dioxus::launch(App);
 }
 

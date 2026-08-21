@@ -8,9 +8,10 @@ build = "build.rs"
 [dependencies]
 # cosmol_viewer_core = { path = "../cosmol_viewer/crates/core" }
 # cosmolkit = { path = "../cosmolkit/crates/cosmolkit" }
-cosmol_viewer_core = "0.2.24"
+cosmol_viewer_core = "0.2.25"
 cosmolkit = "0.2.12"
 dioxus = { version = "=0.7.10", features = ["router"] }
+dioxus-router = { version = "=0.7.10", optional = true }
 postcard = { version = "1.1.3", default-features = false, features = ["use-std"] }
 web-time = "1.1.0"
 wasm-bindgen = "0.2.126"
@@ -18,20 +19,21 @@ wasm-bindgen-futures = "0.4.76"
 web-sys = { version = "0.3.103", features = ["Clipboard", "Document", "HtmlCanvasElement", "Navigator", "Window"] }
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
-gloo-timers = { version = "0.3.0", features = ["futures"] }
+gloo-timers = { version = "0.4.0", features = ["futures"] }
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 tokio = { version = "1.49.0", features = ["time"] }
 
 [build-dependencies]
-cosmol_viewer_core = "0.2.24"
+cosmol_viewer_core = "0.2.25"
 cosmolkit = "0.2.12"
 postcard = { version = "1.1.3", default-features = false, features = ["use-std"] }
 
 [features]
 default = ["web"]
 web = ["dioxus/web"]
-ssg = ["dioxus/fullstack"]
+ssg = []
+wasm-split = ["dioxus/wasm-split", "dep:dioxus-router", "dioxus-router/wasm-split"]
 desktop = ["dioxus/desktop"]
 mobile = ["dioxus/mobile"]
-server = ["dioxus/server"]
+server = ["dioxus/server", "dioxus/fullstack"]

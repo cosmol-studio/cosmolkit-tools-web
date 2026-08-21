@@ -191,3 +191,22 @@ fn initial_html_contains_a_self_removing_loading_state() {
     assert!(!app.contains("initial-loader-molecule"));
     assert!(app.contains("use_effect(move || visible.set(false))"));
 }
+
+#[test]
+fn production_build_enables_route_level_wasm_splitting() {
+    let manifest = fs::read_to_string("Cargo.toml").expect("Cargo manifest should exist");
+    let workflow = fs::read_to_string(".github/workflows/depoly.yml")
+        .expect("deployment workflow should exist");
+    let navbar = fs::read_to_string("src/component/navbar.rs").expect("navbar source should exist");
+    let app = fs::read_to_string("src/main.rs").expect("app source should exist");
+
+    assert!(manifest.contains("dioxus/wasm-split"));
+    assert!(manifest.contains("dioxus-router/wasm-split"));
+    assert!(manifest.contains("ssg = []"));
+    assert!(workflow.contains("--features \"ssg wasm-split\""));
+    assert!(workflow.contains("--wasm-split"));
+    assert!(workflow.contains("--fullstack true"));
+    assert!(navbar.contains("SuspenseBoundary"));
+    assert!(navbar.contains("Loading tool"));
+    assert!(app.contains("root.set_inner_html(\"\")"));
+}

@@ -105,7 +105,24 @@ pub fn Navbar() -> Element {
             }
         }
 
-        Outlet::<Route> {}
+        SuspenseBoundary {
+            fallback: |_| rsx! {
+                main {
+                    class: "grid min-h-[calc(100vh-74px)] place-items-center bg-[#071426] px-6 pt-[74px] font-sans text-[#e8edf5]",
+                    div {
+                        role: "status",
+                        aria_live: "polite",
+                        class: "flex flex-col items-center gap-4",
+                        span {
+                            class: "h-7 w-7 animate-spin rounded-full border-2 border-[#29415f] border-t-[#4b96ff]",
+                            aria_hidden: "true",
+                        }
+                        span { class: "text-sm font-semibold text-[#91a1b5]", "Loading tool" }
+                    }
+                }
+            },
+            Outlet::<Route> {}
+        }
 
         footer {
             class: "border-t border-white/8 bg-[#081321] px-6 py-5 font-sans text-xs text-[#718299] max-[640px]:px-3.5",
