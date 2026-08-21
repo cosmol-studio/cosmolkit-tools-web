@@ -10,8 +10,10 @@ use cosmol_viewer_core::scene::Scene;
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen_futures::spawn_local;
 
-const MOL_SVG: Asset = asset!("/assets/benzene.svg");
-const SDF_SVG: Asset = asset!("/assets/sdf.svg");
+// Manganis assets declared inside split route modules can resolve to an empty
+// URL after the client mounts. These files use stable copied public paths.
+const MOL_SVG: &str = "/assets/benzene.svg";
+const SDF_SVG: &str = "/assets/sdf.svg";
 
 #[cfg(target_arch = "wasm32")]
 fn build_molecule_scene() -> Result<Scene, String> {

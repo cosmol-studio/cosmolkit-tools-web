@@ -22,12 +22,26 @@ jobs:
           override: true
           target: wasm32-unknown-unknown
 
+      - name: Restore Rust and Dioxus build cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: production-wasm-split
+          add-job-id-key: false
+          cache-targets: true
+          cache-bin: true
+          cache-all-crates: true
+          cache-workspace-crates: true
+          cache-on-failure: true
+          cache-directories: |
+            ~/.local/share/.dx
+
       - uses: cargo-bins/cargo-binstall@main
       - name: Install Dioxus-CLI
         run: |
-          cargo binstall -y dioxus-cli@0.7.10
+          if ! command -v dx >/dev/null || ! dx --version | grep -q '0.7.10'; then
+            cargo binstall -y dioxus-cli@0.7.10
+          fi
 
-      - uses: Swatinem/rust-cache@v2
       - name: Dioxus Build
         run: |
           dx build -r --web --fullstack true --ssg --features "ssg wasm-split" --wasm-split --force-sequential --debug-symbols false
@@ -36,6 +50,8 @@ jobs:
           cp robots.txt deploy/web/public/robots.txt
           cp sitemap.xml deploy/web/public/sitemap.xml
           cp _redirects deploy/web/public/_redirects
+          cp assets/benzene.svg deploy/web/public/assets/benzene.svg
+          cp assets/sdf.svg deploy/web/public/assets/sdf.svg
           python scripts/check_ssg_output.py deploy/web/public
 
       - name: Upload artifact

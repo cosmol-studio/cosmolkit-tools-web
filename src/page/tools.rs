@@ -2,8 +2,9 @@ use dioxus::prelude::*;
 
 use crate::component::Seo;
 
-const MOLECULE_SVG: Asset = asset!("/assets/benzene.svg");
-const SDF_SVG: Asset = asset!("/assets/sdf.svg");
+// Keep route-split card images independent of Manganis runtime resolution.
+const MOLECULE_SVG: &str = "/assets/benzene.svg";
+const SDF_SVG: &str = "/assets/sdf.svg";
 
 #[component]
 pub fn ToolDirectory() -> Element {

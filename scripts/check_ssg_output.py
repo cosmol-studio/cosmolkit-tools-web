@@ -13,6 +13,10 @@ PAGES = {
     "/inchi": "InChI Converter — InChI, InChIKey & Molecular Structure | COSMolKit",
     "/ecosystem": "COSMol Ecosystem — COSMolKit, Viewer & Browser Tools",
 }
+CARD_IMAGES = {
+    "/": {"/assets/benzene.svg", "/assets/sdf.svg"},
+    "/tools": {"/assets/benzene.svg", "/assets/sdf.svg"},
+}
 
 
 class SeoParser(HTMLParser):
@@ -24,6 +28,7 @@ class SeoParser(HTMLParser):
         self.h1 = ""
         self.description = None
         self.canonical = None
+        self.image_sources = []
 
     def handle_starttag(self, tag, attrs):
         attributes = dict(attrs)
@@ -35,6 +40,8 @@ class SeoParser(HTMLParser):
             self.description = attributes.get("content")
         elif tag == "link" and attributes.get("rel") == "canonical":
             self.canonical = attributes.get("href")
+        elif tag == "img":
+            self.image_sources.append(attributes.get("src", ""))
 
     def handle_endtag(self, tag):
         if tag == "title":
@@ -57,6 +64,10 @@ def main():
     public_dir = Path(sys.argv[1] if len(sys.argv) > 1 else "deploy/web/public")
     failures = []
 
+    for asset_path in ("assets/benzene.svg", "assets/sdf.svg"):
+        if not (public_dir / asset_path).exists():
+            failures.append(f"missing static card image: {asset_path}")
+
     for route, expected_title in PAGES.items():
         html_path = public_dir / route.lstrip("/") / "index.html"
         if route == "/":
@@ -76,6 +87,12 @@ def main():
             failures.append(f"{route}: incorrect canonical {parser.canonical!r}")
         if not parser.h1.strip():
             failures.append(f"{route}: missing prerendered H1")
+        expected_images = CARD_IMAGES.get(route, set())
+        missing_images = expected_images.difference(parser.image_sources)
+        if missing_images:
+            failures.append(f"{route}: missing stable card images {sorted(missing_images)}")
+        if route in CARD_IMAGES and "" in parser.image_sources:
+            failures.append(f"{route}: contains an empty image source")
 
     for static_name in ("robots.txt", "sitemap.xml", "_redirects"):
         if not (public_dir / static_name).exists():
