@@ -11,7 +11,7 @@ pub fn ToolDirectory() -> Element {
     rsx! {
         Seo {
             title: "Free Molecular & Cheminformatics Tools — COSMolKit",
-            description: "Free browser tools for molecular format conversion, SMILES rendering, 2D SVG structures, ETKDG 3D conformers, InChI conversion, and InChIKey generation.",
+            description: "Free browser tools for molecular properties, SMILES canonicalization, format conversion, 2D SVG structures, ETKDG 3D conformers, InChI and InChIKey workflows.",
             canonical: "https://tools.cosmol.org/tools",
         }
         div { class: "min-h-screen uu-backdrop m-0 pt-[74px]",
@@ -25,8 +25,8 @@ pub fn ToolDirectory() -> Element {
                         }
                     }
                     div { class: "flex shrink-0 items-center gap-3 text-xs",
-                        span { class: "rounded-md border border-[#285b4d] bg-[#0d2923] px-2.5 py-1.5 font-semibold text-[#8ee0c4]", "4 available" }
-                        span { class: "text-[#718299]", "5 tools" }
+                        span { class: "rounded-md border border-[#285b4d] bg-[#0d2923] px-2.5 py-1.5 font-semibold text-[#8ee0c4]", "6 available" }
+                        span { class: "text-[#718299]", "7 tools" }
                     }
                 }
 
@@ -114,6 +114,50 @@ pub fn ToolDirectory() -> Element {
                             }
                         }
                         div { class: "mt-auto flex items-center justify-between border-t border-white/8 pt-4 text-xs font-semibold text-[#86c8e2]",
+                            span { "Open tool" }
+                            span { class: "text-base transition-transform group-hover:translate-x-1", ">" }
+                        }
+                    }
+
+                    Link {
+                        class: "group flex min-h-[292px] flex-col rounded-lg border border-[#514a32] bg-[#0b1727] p-5 no-underline shadow-[0_16px_40px_rgba(0,0,0,0.16)] transition-colors hover:border-[#c4a84e] hover:bg-[#0d1b2d]",
+                        to: crate::route::Route::MolecularProperties {},
+                        div { class: "flex items-start justify-between gap-4",
+                            div { class: "grid h-16 w-16 shrink-0 place-items-center rounded-lg border border-[#c4a84e80] bg-[#282416] p-2.5",
+                                img { class: "h-full w-full object-contain", src: MOLECULE_SVG, alt: "Molecule property calculation" }
+                            }
+                            span { class: "rounded-[5px] border border-[#285b4d] bg-[#0d2923] px-2 py-1 text-[10px] font-bold text-[#8ee0c4]", "AVAILABLE" }
+                        }
+                        div { class: "mt-6",
+                            span { class: "text-[10px] font-bold text-[#d2b95e]", "MOLECULAR DESCRIPTORS" }
+                            h2 { class: "mt-2 mb-2 text-lg font-bold text-white", "Molecular properties calculator" }
+                            p { class: "m-0 text-[13px] leading-5 text-[#9caabd]",
+                                "Calculate formula, molecular weight, exact mass, TPSA, logP, HBD, HBA, rotatable bonds, and charge."
+                            }
+                        }
+                        div { class: "mt-auto flex items-center justify-between border-t border-white/8 pt-4 text-xs font-semibold text-[#d8c574]",
+                            span { "Open tool" }
+                            span { class: "text-base transition-transform group-hover:translate-x-1", ">" }
+                        }
+                    }
+
+                    Link {
+                        class: "group flex min-h-[292px] flex-col rounded-lg border border-[#3d4f55] bg-[#0b1727] p-5 no-underline shadow-[0_16px_40px_rgba(0,0,0,0.16)] transition-colors hover:border-[#6ba6b5] hover:bg-[#0d1b2d]",
+                        to: crate::route::Route::SmilesCanonicalizer {},
+                        div { class: "flex items-start justify-between gap-4",
+                            div { class: "grid h-16 w-16 shrink-0 place-items-center rounded-lg border border-[#6ba6b580] bg-[#14252a] p-2.5",
+                                img { class: "h-full w-full object-contain", src: SDF_SVG, alt: "Canonical SMILES output" }
+                            }
+                            span { class: "rounded-[5px] border border-[#285b4d] bg-[#0d2923] px-2 py-1 text-[10px] font-bold text-[#8ee0c4]", "AVAILABLE" }
+                        }
+                        div { class: "mt-6",
+                            span { class: "text-[10px] font-bold text-[#7db9c8]", "SMILES NORMALIZATION" }
+                            h2 { class: "mt-2 mb-2 text-lg font-bold text-white", "SMILES canonicalizer" }
+                            p { class: "m-0 text-[13px] leading-5 text-[#9caabd]",
+                                "Generate canonical, isomeric, and kekulized SMILES and inspect hydrogen count and formal charge."
+                            }
+                        }
+                        div { class: "mt-auto flex items-center justify-between border-t border-white/8 pt-4 text-xs font-semibold text-[#8ec4d1]",
                             span { "Open tool" }
                             span { class: "text-base transition-transform group-hover:translate-x-1", ">" }
                         }

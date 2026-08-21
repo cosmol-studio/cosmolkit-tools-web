@@ -168,6 +168,57 @@ def test_smiles_to_svg(directory: Path) -> None:
         raise AssertionError("SMILES to SVG file round trip failed")
 
 
+def test_molecular_properties() -> None:
+    molecule = Molecule.from_smiles("CCO")
+    logp, _ = cosmolkit.calc_crippen_descriptors(molecule)
+    properties = {
+        "formula": cosmolkit.calc_mol_formula(molecule),
+        "molecular_weight": cosmolkit.calc_mol_wt(molecule),
+        "exact_mass": cosmolkit.calc_exact_mol_wt(molecule),
+        "heavy_atoms": sum(atom.atomic_num() != 1 for atom in molecule.atoms()),
+        "hbd": cosmolkit.calc_num_hbd(molecule),
+        "hba": cosmolkit.calc_num_hba(molecule),
+        "tpsa": cosmolkit.calc_tpsa(molecule),
+        "rotatable_bonds": cosmolkit.calc_num_rotatable_bonds(
+            molecule, mode="strict"
+        ),
+        "logp": logp,
+        "formal_charge": sum(atom.formal_charge() for atom in molecule.atoms()),
+    }
+    assert properties["formula"] == "C2H6O"
+    assert properties["heavy_atoms"] == 3
+    assert properties["hbd"] == properties["hba"] == 1
+    assert properties["rotatable_bonds"] == properties["formal_charge"] == 0
+    assert abs(properties["molecular_weight"] - 46.069) < 0.001
+    assert abs(properties["exact_mass"] - 46.041865) < 0.00001
+    assert abs(properties["tpsa"] - 20.23) < 0.01
+    assert abs(properties["logp"] - -0.0014) < 0.0001
+
+
+def test_smiles_canonicalizer() -> None:
+    molecule = Molecule.from_smiles("OCC")
+    result = {
+        "canonical_smiles": molecule.to_smiles(
+            isomeric_smiles=False, canonical=True
+        ),
+        "isomeric_smiles": molecule.to_smiles(
+            isomeric_smiles=True, canonical=True
+        ),
+        "kekulized_smiles": molecule.to_smiles(canonical=True, kekule=True),
+        "hydrogen_count": sum(
+            atom.atomic_num() == 1 for atom in molecule.with_hydrogens().atoms()
+        ),
+        "formal_charge": sum(atom.formal_charge() for atom in molecule.atoms()),
+    }
+    assert result == {
+        "canonical_smiles": "CCO",
+        "isomeric_smiles": "CCO",
+        "kekulized_smiles": "CCO",
+        "hydrogen_count": 6,
+        "formal_charge": 0,
+    }
+
+
 def main() -> None:
     expected_version = expected_cosmolkit_version()
     installed_version = cosmolkit.__version__
@@ -182,9 +233,13 @@ def main() -> None:
         directory = Path(temp_dir)
         completed = test_format_converter(directory)
         test_smiles_to_svg(directory)
+        test_molecular_properties()
+        test_smiles_canonicalizer()
 
     print(f"format converter: {completed}/42 combinations passed")
     print("smiles to SVG file example: passed")
+    print("molecular properties example: passed")
+    print("SMILES canonicalizer example: passed")
 
 
 if __name__ == "__main__":

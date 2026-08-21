@@ -3,8 +3,8 @@ use dioxus::prelude::*;
 use crate::{
     component::Navbar,
     page::{
-        CheckPains, ConformerGenerator, Ecosystem, FormatConverter, Home, InchiTool, SmilesToSvg,
-        ToolDirectory,
+        CheckPains, ConformerGenerator, Ecosystem, FormatConverter, Home, InchiTool,
+        MolecularProperties, SmilesCanonicalizer, SmilesToSvg, ToolDirectory,
     },
 };
 
@@ -26,6 +26,10 @@ pub enum Route {
     ConformerGenerator {},
     #[route("/inchi")]
     InchiTool {},
+    #[route("/molecular-properties")]
+    MolecularProperties {},
+    #[route("/smiles-canonicalizer")]
+    SmilesCanonicalizer {},
     #[route("/check-pains")]
     CheckPains {},
 }

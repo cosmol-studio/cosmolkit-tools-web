@@ -4,6 +4,8 @@ mod ecosystem;
 mod format_converter;
 mod home;
 mod inchi;
+mod molecular_properties;
+mod smiles_canonicalizer;
 mod smiles_to_svg;
 mod tools;
 
@@ -13,5 +15,7 @@ pub(crate) use ecosystem::Ecosystem;
 pub(crate) use format_converter::FormatConverter;
 pub(crate) use home::Home;
 pub(crate) use inchi::InchiTool;
+pub(crate) use molecular_properties::MolecularProperties;
+pub(crate) use smiles_canonicalizer::SmilesCanonicalizer;
 pub(crate) use smiles_to_svg::SmilesToSvg;
 pub(crate) use tools::ToolDirectory;

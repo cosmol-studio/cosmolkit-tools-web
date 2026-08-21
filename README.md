@@ -28,7 +28,7 @@ conda activate COS
 python scripts/test_python_examples.py
 ```
 
-The script checks the package version declared in `Cargo.toml`, every Format Converter input/output combination, and the SMILES to SVG file example.
+The script checks the package version declared in `Cargo.toml`, every Format Converter input/output combination, and the SMILES to SVG, molecular properties, and SMILES canonicalizer examples.
 
 ## SEO and static generation
 

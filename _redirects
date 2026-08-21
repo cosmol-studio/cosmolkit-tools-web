@@ -2,4 +2,6 @@
 /tools/format-converter /format-converter 301
 /tools/conformer-generator /conformer-generator 301
 /tools/inchi /inchi 301
+/tools/molecular-properties /molecular-properties 301
+/tools/smiles-canonicalizer /smiles-canonicalizer 301
 /tools/check-pains /check-pains 301

@@ -6,5 +6,7 @@
   <url><loc>https://tools.cosmol.org/format-converter</loc></url>
   <url><loc>https://tools.cosmol.org/conformer-generator</loc></url>
   <url><loc>https://tools.cosmol.org/inchi</loc></url>
+  <url><loc>https://tools.cosmol.org/molecular-properties</loc></url>
+  <url><loc>https://tools.cosmol.org/smiles-canonicalizer</loc></url>
   <url><loc>https://tools.cosmol.org/ecosystem</loc></url>
 </urlset>

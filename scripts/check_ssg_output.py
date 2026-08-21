@@ -11,6 +11,8 @@ PAGES = {
     "/format-converter": "Molecular Format Converter — SDF, SMILES, MOL2, PDB | COSMolKit",
     "/conformer-generator": "SMILES to 3D Conformer — Browser ETKDG Generator | COSMolKit",
     "/inchi": "InChI Converter — InChI, InChIKey & Molecular Structure | COSMolKit",
+    "/molecular-properties": "Molecular Properties Calculator — MW, TPSA, logP | COSMolKit",
+    "/smiles-canonicalizer": "SMILES Canonicalizer — Canonical & Isomeric SMILES | COSMolKit",
     "/ecosystem": "COSMol Ecosystem — COSMolKit, Viewer & Browser Tools",
 }
 CARD_IMAGES = {

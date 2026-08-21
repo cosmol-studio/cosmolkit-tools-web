@@ -1,12 +1,14 @@
 use std::{collections::HashSet, fs, path::Path};
 
-const FINISHED_ROUTES: [(&str, &str); 7] = [
+const FINISHED_ROUTES: [(&str, &str); 9] = [
     ("/", "src/page/home.rs"),
     ("/tools", "src/page/tools.rs"),
     ("/smiles-to-svg", "src/page/smiles_to_svg.rs"),
     ("/format-converter", "src/page/format_converter.rs"),
     ("/conformer-generator", "src/page/conformer_generator.rs"),
     ("/inchi", "src/page/inchi.rs"),
+    ("/molecular-properties", "src/page/molecular_properties.rs"),
+    ("/smiles-canonicalizer", "src/page/smiles_canonicalizer.rs"),
     ("/ecosystem", "src/page/ecosystem.rs"),
 ];
 
@@ -35,6 +37,8 @@ fn legacy_tool_routes_redirect_to_root_level_urls() {
         ("/tools/format-converter", "/format-converter"),
         ("/tools/conformer-generator", "/conformer-generator"),
         ("/tools/inchi", "/inchi"),
+        ("/tools/molecular-properties", "/molecular-properties"),
+        ("/tools/smiles-canonicalizer", "/smiles-canonicalizer"),
         ("/tools/check-pains", "/check-pains"),
     ] {
         let rule = format!("{old_route} {new_route} 301");
@@ -153,6 +157,25 @@ fn public_tools_expose_supported_search_terms() {
                 "SMILES to InChI",
                 "InChI to canonical SMILES",
                 "InChIKey generator",
+            ][..],
+        ),
+        (
+            "src/page/molecular_properties.rs",
+            &[
+                "molecular formula",
+                "molecular weight",
+                "exact mass",
+                "Crippen logP",
+                "rotatable bonds",
+            ][..],
+        ),
+        (
+            "src/page/smiles_canonicalizer.rs",
+            &[
+                "Canonical SMILES",
+                "Isomeric SMILES",
+                "Kekulized SMILES",
+                "formal charge",
             ][..],
         ),
     ] {
