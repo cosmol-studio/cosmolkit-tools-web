@@ -20,7 +20,7 @@ SEARCH_PHRASES = {
     "/tools": ("rust", "cheminformatics", "browser-based"),
     "/ecosystem": ("rust", "cheminformatics", "browser-native"),
 }
-CARD_IMAGE_PREFIXES = ("/assets/benzene-", "/assets/sdf-")
+CARD_ICONS = ("molecule", "sdf")
 
 
 class SeoParser(HTMLParser):
@@ -35,6 +35,7 @@ class SeoParser(HTMLParser):
         self.description = None
         self.canonical = None
         self.image_sources = []
+        self.card_icons = []
 
     def handle_starttag(self, tag, attrs):
         attributes = dict(attrs)
@@ -50,6 +51,8 @@ class SeoParser(HTMLParser):
             self.canonical = attributes.get("href")
         elif tag == "img":
             self.image_sources.append(attributes.get("src", ""))
+        elif tag == "svg" and attributes.get("data-card-icon"):
+            self.card_icons.append(attributes["data-card-icon"])
 
     def handle_endtag(self, tag):
         if tag == "title":
@@ -105,18 +108,9 @@ def main():
         if route in ("/", "/tools") and "" in parser.image_sources:
             failures.append(f"{route}: contains an empty image source")
         if route in ("/", "/tools"):
-            for prefix in CARD_IMAGE_PREFIXES:
-                matching_sources = [
-                    source
-                    for source in parser.image_sources
-                    if source.startswith(prefix) and source.endswith(".svg")
-                ]
-                if not matching_sources:
-                    failures.append(f"{route}: missing bundled card image {prefix}*.svg")
-                    continue
-                for source in matching_sources:
-                    if not (public_dir / source.lstrip("/")).exists():
-                        failures.append(f"{route}: missing referenced card image {source}")
+            for icon in CARD_ICONS:
+                if icon not in parser.card_icons:
+                    failures.append(f"{route}: missing embedded card icon {icon}")
 
     for static_name in ("robots.txt", "sitemap.xml", "_redirects"):
         if not (public_dir / static_name).exists():

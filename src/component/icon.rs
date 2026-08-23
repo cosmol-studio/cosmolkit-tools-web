@@ -23,3 +23,58 @@ pub fn MdiIcon(
         }
     }
 }
+
+#[component]
+pub fn MoleculeCardIcon(class: &'static str, label: &'static str) -> Element {
+    rsx! {
+        svg {
+            class,
+            view_box: "0 0 194 168",
+            fill: "none",
+            stroke: "#185E91",
+            stroke_width: "7",
+            stroke_linejoin: "round",
+            role: "img",
+            "aria-label": label,
+            "data-card-icon": "molecule",
+            polygon { points: "50.7 3.5 143.5 3.8 189.6 84.3 143 164.6 50.2 164.3 4 83.8 50.7 3.5" }
+            path { d: "M58.6 17.4 135.4 17.7" }
+            path { d: "m173.6 84.3-38.6 66.3" }
+            path { d: "m58.2 150.3-38.1-66.5" }
+        }
+    }
+}
+
+#[component]
+pub fn SdfCardIcon(class: &'static str, label: &'static str) -> Element {
+    rsx! {
+        svg {
+            class,
+            view_box: "0 0 194 168",
+            fill: "none",
+            stroke: "#71a554",
+            stroke_linejoin: "round",
+            role: "img",
+            "aria-label": label,
+            "data-card-icon": "sdf",
+            path {
+                stroke_width: "7.8",
+                d: "M111.6 4.6H45.9c-8.1 0-14.7 6.6-14.7 14.7v130.3c0 8.1 6.6 14.7 14.7 14.7h102c8.1 0 14.7-6.6 14.7-14.7v-94L111.6 4.6Z"
+            }
+            path {
+                stroke_width: "6.7",
+                d: "M162.6 55.6h-36.3c-8.1 0-14.7-6.6-14.7-14.7V4.6"
+            }
+            text {
+                x: "49.8",
+                y: "113.9",
+                fill: "#71a554",
+                stroke: "none",
+                font_size: "48",
+                font_weight: "700",
+                font_family: "Arial, sans-serif",
+                "SDF"
+            }
+        }
+    }
+}

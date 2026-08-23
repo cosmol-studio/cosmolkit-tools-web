@@ -257,3 +257,18 @@ fn production_build_enables_route_level_wasm_splitting() {
     assert!(navbar.contains("Loading tool"));
     assert!(app.contains("root.set_inner_html(\"\")"));
 }
+
+#[test]
+fn split_routes_use_embedded_card_icons() {
+    let icons = fs::read_to_string("src/component/icon.rs").expect("icon source should exist");
+    for source_path in ["src/page/home.rs", "src/page/tools.rs"] {
+        let source = fs::read_to_string(source_path).expect("page source should be readable");
+        assert!(source.contains("MoleculeCardIcon"));
+        assert!(source.contains("SdfCardIcon"));
+        assert!(!source.contains("src: MOLECULE_SVG"));
+        assert!(!source.contains("src: SDF_SVG"));
+    }
+
+    assert!(icons.contains("\"data-card-icon\": \"molecule\""));
+    assert!(icons.contains("\"data-card-icon\": \"sdf\""));
+}

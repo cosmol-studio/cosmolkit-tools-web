@@ -1,6 +1,6 @@
 use dioxus::prelude::*;
 
-use crate::{MOLECULE_SVG, SDF_SVG, component::Seo};
+use crate::component::{MoleculeCardIcon, SdfCardIcon, Seo};
 
 #[component]
 pub fn ToolDirectory() -> Element {
@@ -32,7 +32,7 @@ pub fn ToolDirectory() -> Element {
                         to: crate::route::Route::SmilesToSvg {},
                         div { class: "flex items-start justify-between gap-4",
                             div { class: "grid h-16 w-16 shrink-0 place-items-center rounded-lg border border-[#1f93de90] bg-[#0f2033] p-2.5",
-                                img { class: "h-full w-full object-contain", src: MOLECULE_SVG, alt: "Benzene structure" }
+                                MoleculeCardIcon { class: "h-full w-full", label: "Benzene structure" }
                             }
                             span { class: "rounded-[5px] border border-[#285b4d] bg-[#0d2923] px-2 py-1 text-[10px] font-bold text-[#8ee0c4]", "AVAILABLE" }
                         }
@@ -54,7 +54,7 @@ pub fn ToolDirectory() -> Element {
                         to: crate::route::Route::FormatConverter {},
                         div { class: "flex items-start justify-between gap-4",
                             div { class: "grid h-16 w-16 shrink-0 place-items-center rounded-lg border border-[#71a55480] bg-[#14231d] p-2.5",
-                                img { class: "h-full w-full object-contain", src: SDF_SVG, alt: "Molecular file" }
+                                SdfCardIcon { class: "h-full w-full", label: "Molecular file" }
                             }
                             span { class: "rounded-[5px] border border-[#285b4d] bg-[#0d2923] px-2 py-1 text-[10px] font-bold text-[#8ee0c4]", "AVAILABLE" }
                         }
@@ -76,7 +76,7 @@ pub fn ToolDirectory() -> Element {
                         to: crate::route::Route::ConformerGenerator {},
                         div { class: "flex items-start justify-between gap-4",
                             div { class: "grid h-16 w-16 shrink-0 place-items-center rounded-lg border border-[#8d7bd080] bg-[#1c1930] p-2.5",
-                                img { class: "h-full w-full object-contain", src: MOLECULE_SVG, alt: "Molecular structure" }
+                                MoleculeCardIcon { class: "h-full w-full", label: "Molecular structure" }
                             }
                             span { class: "rounded-[5px] border border-[#285b4d] bg-[#0d2923] px-2 py-1 text-[10px] font-bold text-[#8ee0c4]", "AVAILABLE" }
                         }
@@ -98,7 +98,7 @@ pub fn ToolDirectory() -> Element {
                         to: crate::route::Route::InchiTool {},
                         div { class: "flex items-start justify-between gap-4",
                             div { class: "grid h-16 w-16 shrink-0 place-items-center rounded-lg border border-[#55a6c880] bg-[#102431] p-2.5",
-                                img { class: "h-full w-full object-contain", src: SDF_SVG, alt: "Molecular identifier" }
+                                SdfCardIcon { class: "h-full w-full", label: "Molecular identifier" }
                             }
                             span { class: "rounded-[5px] border border-[#285b4d] bg-[#0d2923] px-2 py-1 text-[10px] font-bold text-[#8ee0c4]", "AVAILABLE" }
                         }
@@ -120,7 +120,7 @@ pub fn ToolDirectory() -> Element {
                         to: crate::route::Route::MolecularProperties {},
                         div { class: "flex items-start justify-between gap-4",
                             div { class: "grid h-16 w-16 shrink-0 place-items-center rounded-lg border border-[#c4a84e80] bg-[#282416] p-2.5",
-                                img { class: "h-full w-full object-contain", src: MOLECULE_SVG, alt: "Molecule property calculation" }
+                                MoleculeCardIcon { class: "h-full w-full", label: "Molecule property calculation" }
                             }
                             span { class: "rounded-[5px] border border-[#285b4d] bg-[#0d2923] px-2 py-1 text-[10px] font-bold text-[#8ee0c4]", "AVAILABLE" }
                         }
@@ -142,7 +142,7 @@ pub fn ToolDirectory() -> Element {
                         to: crate::route::Route::SmilesCanonicalizer {},
                         div { class: "flex items-start justify-between gap-4",
                             div { class: "grid h-16 w-16 shrink-0 place-items-center rounded-lg border border-[#6ba6b580] bg-[#14252a] p-2.5",
-                                img { class: "h-full w-full object-contain", src: SDF_SVG, alt: "Canonical SMILES output" }
+                                SdfCardIcon { class: "h-full w-full", label: "Canonical SMILES output" }
                             }
                             span { class: "rounded-[5px] border border-[#285b4d] bg-[#0d2923] px-2 py-1 text-[10px] font-bold text-[#8ee0c4]", "AVAILABLE" }
                         }
@@ -164,7 +164,7 @@ pub fn ToolDirectory() -> Element {
                         to: crate::route::Route::CheckPains {},
                         div { class: "flex items-start justify-between gap-4",
                             div { class: "grid h-16 w-16 shrink-0 place-items-center rounded-lg border border-[#9b6b8080] bg-[#241823] p-2.5",
-                                img { class: "h-full w-full object-contain opacity-80", src: MOLECULE_SVG, alt: "Chemical structure" }
+                                MoleculeCardIcon { class: "h-full w-full opacity-80", label: "Chemical structure" }
                             }
                             span { class: "rounded-[5px] border border-[#5d5132] bg-[#282315] px-2 py-1 text-[10px] font-bold text-[#d9bd72]", "CORE PENDING" }
                         }

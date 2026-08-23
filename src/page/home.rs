@@ -1,6 +1,9 @@
 use dioxus::prelude::*;
 
-use crate::{MOLECULE_SVG, SDF_SVG, component::Seo, route::Route};
+use crate::{
+    component::{MoleculeCardIcon, SdfCardIcon, Seo},
+    route::Route,
+};
 pub const HOME_CANVAS_ID: &str = "home-canvas";
 
 #[cfg(target_arch = "wasm32")]
@@ -58,24 +61,28 @@ pub fn Home() -> Element {
             main{
                 class: "max-w-6xl mx-auto py-5",
                 div{
-                    class: "flex max-w-5xl mx-auto mb-5 overflow-visible relative",
+                    class: "relative mx-auto mb-4 flex min-h-[320px] max-w-5xl overflow-visible",
                     div {
-                        class: "w-[50%] h-[300px] flex items-center justify-center flex-col z-10",
+                        class: "z-10 flex min-h-[320px] w-[52%] flex-col items-start justify-center",
                         h1 {
-                            class: "text-3xl font-bold leading-relaxed mb-4",
+                            class: "mb-4 text-[28px] leading-[1.35] font-bold",
                             span {
                                 class: "block text-white",
-                                "Browser-based cheminformatics & structural biology tools,"
+                                "Browser-based cheminformatics"
+                            }
+                            span {
+                                class: "block text-white",
+                                "& structural biology tools"
                             }
                             span {
                                 class: "block text-[#3082FF]",
-                                "powered by Rust & WebAssembly."
+                                "Powered by Rust & WebAssembly."
                             }
                         }
                         span {
-                            class: "text-[white] leading-relaxed opacity-75 mb-4",
-                            "Built on the open-source COSMolKit Rust cheminformatics toolkit. Browser-native,
-                            private, and offline-capable, with no installation required."
+                            class: "mb-4 max-w-[500px] leading-relaxed text-white opacity-75",
+                            "Built on COSMolKit's Rust cheminformatics core. Browser-native, private,
+                            offline-capable, and installation-free."
                         }
                         div{
                             class: "flex gap-4 justify-left w-full",
@@ -93,7 +100,7 @@ pub fn Home() -> Element {
                         }
                     }
                     div {
-                        class: "w-[50%] h-[300px] flex items-center justify-center flex-col absolute right-0 overflow-visible",
+                        class: "absolute right-0 flex h-[320px] w-[48%] flex-col items-center justify-center overflow-visible",
                         canvas {
                             class: "h-[140%] w-[140%]",
                             id: HOME_CANVAS_ID
@@ -114,10 +121,7 @@ pub fn Home() -> Element {
                                 class: "w-full h-100px flex space-between mb-2",
                                 div {
                                     class: "h-[60px] w-[60px] m-[10px] mt-[20px] border-[1.5px] border-[#1f93de90] rounded-xl",
-                                    img {
-                                        class: "w-[80%] h-[80%] m-[10%]",
-                                        src: MOLECULE_SVG,
-                                    }
+                                    MoleculeCardIcon { class: "w-[80%] h-[80%] m-[10%]", label: "Benzene structure" }
                                 }
                                 div {
                                     class: "h-[100px] w-[180px] pl-[5px] justify-center flex flex-col",
@@ -143,10 +147,7 @@ pub fn Home() -> Element {
                                 class: "w-full h-100px flex space-between mb-2",
                                 div {
                                     class: "h-[60px] w-[60px] m-[10px] mt-[20px] border-[1.5px] border-[#71a554] rounded-xl",
-                                    img {
-                                        class: "w-[80%] h-[80%] m-[10%]",
-                                        src: SDF_SVG,
-                                    }
+                                    SdfCardIcon { class: "w-[80%] h-[80%] m-[10%]", label: "Molecular file" }
                                 }
                                 div {
                                     class: "h-[100px] w-[180px] pl-[5px] justify-center flex flex-col",
@@ -172,10 +173,7 @@ pub fn Home() -> Element {
                                 class: "w-full h-100px flex space-between mb-2",
                                 div {
                                     class: "h-[60px] w-[60px] m-[10px] mt-[20px] border-[1.5px] border-[#1f93de90] rounded-xl",
-                                    img {
-                                        class: "w-[80%] h-[80%] m-[10%]",
-                                        src: MOLECULE_SVG,
-                                    }
+                                    MoleculeCardIcon { class: "w-[80%] h-[80%] m-[10%]", label: "Molecular structure" }
                                 }
                                 div {
                                     class: "h-[100px] w-[180px] pl-[5px] justify-center flex flex-col",
@@ -201,10 +199,7 @@ pub fn Home() -> Element {
                                 class: "w-full h-100px flex space-between mb-2",
                                 div {
                                     class: "h-[60px] w-[60px] m-[10px] mt-[20px] border-[1.5px] border-[#55a6c8] rounded-xl",
-                                    img {
-                                        class: "w-[80%] h-[80%] m-[10%]",
-                                        src: SDF_SVG,
-                                    }
+                                    SdfCardIcon { class: "w-[80%] h-[80%] m-[10%]", label: "Molecular identifier" }
                                 }
                                 div {
                                     class: "h-[100px] w-[180px] pl-[5px] justify-center flex flex-col",
