@@ -1,6 +1,6 @@
 use dioxus::prelude::*;
 
-use crate::{component::Seo, route::Route};
+use crate::{MOLECULE_SVG, SDF_SVG, component::Seo, route::Route};
 pub const HOME_CANVAS_ID: &str = "home-canvas";
 
 #[cfg(target_arch = "wasm32")]
@@ -9,11 +9,6 @@ use crate::component::{Viewer, WasmLogger, get_viewer};
 use cosmol_viewer_core::scene::Scene;
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen_futures::spawn_local;
-
-// Manganis assets declared inside split route modules can resolve to an empty
-// URL after the client mounts. These files use stable copied public paths.
-const MOL_SVG: &str = "/assets/benzene.svg";
-const SDF_SVG: &str = "/assets/sdf.svg";
 
 #[cfg(target_arch = "wasm32")]
 fn build_molecule_scene() -> Result<Scene, String> {
@@ -54,8 +49,8 @@ pub fn Home() -> Element {
     });
     rsx! {
         Seo {
-            title: "COSMolKit Tools — Browser-Native Cheminformatics",
-            description: "Free browser-based cheminformatics tools for molecular format conversion, SMILES rendering, SVG structures, 3D conformer generation, InChI, and InChIKey workflows.",
+            title: "COSMolKit — Browser-Native Cheminformatics Powered by Rust",
+            description: "Open-source browser-native cheminformatics tools powered by Rust, COSMolKit, and WebAssembly. Convert molecular formats, render SMILES, generate 3D conformers, calculate properties, and work with InChI locally.",
             canonical: "https://tools.cosmol.org/",
         }
         div {
@@ -74,13 +69,13 @@ pub fn Home() -> Element {
                             }
                             span {
                                 class: "block text-[#3082FF]",
-                                "powered by WebAssembly."
+                                "powered by Rust & WebAssembly."
                             }
                         }
                         span {
                             class: "text-[white] leading-relaxed opacity-75 mb-4",
-                            "Fast, private, and offline-capable tools for molecules and macromolecules.
-                            All in your browser. No installation required."
+                            "Built on the open-source COSMolKit Rust cheminformatics toolkit. Browser-native,
+                            private, and offline-capable, with no installation required."
                         }
                         div{
                             class: "flex gap-4 justify-left w-full",
@@ -121,7 +116,7 @@ pub fn Home() -> Element {
                                     class: "h-[60px] w-[60px] m-[10px] mt-[20px] border-[1.5px] border-[#1f93de90] rounded-xl",
                                     img {
                                         class: "w-[80%] h-[80%] m-[10%]",
-                                        src: MOL_SVG,
+                                        src: MOLECULE_SVG,
                                     }
                                 }
                                 div {
@@ -179,7 +174,7 @@ pub fn Home() -> Element {
                                     class: "h-[60px] w-[60px] m-[10px] mt-[20px] border-[1.5px] border-[#1f93de90] rounded-xl",
                                     img {
                                         class: "w-[80%] h-[80%] m-[10%]",
-                                        src: MOL_SVG,
+                                        src: MOLECULE_SVG,
                                     }
                                 }
                                 div {

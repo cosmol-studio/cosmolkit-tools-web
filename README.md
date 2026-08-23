@@ -1,5 +1,5 @@
 # cosmolkit-tools-web
-Web-based COSMolKit tools for browser-native molecular parsing, visualization, conversion, and analysis via WASM.
+Browser-based Rust cheminformatics tools powered by COSMolKit for browser-native molecular parsing, visualization, conversion, and analysis via WebAssembly.
 
 ## Serving Your App
 
@@ -41,8 +41,6 @@ cp -R target/dx/cosmolkit-tools-web/release/web/public/. deploy/web/public/
 cp robots.txt deploy/web/public/robots.txt
 cp sitemap.xml deploy/web/public/sitemap.xml
 cp _redirects deploy/web/public/_redirects
-cp assets/benzene.svg deploy/web/public/assets/benzene.svg
-cp assets/sdf.svg deploy/web/public/assets/sdf.svg
 python scripts/check_ssg_output.py deploy/web/public
 ```
 

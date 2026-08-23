@@ -1,17 +1,13 @@
 use dioxus::prelude::*;
 
-use crate::component::Seo;
-
-// Keep route-split card images independent of Manganis runtime resolution.
-const MOLECULE_SVG: &str = "/assets/benzene.svg";
-const SDF_SVG: &str = "/assets/sdf.svg";
+use crate::{MOLECULE_SVG, SDF_SVG, component::Seo};
 
 #[component]
 pub fn ToolDirectory() -> Element {
     rsx! {
         Seo {
-            title: "Free Molecular & Cheminformatics Tools — COSMolKit",
-            description: "Free browser tools for molecular properties, SMILES canonicalization, format conversion, 2D SVG structures, ETKDG 3D conformers, InChI and InChIKey workflows.",
+            title: "Browser-Based Cheminformatics Tools Powered by Rust — COSMolKit",
+            description: "Free browser-based cheminformatics tools powered by Rust and COSMolKit for molecular properties, SMILES canonicalization, format conversion, SVG depiction, ETKDG conformers, and InChI workflows.",
             canonical: "https://tools.cosmol.org/tools",
         }
         div { class: "min-h-screen uu-backdrop m-0 pt-[74px]",
@@ -21,7 +17,7 @@ pub fn ToolDirectory() -> Element {
                         span { class: "text-xs font-bold text-[#4b96ff]", "TOOL DIRECTORY" }
                         h1 { class: "mt-2 mb-2 text-[32px] leading-tight font-bold text-white max-[640px]:text-[27px]", "Free Browser-Based Cheminformatics Tools" }
                         p { class: "m-0 max-w-[650px] text-[15px] leading-6 text-[#9caabd]",
-                            "These molecular tools run locally in your browser using COSMolKit, Rust, and WebAssembly."
+                            "Powered by Rust and the open-source COSMolKit cheminformatics library, these molecular tools run locally through WebAssembly."
                         }
                     }
                     div { class: "flex shrink-0 items-center gap-3 text-xs",
@@ -188,7 +184,7 @@ pub fn ToolDirectory() -> Element {
 
                 footer { class: "mt-8 flex items-center gap-2 border-t border-white/8 pt-5 text-xs text-[#718299]",
                     span { class: "h-2 w-2 rounded-full bg-[#38c793]" }
-                    "Available tools execute locally in your browser through Rust and WebAssembly."
+                    "Available cheminformatics tools are powered by Rust and execute locally in your browser through WebAssembly."
                 }
             }
         }

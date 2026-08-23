@@ -3,7 +3,7 @@
 [web.app]
 
 # HTML title tag content
-title = "COSMolKit Tools — Browser-Native Cheminformatics"
+title = "COSMolKit — Browser-Native Cheminformatics Powered by Rust"
 
 # include `assets` in web platform
 [web.resource]

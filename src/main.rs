@@ -11,6 +11,8 @@ const FAVICON: Asset = asset!("/assets/logo.svg");
 const MAIN_CSS: Asset = asset!("/assets/main.css");
 // const HEADER_SVG: Asset = asset!("/assets/header.svg");
 const TAILWIND_CSS: Asset = asset!("/assets/tailwind.css");
+pub(crate) const MOLECULE_SVG: Asset = asset!("/assets/benzene.svg");
+pub(crate) const SDF_SVG: Asset = asset!("/assets/sdf.svg");
 
 #[cfg(all(feature = "ssg", not(target_arch = "wasm32")))]
 fn main() {

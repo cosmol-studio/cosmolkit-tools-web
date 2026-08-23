@@ -43,8 +43,8 @@ const PROJECTS: [Project; 3] = [
 pub fn Ecosystem() -> Element {
     rsx! {
         Seo {
-            title: "COSMol Ecosystem — COSMolKit, Viewer & Browser Tools",
-            description: "Understand how COSMolKit, COSMol-viewer and COSMolKit Tools combine Rust chemistry, molecular visualization and browser-native workflows.",
+            title: "COSMol Ecosystem — Rust-Powered Cheminformatics & Browser-Native Tools",
+            description: "Explore the open-source COSMol Rust cheminformatics ecosystem: COSMolKit provides the chemistry core, COSMol-viewer handles visualization, and COSMolKit Tools provides browser-native workflows.",
             canonical: "https://tools.cosmol.org/ecosystem",
         }
         div { class: "min-h-screen uu-backdrop m-0 pt-[74px]",
@@ -53,7 +53,7 @@ pub fn Ecosystem() -> Element {
                     Link { class: "text-[13px] font-semibold text-[#7ab5ff] no-underline hover:text-[#b4d6ff]", to: crate::route::Route::Home {}, "Back to home" }
                     span { class: "mt-7 block text-xs font-bold tracking-[0.08em] text-[#4b96ff]", "OPEN SOURCE ECOSYSTEM" }
                     h1 { class: "mb-3 mt-2 text-[32px] leading-[1.2] font-bold text-slate-50 max-[640px]:text-[27px]", "One molecular stack, three focused projects." }
-                    p { class: "m-0 text-[15px] leading-6 text-[#9caabd]", "COSMolKit provides the chemistry, COSMol-viewer provides the interactive scene, and this web app turns both into practical browser tools." }
+                    p { class: "m-0 text-[15px] leading-6 text-[#9caabd]", "The open-source Rust cheminformatics stack: COSMolKit provides the chemistry, COSMol-viewer provides the interactive scene, and this web app turns both into practical browser-native tools." }
                 }
 
                 section { class: "mt-10 grid grid-cols-3 gap-4 max-[900px]:grid-cols-1",

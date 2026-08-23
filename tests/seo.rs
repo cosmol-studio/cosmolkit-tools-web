@@ -190,6 +190,30 @@ fn public_tools_expose_supported_search_terms() {
 }
 
 #[test]
+fn primary_pages_expose_rust_and_cheminformatics_as_indexable_text() {
+    for (source_path, browser_phrase) in [
+        ("src/page/home.rs", "browser-native"),
+        ("src/page/tools.rs", "browser-based"),
+        ("src/page/ecosystem.rs", "browser-native"),
+    ] {
+        let source = fs::read_to_string(source_path).expect("page source should be readable");
+        let lowercase_source = source.to_lowercase();
+        for phrase in ["rust", "cheminformatics", browser_phrase] {
+            assert!(
+                lowercase_source.matches(phrase).count() >= 3,
+                "{source_path} should include {phrase} in metadata and visible text"
+            );
+        }
+    }
+
+    let config = fs::read_to_string("Dioxus.toml").expect("Dioxus config should exist");
+    let lowercase_config = config.to_lowercase();
+    assert!(lowercase_config.contains("rust"));
+    assert!(lowercase_config.contains("cheminformatics"));
+    assert!(lowercase_config.contains("browser-native"));
+}
+
+#[test]
 fn initial_html_contains_a_self_removing_loading_state() {
     let template = fs::read_to_string("index.html").expect("initial HTML template should exist");
     let app = fs::read_to_string("src/main.rs").expect("app source should exist");
