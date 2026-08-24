@@ -41,6 +41,7 @@ cp -R target/dx/cosmolkit-tools-web/release/web/public/. deploy/web/public/
 cp robots.txt deploy/web/public/robots.txt
 cp sitemap.xml deploy/web/public/sitemap.xml
 cp _redirects deploy/web/public/_redirects
+cp b2d03e0f-cc00-4050-8e29-3316108be26b.txt deploy/web/public/
 python scripts/check_ssg_output.py deploy/web/public
 ```
 
@@ -55,3 +56,15 @@ Dioxus 0.7.10 cannot currently hydrate route-split output correctly ([DioxusLabs
 Dioxus CLI 0.7.10 performs prerendering through `dx build --ssg`; `dx bundle --ssg` currently does not invoke the SSG step. Keep the CLI and Dioxus dependency on the same version.
 
 When a tool becomes public, add its route and page, provide unique `Seo` metadata, add its production URL to `sitemap.xml` and `tests/seo.rs`, then add the expected generated title to `scripts/check_ssg_output.py`. Keep unfinished routes such as Check PAINS out of the sitemap until their core capability is usable.
+
+## IndexNow
+
+Production deployments publish the IndexNow key file at the site root and notify IndexNow after Cloudflare Pages finishes deploying. The notifier reads canonical URLs directly from `sitemap.xml`, waits until the key is available at `https://tools.cosmol.org/b2d03e0f-cc00-4050-8e29-3316108be26b.txt`, and accepts HTTP 200 or 202 from the IndexNow endpoint.
+
+Validate the payload locally without making a network request:
+
+```bash
+INDEXNOW_KEY=b2d03e0f-cc00-4050-8e29-3316108be26b python scripts/notify_indexnow.py --dry-run
+```
+
+The notification step only runs for pushes to `main`, not pull requests. Add future public routes to `sitemap.xml`; the next production deployment will include them automatically.

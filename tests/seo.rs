@@ -29,6 +29,27 @@ fn robots_allows_crawling_and_references_the_production_sitemap() {
 }
 
 #[test]
+fn indexnow_key_and_deployment_notification_are_configured() {
+    const KEY: &str = "b2d03e0f-cc00-4050-8e29-3316108be26b";
+    let key_file = format!("{KEY}.txt");
+    let key_contents = fs::read_to_string(&key_file).expect("IndexNow key file should exist");
+    let workflow = fs::read_to_string(".github/workflows/depoly.yml")
+        .expect("deployment workflow should exist");
+    let notifier =
+        fs::read_to_string("scripts/notify_indexnow.py").expect("IndexNow notifier should exist");
+
+    assert_eq!(key_contents.trim(), KEY);
+    assert!(workflow.contains(&format!("INDEXNOW_KEY: {KEY}")));
+    assert!(workflow.contains("cp \"${INDEXNOW_KEY}.txt\""));
+    assert!(workflow.contains("python scripts/notify_indexnow.py --dry-run"));
+    assert!(workflow.contains("python scripts/notify_indexnow.py"));
+    assert!(workflow.contains("github.event_name == 'push'"));
+    assert!(notifier.contains("https://api.indexnow.org/indexnow"));
+    assert!(notifier.contains("sitemap_urls(args.sitemap)"));
+    assert!(!notifier.contains("/check-pains"));
+}
+
+#[test]
 fn legacy_tool_routes_redirect_to_root_level_urls() {
     let redirects = fs::read_to_string("_redirects").expect("Cloudflare redirects should exist");
 

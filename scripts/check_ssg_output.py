@@ -4,6 +4,7 @@ import sys
 
 
 SITE_ORIGIN = "https://tools.cosmol.org"
+INDEXNOW_KEY_FILE = "b2d03e0f-cc00-4050-8e29-3316108be26b.txt"
 PAGES = {
     "/": "COSMolKit — Browser-Native Cheminformatics Powered by Rust",
     "/tools": "Browser-Based Cheminformatics Tools Powered by Rust — COSMolKit",
@@ -112,7 +113,7 @@ def main():
                 if icon not in parser.card_icons:
                     failures.append(f"{route}: missing embedded card icon {icon}")
 
-    for static_name in ("robots.txt", "sitemap.xml", "_redirects"):
+    for static_name in ("robots.txt", "sitemap.xml", "_redirects", INDEXNOW_KEY_FILE):
         if not (public_dir / static_name).exists():
             failures.append(f"missing deployed static file: {static_name}")
 

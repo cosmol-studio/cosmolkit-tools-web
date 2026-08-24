@@ -8,6 +8,7 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
+  INDEXNOW_KEY: b2d03e0f-cc00-4050-8e29-3316108be26b
 
 jobs:
   build:
@@ -50,6 +51,8 @@ jobs:
           cp robots.txt deploy/web/public/robots.txt
           cp sitemap.xml deploy/web/public/sitemap.xml
           cp _redirects deploy/web/public/_redirects
+          cp "${INDEXNOW_KEY}.txt" deploy/web/public/"${INDEXNOW_KEY}.txt"
+          python scripts/notify_indexnow.py --dry-run > /dev/null
           python scripts/check_ssg_output.py deploy/web/public
 
       - name: Upload artifact
@@ -64,3 +67,7 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy ./deploy/web/public/ --project-name=cosmolkit-tools-web
+
+      - name: Notify IndexNow
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: python scripts/notify_indexnow.py
