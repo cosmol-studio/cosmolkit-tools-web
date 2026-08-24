@@ -1,70 +1,41 @@
-# cosmolkit-tools-web
-Browser-based Rust cheminformatics tools powered by COSMolKit for browser-native molecular parsing, visualization, conversion, and analysis via WebAssembly.
+# COSMolKit Tools
 
-## Serving Your App
+Browser-based cheminformatics and molecular visualization tools powered by Rust and WebAssembly.
 
-```bash
-dx serve --web
-```
+**Use the tools at [tools.cosmol.org](https://tools.cosmol.org/).** Molecular structures are processed locally in the browser and are not uploaded to a backend service.
 
-To test route-level WASM chunks locally, opt into the production splitting feature:
+## Available tools
 
-```bash
-dx serve --web --features wasm-split --wasm-split
-```
+| Tool | What it does |
+| --- | --- |
+| [SMILES to SVG](https://tools.cosmol.org/smiles-to-svg) | Parse SMILES, generate 2D coordinates, and export a scalable SVG molecular depiction. |
+| [Molecular format converter](https://tools.cosmol.org/format-converter) | Read SMILES, MOL/SDF V2000 and V3000, MOL2, PDB, mmCIF, or XYZ, then export SMILES, MOL/SDF, PDB, or SVG. |
+| [3D conformer generator](https://tools.cosmol.org/conformer-generator) | Generate a conformer from SMILES with ETKDG v2, ETKDG v3, or KDG, preview it in 3D, and export SDF V3000 or PDB coordinates. |
+| [InChI converter](https://tools.cosmol.org/inchi) | Convert SMILES to standard InChI and InChIKey, or parse InChI back into a molecular structure and canonical SMILES. |
+| [Molecular properties](https://tools.cosmol.org/molecular-properties) | Calculate formula, molecular weight, exact mass, heavy atoms, HBD, HBA, TPSA, rotatable bonds, logP, and formal charge from SMILES. |
+| [SMILES canonicalizer](https://tools.cosmol.org/smiles-canonicalizer) | Generate canonical, isomeric, and kekulized SMILES and inspect hydrogen count and formal charge. |
 
-For desktop debugging, run the frontend without rebuilding wasm:
+Browse the complete directory at [tools.cosmol.org/tools](https://tools.cosmol.org/tools).
 
-```bash
-dx serve --desktop --no-default-features --always-on-top false
-```
+## Built on the COSMol ecosystem
 
-## Python Example Regression Test
+COSMolKit Tools brings together three focused open-source Rust projects:
 
-Run the Python examples against the COSMolKit package installed in the `COS` environment:
+- [COSMolKit](https://github.com/cosmol-studio/COSMolKit) provides molecular graphs, cheminformatics algorithms, format readers and writers, descriptors, coordinates, SMILES, and InChI.
+- [COSMol-viewer](https://github.com/cosmol-studio/COSMol-viewer) provides interactive molecular and structural biology visualization, including the 3D conformer preview.
+- [cosmolkit-tools-web](https://github.com/cosmol-studio/cosmolkit-tools-web) combines the chemistry core and viewer into accessible browser workflows.
 
-```powershell
-conda activate COS
-python scripts/test_python_examples.py
-```
+The interface and application logic are written in Rust with [Dioxus](https://dioxuslabs.com/) and compiled to WebAssembly. There is no hand-written JavaScript or TypeScript glue layer, and the tools do not require an application backend.
 
-The script checks the package version declared in `Cargo.toml`, every Format Converter input/output combination, and the SMILES to SVG, molecular properties, and SMILES canonicalizer examples.
+## Documentation
 
-## SEO and static generation
+- [COSMolKit documentation](https://kit.cosmol.org/)
+- [COSMolKit on crates.io](https://crates.io/crates/cosmolkit)
+- [COSMol-viewer documentation](https://cosmol-studio.github.io/COSMol-viewer/)
+- [COSMol ecosystem overview](https://tools.cosmol.org/ecosystem)
 
-Production uses Dioxus 0.7 static site generation so each public route contains its title, description, canonical URL, Open Graph metadata, H1, and page text before WebAssembly loads:
+Development and production build instructions are documented in [dev.md](dev.md).
 
-```bash
-dx build --release --web --fullstack true --ssg --features "ssg wasm-split" --wasm-split --force-sequential --debug-symbols false
-mkdir -p deploy/web/public
-cp -R target/dx/cosmolkit-tools-web/release/web/public/. deploy/web/public/
-cp robots.txt deploy/web/public/robots.txt
-cp sitemap.xml deploy/web/public/sitemap.xml
-cp _redirects deploy/web/public/_redirects
-cp b2d03e0f-cc00-4050-8e29-3316108be26b.txt deploy/web/public/
-python scripts/check_ssg_output.py deploy/web/public
-```
+## License
 
-Route metadata is declared explicitly with the small `Seo` component at the top of each page. The `static_routes` server function supplies Dioxus with the routes to prerender; the generated `deploy/web/public` directory remains a static site and is deployed directly to Cloudflare Pages. Legacy tool URLs under `/tools/...` are permanently redirected to the current root-level tool routes through `_redirects`.
-
-The project-level `ssg` feature is deliberately an empty compile-time marker. Dioxus CLI enables the existing `server` feature only for its native prerender target, while the WASM target remains an ordinary Web client with route-level splitting. Normal `dx serve --web` development therefore builds only the browser client and does not compile or start a native server.
-
-Dioxus 0.7.10 cannot currently hydrate route-split output correctly ([DioxusLabs/dioxus#4631](https://github.com/DioxusLabs/dioxus/issues/4631)). The split client therefore replaces the prerendered mount after WASM starts instead of hydrating it. Search engines and no-JavaScript clients still receive the complete SSG document, and browser interactivity is mounted immediately afterward without the hydration crash. Revisit this workaround after the upstream issue is fixed.
-
-`--fullstack true` is explicit so Dioxus CLI creates the temporary native renderer required by `--ssg`. The deployed result still contains only static files. The production command builds sequentially so the client bundle and chunks are complete before the native renderer writes the final prerendered HTML.
-
-Dioxus CLI 0.7.10 performs prerendering through `dx build --ssg`; `dx bundle --ssg` currently does not invoke the SSG step. Keep the CLI and Dioxus dependency on the same version.
-
-When a tool becomes public, add its route and page, provide unique `Seo` metadata, add its production URL to `sitemap.xml` and `tests/seo.rs`, then add the expected generated title to `scripts/check_ssg_output.py`. Keep unfinished routes such as Check PAINS out of the sitemap until their core capability is usable.
-
-## IndexNow
-
-Production deployments publish the IndexNow key file at the site root and notify IndexNow after Cloudflare Pages finishes deploying. The notifier reads canonical URLs directly from `sitemap.xml`, waits until the key is available at `https://tools.cosmol.org/b2d03e0f-cc00-4050-8e29-3316108be26b.txt`, and accepts HTTP 200 or 202 from the IndexNow endpoint.
-
-Validate the payload locally without making a network request:
-
-```bash
-INDEXNOW_KEY=b2d03e0f-cc00-4050-8e29-3316108be26b python scripts/notify_indexnow.py --dry-run
-```
-
-The notification step only runs for pushes to `main`, not pull requests. Add future public routes to `sitemap.xml`; the next production deployment will include them automatically.
+This project is available under the [MIT License](LICENSE).
