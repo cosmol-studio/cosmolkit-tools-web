@@ -3,8 +3,10 @@ use dioxus::prelude::*;
 use crate::{
     component::Navbar,
     page::{
-        CheckPains, ConformerGenerator, Ecosystem, FormatConverter, Home, InchiTool,
-        MolecularProperties, SmilesCanonicalizer, SmilesToSvg, ToolDirectory,
+        Blog, CheckPains, ConformerGenerator, ConversionSlug, Ecosystem, FormatConversion,
+        FormatConverter, Home, InchiTool, MolecularProperties, RdkitAlternativeRust,
+        RustCheminformatics, RustCheminformaticsLibraries, SmilesCanonicalizer, SmilesToSvg,
+        ToolDirectory, Validation,
     },
 };
 
@@ -18,6 +20,16 @@ pub enum Route {
     ToolDirectory {},
     #[route("/ecosystem")]
     Ecosystem {},
+    #[route("/blog")]
+    Blog {},
+    #[route("/rust-cheminformatics")]
+    RustCheminformatics {},
+    #[route("/rdkit-alternative-rust")]
+    RdkitAlternativeRust {},
+    #[route("/rust-cheminformatics-libraries")]
+    RustCheminformaticsLibraries {},
+    #[route("/validation")]
+    Validation {},
     #[route("/smiles-to-svg")]
     SmilesToSvg {},
     #[route("/format-converter")]
@@ -32,13 +44,46 @@ pub enum Route {
     SmilesCanonicalizer {},
     #[route("/check-pains")]
     CheckPains {},
+    #[route("/:conversion")]
+    FormatConversion { conversion: ConversionSlug },
 }
 
 #[cfg(all(feature = "ssg", not(target_arch = "wasm32")))]
 #[server(endpoint = "static_routes", output = server_fn::codec::Json)]
 async fn static_routes() -> Result<Vec<String>, ServerFnError> {
-    Ok(Route::static_routes()
+    let mut routes: Vec<String> = Route::static_routes()
         .iter()
         .map(ToString::to_string)
-        .collect())
+        .collect();
+    routes.extend(
+        ConversionSlug::all()
+            .into_iter()
+            .map(|conversion| Route::FormatConversion { conversion }.to_string()),
+    );
+    Ok(routes)
+}
+
+#[cfg(test)]
+mod tests {
+    use std::str::FromStr;
+
+    use super::*;
+
+    #[test]
+    fn conversion_slugs_do_not_shadow_existing_routes() {
+        assert_eq!(Route::from_str("/inchi").unwrap(), Route::InchiTool {});
+        assert_eq!(
+            Route::from_str("/sdf-to-smiles").unwrap(),
+            Route::FormatConversion {
+                conversion: "sdf-to-smiles".parse().unwrap(),
+            }
+        );
+        assert_eq!(
+            Route::from_str("/smiles-to-svg").unwrap(),
+            Route::SmilesToSvg {}
+        );
+        assert!(Route::from_str("/smiles-to-svg-converter").is_err());
+        assert!(Route::from_str("/pdb-to-svg").is_err());
+        assert!(Route::from_str("/not-a-supported-conversion").is_err());
+    }
 }

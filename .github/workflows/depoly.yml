@@ -45,6 +45,7 @@ jobs:
 
       - name: Dioxus Build
         run: |
+          rm -rf target/dx/cosmolkit-tools-web/release/web/public deploy/web/public
           dx build -r --web --fullstack true --ssg --features "ssg wasm-split" --wasm-split --force-sequential --debug-symbols false
           mkdir -p deploy/web/public
           cp -R target/dx/cosmolkit-tools-web/release/web/public/. deploy/web/public/

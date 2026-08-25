@@ -32,6 +32,11 @@ pub fn Navbar() -> Element {
                         to: Route::ToolDirectory {},
                         "Tools",
                     }
+                    Link {
+                        class: "whitespace-nowrap text-sm font-semibold text-[#9baabd] no-underline hover:text-white max-[800px]:text-xs",
+                        to: Route::Blog {},
+                        "Blog",
+                    }
                     div {
                         class: "group relative",
                         button {
@@ -62,7 +67,7 @@ pub fn Navbar() -> Element {
                         }
                     }
                     Link {
-                        class: "whitespace-nowrap text-sm font-semibold text-[#9baabd] no-underline hover:text-white max-[800px]:text-xs",
+                        class: "whitespace-nowrap text-sm font-semibold text-[#9baabd] no-underline hover:text-white max-[800px]:text-xs max-[640px]:hidden",
                         to: Route::Ecosystem {},
                         "Ecosystem",
                     }

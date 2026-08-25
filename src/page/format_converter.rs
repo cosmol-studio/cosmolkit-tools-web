@@ -1,6 +1,7 @@
 use cosmolkit::{Molecule, io::molblock};
 use dioxus::prelude::*;
 
+use super::conversion_routes::ConversionSlug;
 use crate::component::{
     MdiIcon, Seo, ToastManager,
     icon::{MDI_CHEVRON_DOWN, MDI_OPEN_IN_NEW},
@@ -9,10 +10,63 @@ use crate::component::{
 const MAX_INPUT_LENGTH: usize = 2_000_000;
 const DEFAULT_SMILES: &str = "CC(=O)Oc1ccccc1C(=O)O";
 
+#[derive(Clone, PartialEq)]
+pub(crate) struct FormatConverterPreset {
+    title: String,
+    description: String,
+    pub(crate) canonical: String,
+    heading: String,
+    intro: String,
+    input_slug: String,
+    input: String,
+    pub(crate) output: String,
+}
+
+impl FormatConverterPreset {
+    pub(crate) fn new(
+        title: &str,
+        description: &str,
+        canonical: &str,
+        heading: &str,
+        intro: &str,
+        input: &str,
+        output: &str,
+    ) -> Self {
+        Self {
+            title: title.to_string(),
+            description: description.to_string(),
+            canonical: canonical.to_string(),
+            heading: heading.to_string(),
+            intro: intro.to_string(),
+            input_slug: input.to_string(),
+            input: input.to_string(),
+            output: output.to_string(),
+        }
+    }
+
+    pub(crate) fn general() -> Self {
+        Self::new(
+            "Molecular Format Converter — SDF, SMILES, MOL2, PDB | COSMolKit",
+            "Convert SDF to SMILES, SMILES to SDF, MOL2 to PDB, PDB to SMILES, mmCIF and XYZ files, or molecular structures to SVG locally with COSMolKit.",
+            "https://tools.cosmol.org/format-converter",
+            "Molecular format converter",
+            "Convert between SMILES, SDF, MOL, MOL2, PDB, mmCIF, XYZ, and SVG locally while preserving the chemical graph and available coordinates.",
+            "smiles",
+            "sdf-v2000",
+        )
+    }
+
+    pub(crate) fn with_input_slug(mut self, input_slug: &str) -> Self {
+        self.input_slug = input_slug.to_string();
+        self
+    }
+}
+
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 enum InputFormat {
     Smiles,
-    MolSdf,
+    Mol,
+    Sdf,
     Mol2,
     Pdb,
     Mmcif,
@@ -20,9 +74,10 @@ enum InputFormat {
 }
 
 impl InputFormat {
-    const ALL: [Self; 6] = [
+    const ALL: [Self; 7] = [
         Self::Smiles,
-        Self::MolSdf,
+        Self::Mol,
+        Self::Sdf,
         Self::Mol2,
         Self::Pdb,
         Self::Mmcif,
@@ -32,7 +87,8 @@ impl InputFormat {
     fn id(self) -> &'static str {
         match self {
             Self::Smiles => "smiles",
-            Self::MolSdf => "mol-sdf",
+            Self::Mol => "mol",
+            Self::Sdf => "sdf",
             Self::Mol2 => "mol2",
             Self::Pdb => "pdb",
             Self::Mmcif => "mmcif",
@@ -43,7 +99,8 @@ impl InputFormat {
     fn label(self) -> &'static str {
         match self {
             Self::Smiles => "SMILES",
-            Self::MolSdf => "MOL / SDF",
+            Self::Mol => "MOL",
+            Self::Sdf => "SDF",
             Self::Mol2 => "Tripos MOL2",
             Self::Pdb => "PDB",
             Self::Mmcif => "mmCIF",
@@ -54,7 +111,8 @@ impl InputFormat {
     fn detail(self) -> &'static str {
         match self {
             Self::Smiles => "Line notation",
-            Self::MolSdf => "V2000 or V3000",
+            Self::Mol => "V2000 or V3000 molfile",
+            Self::Sdf => "V2000 or V3000 record",
             Self::Mol2 => "Tripos structure",
             Self::Pdb => "Protein Data Bank",
             Self::Mmcif => "PDBx/mmCIF",
@@ -65,7 +123,8 @@ impl InputFormat {
     fn accept(self) -> &'static str {
         match self {
             Self::Smiles => ".smi,.smiles,.txt",
-            Self::MolSdf => ".mol,.sdf",
+            Self::Mol => ".mol",
+            Self::Sdf => ".sdf",
             Self::Mol2 => ".mol2",
             Self::Pdb => ".pdb,.ent",
             Self::Mmcif => ".cif,.mmcif",
@@ -78,6 +137,18 @@ impl InputFormat {
             .into_iter()
             .find(|format| format.id() == value)
             .unwrap_or(Self::Smiles)
+    }
+
+    fn source_slug(self) -> &'static str {
+        match self {
+            Self::Smiles => "smiles",
+            Self::Mol => "mol",
+            Self::Sdf => "sdf",
+            Self::Mol2 => "mol2",
+            Self::Pdb => "pdb",
+            Self::Mmcif => "mmcif",
+            Self::Xyz => "xyz",
+        }
     }
 }
 
@@ -157,10 +228,19 @@ impl OutputFormat {
     fn as_input(self) -> Option<InputFormat> {
         match self {
             Self::Smiles => Some(InputFormat::Smiles),
-            Self::MolV2000 | Self::MolV3000 | Self::SdfV2000 | Self::SdfV3000 => {
-                Some(InputFormat::MolSdf)
-            }
+            Self::MolV2000 | Self::MolV3000 => Some(InputFormat::Mol),
+            Self::SdfV2000 | Self::SdfV3000 => Some(InputFormat::Sdf),
             Self::Pdb => Some(InputFormat::Pdb),
+            Self::Svg => None,
+        }
+    }
+
+    fn input_slug(self) -> Option<&'static str> {
+        match self {
+            Self::Smiles => Some("smiles"),
+            Self::MolV2000 | Self::MolV3000 => Some("mol"),
+            Self::SdfV2000 | Self::SdfV3000 => Some("sdf"),
+            Self::Pdb => Some("pdb"),
             Self::Svg => None,
         }
     }
@@ -177,7 +257,8 @@ struct ConversionResult {
 fn output_for_input(format: InputFormat) -> Option<OutputFormat> {
     match format {
         InputFormat::Smiles => Some(OutputFormat::Smiles),
-        InputFormat::MolSdf => Some(OutputFormat::SdfV2000),
+        InputFormat::Mol => Some(OutputFormat::MolV2000),
+        InputFormat::Sdf => Some(OutputFormat::SdfV2000),
         InputFormat::Pdb => Some(OutputFormat::Pdb),
         InputFormat::Mol2 | InputFormat::Mmcif | InputFormat::Xyz => None,
     }
@@ -187,8 +268,12 @@ fn parse_molecule(input: &str, format: InputFormat) -> Result<Molecule, String> 
     match format {
         InputFormat::Smiles => Molecule::from_smiles(input.trim())
             .map_err(|error| format!("Could not parse SMILES: {error}")),
-        InputFormat::MolSdf => Molecule::from_mol_block(input)
-            .map_err(|error| format!("Could not parse MOL/SDF: {error}")),
+        InputFormat::Mol => {
+            Molecule::from_mol_block(input).map_err(|error| format!("Could not parse MOL: {error}"))
+        }
+        InputFormat::Sdf => {
+            Molecule::from_mol_block(input).map_err(|error| format!("Could not parse SDF: {error}"))
+        }
         InputFormat::Mol2 => cosmolkit::read_mol2_from_str(input)
             .map_err(|error| format!("Could not parse MOL2: {error}"))?
             .map(|record| record.molecule)
@@ -278,11 +363,18 @@ fn data_url(mime: &str, content: &str) -> String {
 fn example_input(format: InputFormat) -> Result<String, String> {
     match format {
         InputFormat::Smiles => Ok(DEFAULT_SMILES.to_string()),
-        InputFormat::MolSdf => {
+        InputFormat::Mol => {
             let molecule = Molecule::from_smiles("CCO")
                 .map_err(|error| format!("Could not create the MOL example: {error}"))?;
             molblock::mol_to_v2000_block(&molecule)
                 .map_err(|error| format!("Could not write the MOL example: {error}"))
+        }
+        InputFormat::Sdf => {
+            let molecule = Molecule::from_smiles("CCO")
+                .map_err(|error| format!("Could not create the SDF example: {error}"))?;
+            let block = molblock::mol_to_v2000_block(&molecule)
+                .map_err(|error| format!("Could not write the SDF example: {error}"))?;
+            Ok(format!("{block}\n$$$$\n"))
         }
         InputFormat::Mol2 => Ok(r#"@<TRIPOS>MOLECULE
 Ethanol
@@ -366,7 +458,7 @@ fn python_example(input: &str, input_format: InputFormat, output_format: OutputF
     };
     let constructor = match input_format {
         InputFormat::Smiles => "Molecule.from_smiles(source)",
-        InputFormat::MolSdf => "Molecule.read_mol_from_str(source)",
+        InputFormat::Mol | InputFormat::Sdf => "Molecule.read_mol_from_str(source)",
         InputFormat::Mol2 => "Molecule.read_mol2_from_str(source)",
         InputFormat::Pdb => "Molecule.from_pdb_block(source)",
         InputFormat::Mmcif => "Molecule.from_mmcif_block(source)",
@@ -417,6 +509,84 @@ fn run_conversion(
 }
 
 #[cfg(target_arch = "wasm32")]
+fn replace_converter_url(path: &str) {
+    let Some(window) = web_sys::window() else {
+        return;
+    };
+    let Ok(history) = window.history() else {
+        return;
+    };
+    let _ = history.replace_state_with_url(&wasm_bindgen::JsValue::NULL, "", Some(path));
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+fn replace_converter_url(_path: &str) {}
+
+#[cfg(target_arch = "wasm32")]
+fn sync_browser_metadata(preset: &FormatConverterPreset) {
+    use wasm_bindgen::JsCast;
+
+    let Some(document) = web_sys::window().and_then(|window| window.document()) else {
+        return;
+    };
+
+    document.set_title(&preset.title);
+
+    let update_content = |selector: &str, content: &str| {
+        let Ok(elements) = document.query_selector_all(selector) else {
+            return;
+        };
+        for index in 0..elements.length() {
+            let Some(node) = elements.item(index) else {
+                continue;
+            };
+            let Ok(element) = node.dyn_into::<web_sys::Element>() else {
+                continue;
+            };
+            let _ = element.set_attribute("content", content);
+        }
+    };
+
+    update_content("meta[name='description']", &preset.description);
+    update_content("meta[property='og:title']", &preset.title);
+    update_content("meta[property='og:description']", &preset.description);
+    update_content("meta[property='og:url']", &preset.canonical);
+
+    let Ok(links) = document.query_selector_all("link[rel='canonical']") else {
+        return;
+    };
+    for index in 0..links.length() {
+        let Some(node) = links.item(index) else {
+            continue;
+        };
+        let Ok(element) = node.dyn_into::<web_sys::Element>() else {
+            continue;
+        };
+        let _ = element.set_attribute("href", &preset.canonical);
+    }
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+fn sync_browser_metadata(_preset: &FormatConverterPreset) {}
+
+fn update_conversion_identity(
+    input_slug: &str,
+    output_format: OutputFormat,
+    mut active_preset: Signal<FormatConverterPreset>,
+) {
+    let (path, preset) = match ConversionSlug::from_format_ids(input_slug, output_format.id()) {
+        Some(conversion) => (format!("/{conversion}"), conversion.preset()),
+        None => (
+            "/format-converter".to_string(),
+            FormatConverterPreset::general(),
+        ),
+    };
+    replace_converter_url(&path);
+    sync_browser_metadata(&preset);
+    active_preset.set(preset);
+}
+
+#[cfg(target_arch = "wasm32")]
 fn copy_text(text: String, success_message: &'static str, mut toast: ToastManager) {
     wasm_bindgen_futures::spawn_local(async move {
         let outcome = async {
@@ -440,25 +610,32 @@ fn copy_text(_text: String, _success_message: &'static str, mut toast: ToastMana
 }
 
 #[component]
-pub fn FormatConverter() -> Element {
-    let mut input_format = use_signal(|| InputFormat::Smiles);
-    let mut output_format = use_signal(|| OutputFormat::SdfV2000);
-    let mut input = use_signal(|| DEFAULT_SMILES.to_string());
+pub fn FormatConverter(#[props(default)] preset: Option<FormatConverterPreset>) -> Element {
+    let preset = preset.unwrap_or_else(FormatConverterPreset::general);
+    let initial_input_format = InputFormat::from_id(&preset.input);
+    let initial_output_format = OutputFormat::from_id(&preset.output);
+    let initial_input = example_input(initial_input_format).unwrap_or_default();
+    let initial_result = convert(&initial_input, initial_input_format, initial_output_format);
+    let active_preset = use_signal(|| preset.clone());
+    let mut input_slug = use_signal(|| preset.input_slug.clone());
+    let mut input_format = use_signal(|| initial_input_format);
+    let mut output_format = use_signal(|| initial_output_format);
+    let mut input = use_signal(move || initial_input);
     let mut uploaded_file = use_signal(|| None::<String>);
-    let result =
-        use_signal(|| convert(DEFAULT_SMILES, InputFormat::Smiles, OutputFormat::SdfV2000));
+    let result = use_signal(move || initial_result);
     let toast = use_context::<ToastManager>();
     let cosmolkit_version = cosmolkit::version();
     let python_code = python_example(&input(), input_format(), output_format());
     let can_swap = output_format().as_input().is_some()
         && output_for_input(input_format()).is_some()
         && result.read().is_ok();
+    let page = active_preset();
 
     rsx! {
         Seo {
-            title: "Molecular Format Converter — SDF, SMILES, MOL2, PDB | COSMolKit",
-            description: "Convert SDF to SMILES, SMILES to SDF, MOL2 to PDB, PDB to SMILES, mmCIF and XYZ files, or molecular structures to SVG locally with COSMolKit.",
-            canonical: "https://tools.cosmol.org/format-converter",
+            title: page.title.clone(),
+            description: page.description.clone(),
+            canonical: page.canonical.clone(),
         }
         div { class: "min-h-screen uu-backdrop m-0 pt-[74px]",
             main { class: "mx-auto w-full max-w-6xl px-0 py-5 font-sans text-[#e8edf5] max-[800px]:px-3.5 max-[800px]:pb-[30px]",
@@ -466,8 +643,8 @@ pub fn FormatConverter() -> Element {
                     div { class: "mb-6 flex items-end justify-between gap-8 max-[800px]:flex-col max-[800px]:items-start max-[800px]:gap-4",
                         div {
                             Link { class: "text-[13px] font-semibold text-[#7ab5ff] no-underline hover:text-[#b4d6ff]", to: crate::route::Route::ToolDirectory {}, "Back to tools" }
-                            h1 { class: "mb-1.5 mt-2.5 text-[32px] leading-[1.2] font-bold text-slate-50 max-[800px]:text-[27px]", "Molecular format converter" }
-                            p { class: "m-0 max-w-[720px] text-[15px] leading-[1.6] text-[#9caabd]", "Convert between SMILES, SDF, MOL, MOL2, PDB, mmCIF, XYZ, and SVG locally while preserving the chemical graph and available coordinates." }
+                            h1 { class: "mb-1.5 mt-2.5 text-[32px] leading-[1.2] font-bold text-slate-50 max-[800px]:text-[27px]", "{page.heading}" }
+                            p { class: "m-0 max-w-[720px] text-[15px] leading-[1.6] text-[#9caabd]", "{page.intro}" }
                         }
                         a {
                             class: "inline-flex shrink-0 items-center gap-2 rounded-md border border-[#23344a] bg-[#0c1828] px-[11px] py-2 text-xs font-semibold text-[#b8c5d6] no-underline hover:border-[#438ee9] hover:text-white",
@@ -501,13 +678,16 @@ pub fn FormatConverter() -> Element {
                                                     return;
                                                 }
                                             };
+                                            let source_slug = format.source_slug();
                                             input_format.set(format);
+                                            input_slug.set(source_slug.to_string());
                                             input.set(example.clone());
                                             uploaded_file.set(None);
                                             run_conversion(example, format, output_format(), result);
+                                            update_conversion_identity(source_slug, output_format(), active_preset);
                                         },
                                         for format in InputFormat::ALL {
-                                            option { value: format.id(), "{format.label()}" }
+                                            option { value: format.id(), selected: format == input_format(), "{format.label()}" }
                                         }
                                     }
                                     span { class: "pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 text-[#c5d1df]",
@@ -528,13 +708,17 @@ pub fn FormatConverter() -> Element {
                                             let Ok(current) = &*current else { return };
                                             current.content.clone()
                                         };
-                                        let Some(next_input_format) = output_format().as_input() else { return };
+                                        let current_output_format = output_format();
+                                        let Some(next_input_format) = current_output_format.as_input() else { return };
                                         let Some(next_output_format) = output_for_input(input_format()) else { return };
+                                        let next_input_slug = current_output_format.input_slug().unwrap_or("sdf");
                                         input_format.set(next_input_format);
                                         output_format.set(next_output_format);
+                                        input_slug.set(next_input_slug.to_string());
                                         input.set(next_input.clone());
                                         uploaded_file.set(None);
                                         run_conversion(next_input, next_input_format, next_output_format, result);
+                                        update_conversion_identity(next_input_slug, next_output_format, active_preset);
                                     },
                                     "⇄"
                                 }
@@ -554,9 +738,10 @@ pub fn FormatConverter() -> Element {
                                             let format = OutputFormat::from_id(&event.value());
                                             output_format.set(format);
                                             run_conversion(input(), input_format(), format, result);
+                                            update_conversion_identity(&input_slug(), format, active_preset);
                                         },
                                         for format in OutputFormat::ALL {
-                                            option { value: format.id(), "{format.label()}" }
+                                            option { value: format.id(), selected: format == output_format(), "{format.label()}" }
                                         }
                                     }
                                     span { class: "pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 text-[#c5d1df]",
@@ -697,6 +882,16 @@ pub fn FormatConverter() -> Element {
                     }
                 }
 
+                nav { class: "mt-7 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-white/8 pt-5 text-xs", aria_label: "Popular molecular format conversions",
+                    span { class: "font-bold text-[#8495aa]", "Popular conversions" }
+                    a { class: "font-semibold text-[#7ab5ff] no-underline hover:text-white", href: "/sdf-to-smiles", "SDF to SMILES" }
+                    a { class: "font-semibold text-[#7ab5ff] no-underline hover:text-white", href: "/smiles-to-sdf", "SMILES to SDF" }
+                    a { class: "font-semibold text-[#7ab5ff] no-underline hover:text-white", href: "/mol2-to-smiles", "MOL2 to SMILES" }
+                    a { class: "font-semibold text-[#7ab5ff] no-underline hover:text-white", href: "/pdb-to-smiles", "PDB to SMILES" }
+                    a { class: "font-semibold text-[#7ab5ff] no-underline hover:text-white", href: "/mmcif-to-pdb", "mmCIF to PDB" }
+                    a { class: "font-semibold text-[#7ab5ff] no-underline hover:text-white", href: "/smiles-converter", "SMILES converter" }
+                }
+
                 section { class: "mt-10 border-t border-[#213147] pt-8",
                     span { class: "text-xs font-bold text-[#4b96ff]", "SUPPORTED FORMATS" }
                     h2 { class: "mb-2 mt-2 text-xl font-bold text-slate-50", "Formats available in this converter" }
@@ -780,7 +975,7 @@ mod tests {
     #[test]
     fn mol_roundtrips_to_smiles() {
         let mol = convert("CCO", InputFormat::Smiles, OutputFormat::MolV2000).unwrap();
-        let smiles = convert(&mol.content, InputFormat::MolSdf, OutputFormat::Smiles).unwrap();
+        let smiles = convert(&mol.content, InputFormat::Mol, OutputFormat::Smiles).unwrap();
         assert_eq!(smiles.content, "CCO");
     }
 
@@ -808,9 +1003,9 @@ mod tests {
 
     #[test]
     fn python_example_preserves_structured_file_headers() {
-        let mol = example_input(InputFormat::MolSdf).expect("MOL example should generate");
+        let mol = example_input(InputFormat::Mol).expect("MOL example should generate");
         assert!(mol.starts_with('\n'));
-        let example = python_example(&mol, InputFormat::MolSdf, OutputFormat::Smiles);
+        let example = python_example(&mol, InputFormat::Mol, OutputFormat::Smiles);
         assert!(example.contains("source = \"\\n  COSMolKit"));
     }
 
@@ -832,5 +1027,26 @@ mod tests {
         let input = example_input(InputFormat::Smiles).expect("SMILES example should generate");
         let pdb = python_example(&input, InputFormat::Smiles, OutputFormat::Pdb);
         assert!(!pdb.contains("mol.with_2d_coordinates()"));
+    }
+
+    #[test]
+    fn conversion_capability_matrix_matches_cosmolkit_outputs() {
+        for input_format in InputFormat::ALL {
+            let input = example_input(input_format).expect("example generation should succeed");
+            for output_format in OutputFormat::ALL {
+                let expected_to_succeed = output_format != OutputFormat::Svg
+                    || matches!(
+                        input_format,
+                        InputFormat::Smiles | InputFormat::Mol | InputFormat::Sdf
+                    );
+                assert_eq!(
+                    convert(&input, input_format, output_format).is_ok(),
+                    expected_to_succeed,
+                    "unexpected capability for {} -> {}",
+                    input_format.id(),
+                    output_format.id(),
+                );
+            }
+        }
     }
 }

@@ -25,56 +25,158 @@ pub fn MdiIcon(
 }
 
 #[component]
-pub fn MoleculeCardIcon(class: &'static str, label: &'static str) -> Element {
+pub fn DepictionCardIcon(class: &'static str, label: &'static str) -> Element {
     rsx! {
         svg {
             class,
-            view_box: "0 0 194 168",
+            view_box: "0 0 48 48",
             fill: "none",
-            stroke: "#185E91",
-            stroke_width: "7",
+            stroke: "currentColor",
+            stroke_width: "2.2",
+            stroke_linecap: "round",
             stroke_linejoin: "round",
             role: "img",
             "aria-label": label,
-            "data-card-icon": "molecule",
-            polygon { points: "50.7 3.5 143.5 3.8 189.6 84.3 143 164.6 50.2 164.3 4 83.8 50.7 3.5" }
-            path { d: "M58.6 17.4 135.4 17.7" }
-            path { d: "m173.6 84.3-38.6 66.3" }
-            path { d: "m58.2 150.3-38.1-66.5" }
+            "data-card-icon": "depiction",
+            path { d: "M16 10h16l8 14-8 14H16L8 24l8-14Z" }
+            path { d: "M18 14h12M35.5 24l-6 10M18 34l-5.5-10" }
         }
     }
 }
 
 #[component]
-pub fn SdfCardIcon(class: &'static str, label: &'static str) -> Element {
+pub fn FormatCardIcon(class: &'static str, label: &'static str) -> Element {
     rsx! {
         svg {
             class,
-            view_box: "0 0 194 168",
+            view_box: "0 0 48 48",
             fill: "none",
-            stroke: "#71a554",
+            stroke: "currentColor",
+            stroke_width: "2.2",
+            stroke_linecap: "round",
             stroke_linejoin: "round",
             role: "img",
             "aria-label": label,
-            "data-card-icon": "sdf",
-            path {
-                stroke_width: "7.8",
-                d: "M111.6 4.6H45.9c-8.1 0-14.7 6.6-14.7 14.7v130.3c0 8.1 6.6 14.7 14.7 14.7h102c8.1 0 14.7-6.6 14.7-14.7v-94L111.6 4.6Z"
-            }
-            path {
-                stroke_width: "6.7",
-                d: "M162.6 55.6h-36.3c-8.1 0-14.7-6.6-14.7-14.7V4.6"
-            }
-            text {
-                x: "49.8",
-                y: "113.9",
-                fill: "#71a554",
-                stroke: "none",
-                font_size: "48",
-                font_weight: "700",
-                font_family: "Arial, sans-serif",
-                "SDF"
-            }
+            "data-card-icon": "format",
+            path { d: "M13 5h15l8 8v30H13V5Z" }
+            path { d: "M28 5v8h8" }
+            path { d: "M18 23h13l-3-3M31 23l-3 3M31 33H18l3-3M18 33l3 3" }
+        }
+    }
+}
+
+#[component]
+pub fn ConformerCardIcon(class: &'static str, label: &'static str) -> Element {
+    rsx! {
+        svg {
+            class,
+            view_box: "0 0 48 48",
+            fill: "none",
+            stroke: "currentColor",
+            stroke_width: "2.2",
+            stroke_linecap: "round",
+            stroke_linejoin: "round",
+            role: "img",
+            "aria-label": label,
+            "data-card-icon": "conformer",
+            path { d: "M12 34l11-10M23 24l13 8M23 24l5-13" }
+            path { d: "M15 12l8 12", stroke_dasharray: "2.5 3", opacity: "0.7" }
+            circle { cx: "10", cy: "36", r: "4" }
+            circle { cx: "23", cy: "24", r: "4.5" }
+            circle { cx: "38", cy: "33", r: "4" }
+            circle { cx: "29", cy: "9", r: "3.5" }
+            circle { cx: "13", cy: "9", r: "3" }
+        }
+    }
+}
+
+#[component]
+pub fn IdentifierCardIcon(class: &'static str, label: &'static str) -> Element {
+    rsx! {
+        svg {
+            class,
+            view_box: "0 0 48 48",
+            fill: "none",
+            stroke: "currentColor",
+            stroke_width: "2.2",
+            stroke_linecap: "round",
+            stroke_linejoin: "round",
+            role: "img",
+            "aria-label": label,
+            "data-card-icon": "identifier",
+            circle { cx: "16", cy: "20", r: "8" }
+            circle { cx: "16", cy: "20", r: "2.5" }
+            path { d: "M23 24l14 14M31 32l4-4M35 36l4-4" }
+            path { d: "M9 38h14M9 42h21", opacity: "0.65" }
+        }
+    }
+}
+
+#[component]
+pub fn PropertiesCardIcon(class: &'static str, label: &'static str) -> Element {
+    rsx! {
+        svg {
+            class,
+            view_box: "0 0 48 48",
+            fill: "none",
+            stroke: "currentColor",
+            stroke_width: "2.2",
+            stroke_linecap: "round",
+            stroke_linejoin: "round",
+            role: "img",
+            "aria-label": label,
+            "data-card-icon": "properties",
+            rect { x: "9", y: "6", width: "30", height: "36", rx: "3" }
+            path { d: "M15 12h18v7H15zM16 35v-5M24 35V25M32 35V22" }
+            circle { cx: "16", cy: "35", r: "1.5", fill: "currentColor", stroke: "none" }
+            circle { cx: "24", cy: "25", r: "1.5", fill: "currentColor", stroke: "none" }
+            circle { cx: "32", cy: "22", r: "1.5", fill: "currentColor", stroke: "none" }
+        }
+    }
+}
+
+#[component]
+pub fn CanonicalCardIcon(class: &'static str, label: &'static str) -> Element {
+    rsx! {
+        svg {
+            class,
+            view_box: "0 0 48 48",
+            fill: "none",
+            stroke: "currentColor",
+            stroke_width: "2.2",
+            stroke_linecap: "round",
+            stroke_linejoin: "round",
+            role: "img",
+            "aria-label": label,
+            "data-card-icon": "canonical",
+            path { d: "M8 14h8l5 6 6-12 6 6h7" }
+            circle { cx: "8", cy: "14", r: "2.5" }
+            circle { cx: "40", cy: "14", r: "2.5" }
+            path { d: "M18 25l6 5 6-5M24 29v7" }
+            path { d: "M10 39h28" }
+            circle { cx: "10", cy: "39", r: "2.5" }
+            circle { cx: "38", cy: "39", r: "2.5" }
+        }
+    }
+}
+
+#[component]
+pub fn FilterAlertCardIcon(class: &'static str, label: &'static str) -> Element {
+    rsx! {
+        svg {
+            class,
+            view_box: "0 0 48 48",
+            fill: "none",
+            stroke: "currentColor",
+            stroke_width: "2.2",
+            stroke_linecap: "round",
+            stroke_linejoin: "round",
+            role: "img",
+            "aria-label": label,
+            "data-card-icon": "filter-alert",
+            path { d: "M7 9h34L28 25v13l-8 4V25L7 9Z" }
+            circle { cx: "37", cy: "35", r: "7", fill: "currentColor", fill_opacity: "0.08" }
+            path { d: "M37 31v5M37 39h.01" }
         }
     }
 }

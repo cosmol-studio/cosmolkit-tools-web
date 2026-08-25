@@ -10,6 +10,7 @@
     --color-slate-50: oklch(98.4% 0.003 247.858);
     --color-white: #fff;
     --spacing: 0.25rem;
+    --container-4xl: 56rem;
     --container-5xl: 64rem;
     --container-6xl: 72rem;
     --text-xs: 0.75rem;
@@ -330,6 +331,9 @@
   .mt-8 {
     margin-top: calc(var(--spacing) * 8);
   }
+  .mt-9 {
+    margin-top: calc(var(--spacing) * 9);
+  }
   .mt-10 {
     margin-top: calc(var(--spacing) * 10);
   }
@@ -510,6 +514,9 @@
   .min-h-\[164px\] {
     min-height: 164px;
   }
+  .min-h-\[210px\] {
+    min-height: 210px;
+  }
   .min-h-\[220px\] {
     min-height: 220px;
   }
@@ -626,6 +633,9 @@
   }
   .w-full {
     width: 100%;
+  }
+  .max-w-4xl {
+    max-width: var(--container-4xl);
   }
   .max-w-5xl {
     max-width: var(--container-5xl);
@@ -946,6 +956,9 @@
   }
   .border-\[\#4b3f34\] {
     border-color: #4b3f34;
+  }
+  .border-\[\#4b96ff\] {
+    border-color: #4b96ff;
   }
   .border-\[\#4b96ff\]\/60 {
     border-color: color-mix(in oklab, #4b96ff 60%, transparent);
@@ -1430,6 +1443,9 @@
   .text-\[32px\] {
     font-size: 32px;
   }
+  .text-\[34px\] {
+    font-size: 34px;
+  }
   .leading-5 {
     --tw-leading: calc(var(--spacing) * 5);
     line-height: calc(var(--spacing) * 5);
@@ -1437,6 +1453,10 @@
   .leading-6 {
     --tw-leading: calc(var(--spacing) * 6);
     line-height: calc(var(--spacing) * 6);
+  }
+  .leading-7 {
+    --tw-leading: calc(var(--spacing) * 7);
+    line-height: calc(var(--spacing) * 7);
   }
   .leading-\[1\.2\] {
     --tw-leading: 1.2;
@@ -1588,6 +1608,9 @@
   .text-\[\#a7ead3\] {
     color: #a7ead3;
   }
+  .text-\[\#a9cfff\] {
+    color: #a9cfff;
+  }
   .text-\[\#a99b76\] {
     color: #a99b76;
   }
@@ -1733,6 +1756,9 @@
   .shadow-\[0_20px_55px_rgba\(0\,0\,0\,0\.24\)\] {
     --tw-shadow: 0 20px 55px var(--tw-shadow-color, rgba(0,0,0,0.24));
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  }
+  .filter {
+    filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,) var(--tw-drop-shadow,);
   }
   .backdrop-blur-md {
     --tw-backdrop-blur: blur(var(--blur-md));
@@ -2315,6 +2341,11 @@
       left: calc(var(--spacing) * 3.5);
     }
   }
+  .max-\[640px\]\:hidden {
+    @media (width < 640px) {
+      display: none;
+    }
+  }
   .max-\[640px\]\:w-auto {
     @media (width < 640px) {
       width: auto;
@@ -2343,6 +2374,11 @@
   .max-\[640px\]\:text-\[27px\] {
     @media (width < 640px) {
       font-size: 27px;
+    }
+  }
+  .max-\[640px\]\:text-\[28px\] {
+    @media (width < 640px) {
+      font-size: 28px;
     }
   }
   .max-\[600px\]\:w-full {
@@ -2573,6 +2609,59 @@
   inherits: false;
   initial-value: 0 0 #0000;
 }
+@property --tw-blur {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-brightness {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-contrast {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-grayscale {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-hue-rotate {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-invert {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-opacity {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-saturate {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-sepia {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-drop-shadow {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-drop-shadow-color {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-drop-shadow-alpha {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 100%;
+}
+@property --tw-drop-shadow-size {
+  syntax: "*";
+  inherits: false;
+}
 @property --tw-backdrop-blur {
   syntax: "*";
   inherits: false;
@@ -2657,6 +2746,19 @@
       --tw-ring-offset-width: 0px;
       --tw-ring-offset-color: #fff;
       --tw-ring-offset-shadow: 0 0 #0000;
+      --tw-blur: initial;
+      --tw-brightness: initial;
+      --tw-contrast: initial;
+      --tw-grayscale: initial;
+      --tw-hue-rotate: initial;
+      --tw-invert: initial;
+      --tw-opacity: initial;
+      --tw-saturate: initial;
+      --tw-sepia: initial;
+      --tw-drop-shadow: initial;
+      --tw-drop-shadow-color: initial;
+      --tw-drop-shadow-alpha: 100%;
+      --tw-drop-shadow-size: initial;
       --tw-backdrop-blur: initial;
       --tw-backdrop-brightness: initial;
       --tw-backdrop-contrast: initial;

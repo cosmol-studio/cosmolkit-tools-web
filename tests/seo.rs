@@ -12,6 +12,77 @@ const FINISHED_ROUTES: [(&str, &str); 9] = [
     ("/ecosystem", "src/page/ecosystem.rs"),
 ];
 
+const CORE_CONVERSION_ROUTES: [(&str, &str); 17] = [
+    (
+        "/smiles-converter",
+        "SMILES Converter Online — Powered by Rust | COSMolKit",
+    ),
+    (
+        "/sdf-to-smiles",
+        "SDF to SMILES Converter Online — Powered by Rust | COSMolKit",
+    ),
+    (
+        "/mol-to-smiles",
+        "MOL to SMILES Converter Online — Powered by Rust | COSMolKit",
+    ),
+    (
+        "/mol2-to-smiles",
+        "MOL2 to SMILES Converter Online — Powered by Rust | COSMolKit",
+    ),
+    (
+        "/pdb-to-smiles",
+        "PDB to SMILES Converter Online — Powered by Rust | COSMolKit",
+    ),
+    (
+        "/mmcif-to-smiles",
+        "mmCIF to SMILES Converter Online — Powered by Rust | COSMolKit",
+    ),
+    (
+        "/xyz-to-smiles",
+        "XYZ to SMILES Converter Online — Powered by Rust | COSMolKit",
+    ),
+    (
+        "/smiles-to-sdf",
+        "SMILES to SDF Converter Online — Powered by Rust | COSMolKit",
+    ),
+    (
+        "/smiles-to-mol",
+        "SMILES to MOL Converter Online — Powered by Rust | COSMolKit",
+    ),
+    (
+        "/smiles-to-pdb",
+        "SMILES to PDB Converter Online — Powered by Rust | COSMolKit",
+    ),
+    (
+        "/mol2-to-sdf",
+        "MOL2 to SDF Converter Online — Powered by Rust | COSMolKit",
+    ),
+    (
+        "/mol2-to-pdb",
+        "MOL2 to PDB Converter Online — Powered by Rust | COSMolKit",
+    ),
+    (
+        "/sdf-to-mol",
+        "SDF to MOL Converter Online — Powered by Rust | COSMolKit",
+    ),
+    (
+        "/sdf-to-pdb",
+        "SDF to PDB Converter Online — Powered by Rust | COSMolKit",
+    ),
+    (
+        "/pdb-to-sdf",
+        "PDB to SDF Converter Online — Powered by Rust | COSMolKit",
+    ),
+    (
+        "/mmcif-to-pdb",
+        "mmCIF to PDB Converter Online — Powered by Rust | COSMolKit",
+    ),
+    (
+        "/xyz-to-sdf",
+        "XYZ to SDF Converter Online — Powered by Rust | COSMolKit",
+    ),
+];
+
 fn production_url(route: &str) -> String {
     if route == "/" {
         "https://tools.cosmol.org/".to_string()
@@ -86,16 +157,103 @@ fn sitemap_contains_each_finished_route_once_and_excludes_pains() {
         );
     }
 
+    for (route, _) in CORE_CONVERSION_ROUTES {
+        let url = production_url(route);
+        assert!(expected_urls.insert(url.clone()));
+        assert_eq!(
+            sitemap.matches(&format!("<loc>{url}</loc>")).count(),
+            1,
+            "{url} must occur exactly once"
+        );
+    }
+
     assert!(!sitemap.contains("/check-pains"));
+    for placeholder in [
+        "/blog",
+        "/rust-cheminformatics",
+        "/rdkit-alternative-rust",
+        "/rust-cheminformatics-libraries",
+        "/validation",
+    ] {
+        assert!(
+            !sitemap.contains(placeholder),
+            "unfinished blog route must not be in the sitemap: {placeholder}"
+        );
+    }
     assert!(!sitemap.contains("https://tools.cosmol.org/tools/"));
+    let mut sitemap_urls = HashSet::new();
     for url in sitemap
         .split("<loc>")
         .skip(1)
         .filter_map(|entry| entry.split_once("</loc>"))
     {
         assert!(url.0.starts_with("https://tools.cosmol.org"));
-        assert!(expected_urls.contains(url.0));
+        assert!(
+            sitemap_urls.insert(url.0.to_string()),
+            "duplicate sitemap URL: {}",
+            url.0
+        );
     }
+    assert!(expected_urls.is_subset(&sitemap_urls));
+}
+
+#[test]
+fn conversion_routes_have_unique_titles_and_canonicals() {
+    let source = fs::read_to_string("src/page/conversion_routes.rs")
+        .expect("conversion route source should exist");
+    assert!(!source.contains("Free & Secure Online Tool"));
+    assert!(source.contains("https://tools.cosmol.org/{slug}"));
+    assert!(source.contains("Converter Online — Powered by Rust | COSMolKit"));
+    assert!(source.contains("fn has_dedicated_route"));
+    assert!(source.contains("unsupported molecular conversion route"));
+    assert!(source.contains("from_format_ids(\"pdb\", \"svg\").is_none()"));
+    assert!(source.contains("https://tools.cosmol.org/smiles-to-svg"));
+
+    for (route, title) in CORE_CONVERSION_ROUTES {
+        assert!(title.contains("Converter Online"));
+        assert!(title.contains("Powered by Rust"));
+        assert!(title.ends_with("| COSMolKit"));
+        assert!(!route.is_empty());
+    }
+}
+
+#[test]
+fn production_checks_reject_unsupported_conversion_pages() {
+    let workflow =
+        fs::read_to_string(".github/workflows/depoly.yml").expect("workflow should exist");
+    let check = fs::read_to_string("scripts/check_ssg_output.py").expect("SSG check should exist");
+
+    assert!(workflow.contains("rm -rf target/dx/cosmolkit-tools-web/release/web/public"));
+    assert!(check.contains("unsupported conversion page was prerendered"));
+    assert!(
+        !fs::read_to_string("sitemap.xml")
+            .unwrap()
+            .contains("pdb-to-svg")
+    );
+}
+
+#[test]
+fn blog_routes_are_crawlable_but_noindex_until_published() {
+    let routes = fs::read_to_string("src/route.rs").expect("route source should exist");
+    let navbar = fs::read_to_string("src/component/navbar.rs").expect("navbar should exist");
+    let blog = fs::read_to_string("src/page/blog.rs").expect("blog pages should exist");
+
+    for route in [
+        "/blog",
+        "/rust-cheminformatics",
+        "/rdkit-alternative-rust",
+        "/rust-cheminformatics-libraries",
+        "/validation",
+    ] {
+        assert!(routes.contains(&format!("#[route(\"{route}\")]")));
+        assert!(blog.contains(&format!("https://tools.cosmol.org{route}")));
+    }
+
+    assert!(navbar.contains("to: Route::Blog {}"));
+    assert!(navbar.contains("\"Blog\""));
+    assert_eq!(blog.matches("content: \"noindex, follow\"").count(), 2);
+    assert!(!blog.contains("use cosmolkit"));
+    assert!(!blog.contains("cosmol_viewer"));
 }
 
 #[test]
@@ -117,7 +275,7 @@ fn every_public_route_declares_complete_metadata() {
             "missing description in {source_path}"
         );
         assert!(
-            source.contains(&format!("canonical: \"{}\"", production_url(route))),
+            source.contains(&production_url(route)),
             "missing production canonical in {source_path}"
         );
     }
@@ -282,14 +440,40 @@ fn production_build_enables_route_level_wasm_splitting() {
 #[test]
 fn split_routes_use_embedded_card_icons() {
     let icons = fs::read_to_string("src/component/icon.rs").expect("icon source should exist");
-    for source_path in ["src/page/home.rs", "src/page/tools.rs"] {
-        let source = fs::read_to_string(source_path).expect("page source should be readable");
-        assert!(source.contains("MoleculeCardIcon"));
-        assert!(source.contains("SdfCardIcon"));
+    let home = fs::read_to_string("src/page/home.rs").expect("home source should be readable");
+    let tools = fs::read_to_string("src/page/tools.rs").expect("tools source should be readable");
+
+    for icon in [
+        "DepictionCardIcon",
+        "FormatCardIcon",
+        "ConformerCardIcon",
+        "IdentifierCardIcon",
+    ] {
+        assert!(home.contains(icon));
+        assert!(tools.contains(icon));
+    }
+    for icon in [
+        "PropertiesCardIcon",
+        "CanonicalCardIcon",
+        "FilterAlertCardIcon",
+    ] {
+        assert!(tools.contains(icon));
+    }
+    for source in [&home, &tools] {
         assert!(!source.contains("src: MOLECULE_SVG"));
         assert!(!source.contains("src: SDF_SVG"));
     }
 
-    assert!(icons.contains("\"data-card-icon\": \"molecule\""));
-    assert!(icons.contains("\"data-card-icon\": \"sdf\""));
+    for icon in [
+        "depiction",
+        "format",
+        "conformer",
+        "identifier",
+        "properties",
+        "canonical",
+        "filter-alert",
+    ] {
+        assert!(icons.contains(&format!("\"data-card-icon\": \"{icon}\"")));
+    }
+    assert!(icons.matches("stroke: \"currentColor\"").count() >= 7);
 }

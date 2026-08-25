@@ -1,6 +1,9 @@
 use dioxus::prelude::*;
 
-use crate::component::{MoleculeCardIcon, SdfCardIcon, Seo};
+use crate::component::{
+    CanonicalCardIcon, ConformerCardIcon, DepictionCardIcon, FilterAlertCardIcon, FormatCardIcon,
+    IdentifierCardIcon, PropertiesCardIcon, Seo,
+};
 
 #[component]
 pub fn ToolDirectory() -> Element {
@@ -31,8 +34,8 @@ pub fn ToolDirectory() -> Element {
                         class: "group flex min-h-[292px] flex-col rounded-lg border border-[#28415f] bg-[#0b1727] p-5 no-underline shadow-[0_16px_40px_rgba(0,0,0,0.16)] transition-colors hover:border-[#438ee9] hover:bg-[#0d1b2d]",
                         to: crate::route::Route::SmilesToSvg {},
                         div { class: "flex items-start justify-between gap-4",
-                            div { class: "grid h-16 w-16 shrink-0 place-items-center rounded-lg border border-[#1f93de90] bg-[#0f2033] p-2.5",
-                                MoleculeCardIcon { class: "h-full w-full", label: "Benzene structure" }
+                            div { class: "grid h-16 w-16 shrink-0 place-items-center rounded-lg border border-[#1f93de90] bg-[#0f2033] p-2.5 text-[#4b96ff]",
+                                DepictionCardIcon { class: "h-full w-full", label: "2D molecular depiction" }
                             }
                             span { class: "rounded-[5px] border border-[#285b4d] bg-[#0d2923] px-2 py-1 text-[10px] font-bold text-[#8ee0c4]", "AVAILABLE" }
                         }
@@ -53,8 +56,8 @@ pub fn ToolDirectory() -> Element {
                         class: "group flex min-h-[292px] flex-col rounded-lg border border-[#31503e] bg-[#0b1727] p-5 no-underline shadow-[0_16px_40px_rgba(0,0,0,0.16)] transition-colors hover:border-[#65a56f] hover:bg-[#0d1b2d]",
                         to: crate::route::Route::FormatConverter {},
                         div { class: "flex items-start justify-between gap-4",
-                            div { class: "grid h-16 w-16 shrink-0 place-items-center rounded-lg border border-[#71a55480] bg-[#14231d] p-2.5",
-                                SdfCardIcon { class: "h-full w-full", label: "Molecular file" }
+                            div { class: "grid h-16 w-16 shrink-0 place-items-center rounded-lg border border-[#71a55480] bg-[#14231d] p-2.5 text-[#86ad72]",
+                                FormatCardIcon { class: "h-full w-full", label: "Molecular format conversion" }
                             }
                             span { class: "rounded-[5px] border border-[#285b4d] bg-[#0d2923] px-2 py-1 text-[10px] font-bold text-[#8ee0c4]", "AVAILABLE" }
                         }
@@ -75,8 +78,8 @@ pub fn ToolDirectory() -> Element {
                         class: "group flex min-h-[292px] flex-col rounded-lg border border-[#4b4568] bg-[#0b1727] p-5 no-underline shadow-[0_16px_40px_rgba(0,0,0,0.16)] transition-colors hover:border-[#8d7bd0] hover:bg-[#0d1b2d]",
                         to: crate::route::Route::ConformerGenerator {},
                         div { class: "flex items-start justify-between gap-4",
-                            div { class: "grid h-16 w-16 shrink-0 place-items-center rounded-lg border border-[#8d7bd080] bg-[#1c1930] p-2.5",
-                                MoleculeCardIcon { class: "h-full w-full", label: "Molecular structure" }
+                            div { class: "grid h-16 w-16 shrink-0 place-items-center rounded-lg border border-[#8d7bd080] bg-[#1c1930] p-2.5 text-[#ab9de0]",
+                                ConformerCardIcon { class: "h-full w-full", label: "3D molecular conformer" }
                             }
                             span { class: "rounded-[5px] border border-[#285b4d] bg-[#0d2923] px-2 py-1 text-[10px] font-bold text-[#8ee0c4]", "AVAILABLE" }
                         }
@@ -97,8 +100,8 @@ pub fn ToolDirectory() -> Element {
                         class: "group flex min-h-[292px] flex-col rounded-lg border border-[#315266] bg-[#0b1727] p-5 no-underline shadow-[0_16px_40px_rgba(0,0,0,0.16)] transition-colors hover:border-[#55a6c8] hover:bg-[#0d1b2d]",
                         to: crate::route::Route::InchiTool {},
                         div { class: "flex items-start justify-between gap-4",
-                            div { class: "grid h-16 w-16 shrink-0 place-items-center rounded-lg border border-[#55a6c880] bg-[#102431] p-2.5",
-                                SdfCardIcon { class: "h-full w-full", label: "Molecular identifier" }
+                            div { class: "grid h-16 w-16 shrink-0 place-items-center rounded-lg border border-[#55a6c880] bg-[#102431] p-2.5 text-[#72bddb]",
+                                IdentifierCardIcon { class: "h-full w-full", label: "InChI molecular identifier" }
                             }
                             span { class: "rounded-[5px] border border-[#285b4d] bg-[#0d2923] px-2 py-1 text-[10px] font-bold text-[#8ee0c4]", "AVAILABLE" }
                         }
@@ -119,8 +122,8 @@ pub fn ToolDirectory() -> Element {
                         class: "group flex min-h-[292px] flex-col rounded-lg border border-[#514a32] bg-[#0b1727] p-5 no-underline shadow-[0_16px_40px_rgba(0,0,0,0.16)] transition-colors hover:border-[#c4a84e] hover:bg-[#0d1b2d]",
                         to: crate::route::Route::MolecularProperties {},
                         div { class: "flex items-start justify-between gap-4",
-                            div { class: "grid h-16 w-16 shrink-0 place-items-center rounded-lg border border-[#c4a84e80] bg-[#282416] p-2.5",
-                                MoleculeCardIcon { class: "h-full w-full", label: "Molecule property calculation" }
+                            div { class: "grid h-16 w-16 shrink-0 place-items-center rounded-lg border border-[#c4a84e80] bg-[#282416] p-2.5 text-[#d2b95e]",
+                                PropertiesCardIcon { class: "h-full w-full", label: "Molecular descriptor calculation" }
                             }
                             span { class: "rounded-[5px] border border-[#285b4d] bg-[#0d2923] px-2 py-1 text-[10px] font-bold text-[#8ee0c4]", "AVAILABLE" }
                         }
@@ -141,8 +144,8 @@ pub fn ToolDirectory() -> Element {
                         class: "group flex min-h-[292px] flex-col rounded-lg border border-[#3d4f55] bg-[#0b1727] p-5 no-underline shadow-[0_16px_40px_rgba(0,0,0,0.16)] transition-colors hover:border-[#6ba6b5] hover:bg-[#0d1b2d]",
                         to: crate::route::Route::SmilesCanonicalizer {},
                         div { class: "flex items-start justify-between gap-4",
-                            div { class: "grid h-16 w-16 shrink-0 place-items-center rounded-lg border border-[#6ba6b580] bg-[#14252a] p-2.5",
-                                SdfCardIcon { class: "h-full w-full", label: "Canonical SMILES output" }
+                            div { class: "grid h-16 w-16 shrink-0 place-items-center rounded-lg border border-[#6ba6b580] bg-[#14252a] p-2.5 text-[#7db9c8]",
+                                CanonicalCardIcon { class: "h-full w-full", label: "Canonical SMILES normalization" }
                             }
                             span { class: "rounded-[5px] border border-[#285b4d] bg-[#0d2923] px-2 py-1 text-[10px] font-bold text-[#8ee0c4]", "AVAILABLE" }
                         }
@@ -163,8 +166,8 @@ pub fn ToolDirectory() -> Element {
                         class: "group flex min-h-[292px] flex-col rounded-lg border border-[#4b3f34] bg-[#0a1524]/80 p-5 no-underline transition-colors hover:border-[#806b45] hover:bg-[#0d1b2d]",
                         to: crate::route::Route::CheckPains {},
                         div { class: "flex items-start justify-between gap-4",
-                            div { class: "grid h-16 w-16 shrink-0 place-items-center rounded-lg border border-[#9b6b8080] bg-[#241823] p-2.5",
-                                MoleculeCardIcon { class: "h-full w-full opacity-80", label: "Chemical structure" }
+                            div { class: "grid h-16 w-16 shrink-0 place-items-center rounded-lg border border-[#9b6b8080] bg-[#241823] p-2.5 text-[#c38da5]",
+                                FilterAlertCardIcon { class: "h-full w-full opacity-80", label: "Compound filter status" }
                             }
                             span { class: "rounded-[5px] border border-[#5d5132] bg-[#282315] px-2 py-1 text-[10px] font-bold text-[#d9bd72]", "CORE PENDING" }
                         }

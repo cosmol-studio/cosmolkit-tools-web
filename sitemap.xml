@@ -4,6 +4,45 @@
   <url><loc>https://tools.cosmol.org/tools</loc></url>
   <url><loc>https://tools.cosmol.org/smiles-to-svg</loc></url>
   <url><loc>https://tools.cosmol.org/format-converter</loc></url>
+  <url><loc>https://tools.cosmol.org/smiles-converter</loc></url>
+  <url><loc>https://tools.cosmol.org/sdf-to-smiles</loc></url>
+  <url><loc>https://tools.cosmol.org/mol-to-smiles</loc></url>
+  <url><loc>https://tools.cosmol.org/mol2-to-smiles</loc></url>
+  <url><loc>https://tools.cosmol.org/pdb-to-smiles</loc></url>
+  <url><loc>https://tools.cosmol.org/mmcif-to-smiles</loc></url>
+  <url><loc>https://tools.cosmol.org/xyz-to-smiles</loc></url>
+  <url><loc>https://tools.cosmol.org/smiles-to-sdf</loc></url>
+  <url><loc>https://tools.cosmol.org/smiles-to-sdf-v3000</loc></url>
+  <url><loc>https://tools.cosmol.org/smiles-to-mol</loc></url>
+  <url><loc>https://tools.cosmol.org/smiles-to-mol-v3000</loc></url>
+  <url><loc>https://tools.cosmol.org/smiles-to-pdb</loc></url>
+  <url><loc>https://tools.cosmol.org/mol-to-sdf</loc></url>
+  <url><loc>https://tools.cosmol.org/mol-to-sdf-v3000</loc></url>
+  <url><loc>https://tools.cosmol.org/mol-to-pdb</loc></url>
+  <url><loc>https://tools.cosmol.org/mol-to-svg</loc></url>
+  <url><loc>https://tools.cosmol.org/mol2-to-mol</loc></url>
+  <url><loc>https://tools.cosmol.org/mol2-to-mol-v3000</loc></url>
+  <url><loc>https://tools.cosmol.org/mol2-to-sdf</loc></url>
+  <url><loc>https://tools.cosmol.org/mol2-to-sdf-v3000</loc></url>
+  <url><loc>https://tools.cosmol.org/mol2-to-pdb</loc></url>
+  <url><loc>https://tools.cosmol.org/sdf-to-mol</loc></url>
+  <url><loc>https://tools.cosmol.org/sdf-to-mol-v3000</loc></url>
+  <url><loc>https://tools.cosmol.org/sdf-to-pdb</loc></url>
+  <url><loc>https://tools.cosmol.org/sdf-to-svg</loc></url>
+  <url><loc>https://tools.cosmol.org/pdb-to-mol</loc></url>
+  <url><loc>https://tools.cosmol.org/pdb-to-mol-v3000</loc></url>
+  <url><loc>https://tools.cosmol.org/pdb-to-sdf</loc></url>
+  <url><loc>https://tools.cosmol.org/pdb-to-sdf-v3000</loc></url>
+  <url><loc>https://tools.cosmol.org/mmcif-to-mol</loc></url>
+  <url><loc>https://tools.cosmol.org/mmcif-to-mol-v3000</loc></url>
+  <url><loc>https://tools.cosmol.org/mmcif-to-sdf</loc></url>
+  <url><loc>https://tools.cosmol.org/mmcif-to-sdf-v3000</loc></url>
+  <url><loc>https://tools.cosmol.org/mmcif-to-pdb</loc></url>
+  <url><loc>https://tools.cosmol.org/xyz-to-mol</loc></url>
+  <url><loc>https://tools.cosmol.org/xyz-to-mol-v3000</loc></url>
+  <url><loc>https://tools.cosmol.org/xyz-to-sdf</loc></url>
+  <url><loc>https://tools.cosmol.org/xyz-to-sdf-v3000</loc></url>
+  <url><loc>https://tools.cosmol.org/xyz-to-pdb</loc></url>
   <url><loc>https://tools.cosmol.org/conformer-generator</loc></url>
   <url><loc>https://tools.cosmol.org/inchi</loc></url>
   <url><loc>https://tools.cosmol.org/molecular-properties</loc></url>

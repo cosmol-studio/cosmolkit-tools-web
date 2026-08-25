@@ -1,7 +1,7 @@
 use dioxus::prelude::*;
 
 use crate::{
-    component::{MoleculeCardIcon, SdfCardIcon, Seo},
+    component::{ConformerCardIcon, DepictionCardIcon, FormatCardIcon, IdentifierCardIcon, Seo},
     route::Route,
 };
 pub const HOME_CANVAS_ID: &str = "home-canvas";
@@ -120,8 +120,8 @@ pub fn Home() -> Element {
                             div{
                                 class: "w-full h-100px flex space-between mb-2",
                                 div {
-                                    class: "h-[60px] w-[60px] m-[10px] mt-[20px] border-[1.5px] border-[#1f93de90] rounded-xl",
-                                    MoleculeCardIcon { class: "w-[80%] h-[80%] m-[10%]", label: "Benzene structure" }
+                                    class: "h-[60px] w-[60px] m-[10px] mt-[20px] border-[1.5px] border-[#1f93de90] rounded-xl text-[#4b96ff]",
+                                    DepictionCardIcon { class: "w-[80%] h-[80%] m-[10%]", label: "2D molecular depiction" }
                                 }
                                 div {
                                     class: "h-[100px] w-[180px] pl-[5px] justify-center flex flex-col",
@@ -146,8 +146,8 @@ pub fn Home() -> Element {
                             div{
                                 class: "w-full h-100px flex space-between mb-2",
                                 div {
-                                    class: "h-[60px] w-[60px] m-[10px] mt-[20px] border-[1.5px] border-[#71a554] rounded-xl",
-                                    SdfCardIcon { class: "w-[80%] h-[80%] m-[10%]", label: "Molecular file" }
+                                    class: "h-[60px] w-[60px] m-[10px] mt-[20px] border-[1.5px] border-[#71a554] rounded-xl text-[#86ad72]",
+                                    FormatCardIcon { class: "w-[80%] h-[80%] m-[10%]", label: "Molecular format conversion" }
                                 }
                                 div {
                                     class: "h-[100px] w-[180px] pl-[5px] justify-center flex flex-col",
@@ -172,8 +172,8 @@ pub fn Home() -> Element {
                             div{
                                 class: "w-full h-100px flex space-between mb-2",
                                 div {
-                                    class: "h-[60px] w-[60px] m-[10px] mt-[20px] border-[1.5px] border-[#1f93de90] rounded-xl",
-                                    MoleculeCardIcon { class: "w-[80%] h-[80%] m-[10%]", label: "Molecular structure" }
+                                    class: "h-[60px] w-[60px] m-[10px] mt-[20px] border-[1.5px] border-[#8d7bd080] rounded-xl text-[#ab9de0]",
+                                    ConformerCardIcon { class: "w-[80%] h-[80%] m-[10%]", label: "3D molecular conformer" }
                                 }
                                 div {
                                     class: "h-[100px] w-[180px] pl-[5px] justify-center flex flex-col",
@@ -198,8 +198,8 @@ pub fn Home() -> Element {
                             div {
                                 class: "w-full h-100px flex space-between mb-2",
                                 div {
-                                    class: "h-[60px] w-[60px] m-[10px] mt-[20px] border-[1.5px] border-[#55a6c8] rounded-xl",
-                                    SdfCardIcon { class: "w-[80%] h-[80%] m-[10%]", label: "Molecular identifier" }
+                                    class: "h-[60px] w-[60px] m-[10px] mt-[20px] border-[1.5px] border-[#55a6c8] rounded-xl text-[#72bddb]",
+                                    IdentifierCardIcon { class: "w-[80%] h-[80%] m-[10%]", label: "InChI molecular identifier" }
                                 }
                                 div {
                                     class: "h-[100px] w-[180px] pl-[5px] justify-center flex flex-col",
