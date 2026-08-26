@@ -9,6 +9,9 @@ on:
 env:
   CARGO_TERM_COLOR: always
   INDEXNOW_KEY: b2d03e0f-cc00-4050-8e29-3316108be26b
+  # Temporary until DioxusLabs/dioxus#5772 is merged and released.
+  DIOXUS_CLI_REV: 239f931305d9eb29e7263e6144750a2f7c5141de
+  DIOXUS_CLI_ROOT: /home/runner/.cache/dioxus-cli-5772
 
 jobs:
   build:
@@ -26,7 +29,7 @@ jobs:
       - name: Restore Rust and Dioxus build cache
         uses: Swatinem/rust-cache@v2
         with:
-          shared-key: production-wasm-split
+          shared-key: production-wasm-split-5772-239f9313
           add-job-id-key: false
           cache-targets: true
           cache-bin: true
@@ -35,18 +38,27 @@ jobs:
           cache-on-failure: true
           cache-directories: |
             ~/.local/share/.dx
+            ~/.cache/dioxus-cli-5772
 
-      - uses: cargo-bins/cargo-binstall@main
-      - name: Install Dioxus-CLI
+      - name: Install patched Dioxus CLI
         run: |
-          if ! command -v dx >/dev/null || ! dx --version | grep -q '0.7.10'; then
-            cargo binstall -y dioxus-cli@0.7.10
+          if [ ! -x "$DIOXUS_CLI_ROOT/bin/dx" ] || \
+             [ ! -f "$DIOXUS_CLI_ROOT/.revision" ] || \
+             [ "$(cat "$DIOXUS_CLI_ROOT/.revision" 2>/dev/null)" != "$DIOXUS_CLI_REV" ]; then
+            rm -rf "$DIOXUS_CLI_ROOT"
+            cargo install dioxus-cli \
+              --git https://github.com/tdymel/dioxus \
+              --rev "$DIOXUS_CLI_REV" \
+              --locked \
+              --root "$DIOXUS_CLI_ROOT"
+            printf '%s\n' "$DIOXUS_CLI_REV" > "$DIOXUS_CLI_ROOT/.revision"
           fi
+          "$DIOXUS_CLI_ROOT/bin/dx" --version
 
       - name: Dioxus Build
         run: |
           rm -rf target/dx/cosmolkit-tools-web/release/web/public deploy/web/public
-          dx build -r --web --fullstack true --ssg --features "ssg wasm-split" --wasm-split --force-sequential --debug-symbols false
+          "$DIOXUS_CLI_ROOT/bin/dx" build -r --web --fullstack true --ssg --features "ssg wasm-split" --wasm-split --force-sequential --debug-symbols false
           mkdir -p deploy/web/public
           cp -R target/dx/cosmolkit-tools-web/release/web/public/. deploy/web/public/
           cp robots.txt deploy/web/public/robots.txt
