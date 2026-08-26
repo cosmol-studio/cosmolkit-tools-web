@@ -53,7 +53,7 @@ pub fn Home() -> Element {
     rsx! {
         Seo {
             title: "COSMolKit — Browser-Native Cheminformatics Powered by Rust",
-            description: "Open-source browser-native cheminformatics tools powered by Rust, COSMolKit, and WebAssembly. Convert molecular formats, render SMILES, generate 3D conformers, calculate properties, and work with InChI locally.",
+            description: "Explore browser-native tools built on COSMolKit's Rust cheminformatics core. Convert formats, render SMILES, build conformers, and calculate properties.",
             canonical: "https://tools.cosmol.org/",
         }
         div {

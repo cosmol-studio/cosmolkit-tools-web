@@ -133,7 +133,7 @@ pub fn Navbar() -> Element {
             class: "border-t border-white/8 bg-[#081321] px-6 py-5 font-sans text-xs text-[#718299] max-[640px]:px-3.5",
             div {
                 class: "mx-auto flex w-full max-w-6xl flex-wrap items-center gap-x-5 gap-y-2",
-                span { class: "font-semibold text-[#9caabd]", "Powered by COSMolKit" }
+                span { class: "font-semibold text-[#9caabd]", "Rust cheminformatics powered by COSMolKit" }
                 a { class: "text-[#7ab5ff] no-underline hover:text-white", href: "https://github.com/cosmol-studio/COSMolKit", target: "_blank", rel: "noreferrer", "GitHub" }
                 a { class: "text-[#7ab5ff] no-underline hover:text-white", href: "https://kit.cosmol.org/", target: "_blank", rel: "noreferrer", "Python documentation" }
                 a { class: "text-[#7ab5ff] no-underline hover:text-white", href: "https://crates.io/crates/cosmolkit", target: "_blank", rel: "noreferrer", "crates.io" }

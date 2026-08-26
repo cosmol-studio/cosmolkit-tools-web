@@ -150,7 +150,7 @@ pub fn SmilesCanonicalizer() -> Element {
     rsx! {
         Seo {
             title: "SMILES Canonicalizer — Canonical & Isomeric SMILES | COSMolKit",
-            description: "Canonicalize SMILES locally in your browser. Generate canonical, isomeric and kekulized SMILES and inspect hydrogen count and formal charge with COSMolKit.",
+            description: "Canonicalize SMILES online with COSMolKit's Rust cheminformatics core. Compare canonical, isomeric, and kekulized SMILES, hydrogen count, and charge.",
             canonical: "https://tools.cosmol.org/smiles-canonicalizer",
         }
         div { class: "min-h-screen uu-backdrop m-0 pt-[74px]",

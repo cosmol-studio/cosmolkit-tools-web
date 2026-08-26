@@ -1,3 +1,4 @@
+use base64::{Engine as _, engine::general_purpose::STANDARD};
 use cosmolkit::Molecule;
 use dioxus::prelude::*;
 
@@ -46,20 +47,10 @@ fn render_smiles(smiles: &str, width: u32, height: u32) -> Result<RenderedMolecu
 }
 
 fn svg_data_url(svg: &str) -> String {
-    const HEX: &[u8; 16] = b"0123456789ABCDEF";
-
-    let mut encoded = String::with_capacity(svg.len() * 2);
-    encoded.push_str("data:image/svg+xml;charset=utf-8,");
-    for byte in svg.bytes() {
-        if byte.is_ascii_alphanumeric() || matches!(byte, b'-' | b'_' | b'.' | b'~') {
-            encoded.push(byte as char);
-        } else {
-            encoded.push('%');
-            encoded.push(HEX[(byte >> 4) as usize] as char);
-            encoded.push(HEX[(byte & 0x0f) as usize] as char);
-        }
-    }
-    encoded
+    format!(
+        "data:image/svg+xml;base64,{}",
+        STANDARD.encode(svg.as_bytes())
+    )
 }
 
 fn python_string_literal(value: &str) -> String {
@@ -98,9 +89,9 @@ fn update_render(
     smiles: String,
     width: u32,
     height: u32,
-    mut rendered: Signal<Result<RenderedMolecule, String>>,
+    mut rendered: Signal<Option<Result<RenderedMolecule, String>>>,
 ) {
-    rendered.set(render_smiles(&smiles, width, height));
+    rendered.set(Some(render_smiles(&smiles, width, height)));
 }
 
 #[cfg(target_arch = "wasm32")]
@@ -133,15 +124,19 @@ pub fn SmilesToSvg() -> Element {
     let mut smiles = use_signal(|| DEFAULT_SMILES.to_string());
     let mut width = use_signal(|| 720_u32);
     let mut height = use_signal(|| 480_u32);
-    let rendered = use_signal(|| render_smiles(DEFAULT_SMILES, 720, 480));
+    let mut rendered = use_signal(|| None::<Result<RenderedMolecule, String>>);
     let toast = use_context::<ToastManager>();
     let cosmolkit_version = cosmolkit::version();
     let python_code = python_example(&smiles(), width(), height());
 
+    use_effect(move || {
+        rendered.set(Some(render_smiles(DEFAULT_SMILES, 720, 480)));
+    });
+
     rsx! {
         Seo {
             title: "SMILES to SVG — Molecular Structure Renderer | COSMolKit",
-            description: "Free browser SMILES renderer and chemical structure drawing tool. Convert SMILES to a scalable SVG molecule image locally with COSMolKit and WebAssembly.",
+            description: "Use this online SMILES renderer to create scalable SVG chemical structure drawings with COSMolKit's Rust cheminformatics core, locally in your browser.",
             canonical: "https://tools.cosmol.org/smiles-to-svg",
         }
         div {
@@ -265,11 +260,11 @@ pub fn SmilesToSvg() -> Element {
                             div { class: "flex min-h-16 items-center justify-between gap-5 border-b border-[#213147] px-[18px] py-3 max-[800px]:flex-col max-[800px]:items-start",
                                 div {
                                     h2 { class: "mt-0 mb-[3px] text-sm leading-[1.2] font-bold text-[#eef4fb]", "Preview" }
-                                    if let Ok(result) = &*rendered.read() {
+                                    if let Some(Ok(result)) = &*rendered.read() {
                                         span { class: "text-[11px] text-[#718299]", "{result.atom_count} atoms  /  {result.bond_count} bonds" }
                                     }
                                 }
-                                if let Ok(result) = &*rendered.read() {
+                                if let Some(Ok(result)) = &*rendered.read() {
                                     div { class: "flex gap-2 max-[480px]:w-full",
                                         button {
                                             r#type: "button",
@@ -299,7 +294,7 @@ pub fn SmilesToSvg() -> Element {
 
                             div { id: "svg-preview-stage", class: "grid min-h-[560px] place-items-center bg-[#e9eef4] p-6 max-[800px]:min-h-[420px] max-[800px]:p-3",
                                 match &*rendered.read() {
-                                    Ok(result) => rsx! {
+                                    Some(Ok(result)) => rsx! {
                                         div {
                                             id: "svg-output",
                                             class: "grid h-full min-h-[480px] w-full place-items-center overflow-hidden border border-[#d5dde7] bg-white max-[800px]:min-h-[380px]",
@@ -310,11 +305,17 @@ pub fn SmilesToSvg() -> Element {
                                             }
                                         }
                                     },
-                                    Err(error) => rsx! {
+                                    Some(Err(error)) => rsx! {
                                         div { class: "max-w-[480px] text-center",
                                             div { class: "mx-auto mt-0 mb-3.5 grid h-[42px] w-[42px] place-items-center rounded-full border border-[#e6a9a9] bg-[#fff5f5] text-lg font-extrabold text-[#c83e3e]", "!" }
                                             h3 { class: "mt-0 mb-[7px] text-base font-bold text-[#172234]", "Unable to render" }
                                             p { class: "m-0 text-[13px] leading-[1.55] text-[#68778a]", "{error}" }
+                                        }
+                                    },
+                                    None => rsx! {
+                                        div { class: "max-w-[480px] text-center",
+                                            div { class: "mx-auto mb-3 h-8 w-8 animate-spin rounded-full border-2 border-[#b8c7d8] border-t-[#267de8]" }
+                                            p { class: "m-0 text-[13px] text-[#68778a]", "Preparing molecular preview" }
                                         }
                                     },
                                 }
@@ -405,7 +406,11 @@ mod tests {
         assert!(output.svg.contains("<svg"));
         assert_eq!(output.atom_count, 6);
         assert_eq!(output.bond_count, 6);
-        assert!(output.download_url.starts_with("data:image/svg+xml"));
+        let encoded = output
+            .download_url
+            .strip_prefix("data:image/svg+xml;base64,")
+            .expect("SVG should use a base64 data URL");
+        assert_eq!(STANDARD.decode(encoded).unwrap(), output.svg.as_bytes());
     }
 
     #[test]

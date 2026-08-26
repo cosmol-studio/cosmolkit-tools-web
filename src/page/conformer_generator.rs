@@ -319,7 +319,7 @@ pub fn ConformerGenerator() -> Element {
     rsx! {
         Seo {
             title: "SMILES to 3D Conformer — Browser ETKDG Generator | COSMolKit",
-            description: "Convert SMILES to a 3D molecular conformer with ETKDG v2, ETKDG v3, or KDG. Preview the 3D molecule and export SDF or PDB coordinates locally.",
+            description: "Generate 3D molecular conformers from SMILES online with ETKDG and COSMolKit's Rust cheminformatics core. Preview and export SDF or PDB locally.",
             canonical: "https://tools.cosmol.org/conformer-generator",
         }
         div { class: "min-h-screen uu-backdrop m-0 pt-[74px]",

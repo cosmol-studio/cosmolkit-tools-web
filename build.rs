@@ -1,15 +1,52 @@
-use std::{env, fs, path::PathBuf};
+use std::{
+    env, fs,
+    path::{Path, PathBuf},
+};
 
 use cosmol_viewer_core::{scene::Scene, shapes::Molecule};
+use pulldown_cmark::{Options, Parser, html};
 
 fn main() {
     println!("cargo:rerun-if-changed=build.rs");
+    println!("cargo:rerun-if-changed=content/rust-cheminformatics.md");
+    println!("cargo:rerun-if-changed=content/rust-cheminformatics-state-management.md");
+    println!("cargo:rerun-if-changed=content/rust-cheminformatics-source-porting.md");
+    println!("cargo:rerun-if-changed=content/rust-cheminformatics-validation.md");
+
+    let out_dir = PathBuf::from(env::var("OUT_DIR").expect("OUT_DIR should be set"));
+    build_markdown_article(
+        "content/rust-cheminformatics.md",
+        "rust_cheminformatics.html",
+        &out_dir,
+    );
+    build_markdown_article(
+        "content/rust-cheminformatics-state-management.md",
+        "rust_cheminformatics_state_management.html",
+        &out_dir,
+    );
+    build_markdown_article(
+        "content/rust-cheminformatics-source-porting.md",
+        "rust_cheminformatics_source_porting.html",
+        &out_dir,
+    );
+    build_markdown_article(
+        "content/rust-cheminformatics-validation.md",
+        "rust_cheminformatics_validation.html",
+        &out_dir,
+    );
 
     let scene = build_home_scene();
     let bytes = postcard::to_allocvec(&scene).expect("serialize home scene");
 
-    let out_dir = PathBuf::from(env::var("OUT_DIR").expect("OUT_DIR should be set"));
     fs::write(out_dir.join("home_scene.postcard"), bytes).expect("write precomputed home scene");
+}
+
+fn build_markdown_article(source: &str, output: &str, out_dir: &Path) {
+    let markdown = fs::read_to_string(source).expect("read Markdown article");
+    let parser = Parser::new_ext(&markdown, Options::all());
+    let mut rendered = String::with_capacity(markdown.len());
+    html::push_html(&mut rendered, parser);
+    fs::write(out_dir.join(output), rendered).expect("write rendered Markdown article");
 }
 
 fn build_home_scene() -> Scene {

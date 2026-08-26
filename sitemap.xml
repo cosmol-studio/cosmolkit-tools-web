@@ -48,4 +48,9 @@
   <url><loc>https://tools.cosmol.org/molecular-properties</loc></url>
   <url><loc>https://tools.cosmol.org/smiles-canonicalizer</loc></url>
   <url><loc>https://tools.cosmol.org/ecosystem</loc></url>
+  <url><loc>https://tools.cosmol.org/blog</loc></url>
+  <url><loc>https://tools.cosmol.org/rust-cheminformatics</loc></url>
+  <url><loc>https://tools.cosmol.org/rdkit-alternative-rust</loc></url>
+  <url><loc>https://tools.cosmol.org/rust-cheminformatics-libraries</loc></url>
+  <url><loc>https://tools.cosmol.org/validation</loc></url>
 </urlset>

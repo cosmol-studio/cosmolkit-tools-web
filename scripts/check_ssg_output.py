@@ -54,14 +54,13 @@ PAGES = {
     "/molecular-properties": "Molecular Properties Calculator — MW, TPSA, logP | COSMolKit",
     "/smiles-canonicalizer": "SMILES Canonicalizer — Canonical & Isomeric SMILES | COSMolKit",
     "/ecosystem": "COSMol Ecosystem — Rust-Powered Cheminformatics & Browser-Native Tools",
-}
-PLACEHOLDER_PAGES = {
     "/blog": "COSMolKit Blog — Rust Cheminformatics Notes",
-    "/rust-cheminformatics": "Rust Cheminformatics — COSMolKit Blog",
-    "/rdkit-alternative-rust": "RDKit Alternative in Rust — COSMolKit Blog",
-    "/rust-cheminformatics-libraries": "Rust Cheminformatics Libraries — COSMolKit Blog",
-    "/validation": "Cheminformatics Software Validation — COSMolKit Blog",
+    "/rust-cheminformatics": "Rust Cheminformatics Beyond RDKit Bindings | COSMolKit",
+    "/rdkit-alternative-rust": "Rust Cheminformatics State Management and Molecular Mutation | COSMolKit",
+    "/rust-cheminformatics-libraries": "Rust Cheminformatics: Porting RDKit Source Semantics to Rust | COSMolKit",
+    "/validation": "Rust Cheminformatics Validation on ChEMBL 37 | COSMolKit",
 }
+PLACEHOLDER_PAGES = {}
 CONVERSION_PRESETS = {
     "/smiles-converter": ("smiles", "sdf-v2000"),
     "/sdf-to-smiles": ("sdf", "smiles"),
@@ -128,12 +127,19 @@ class SeoParser(HTMLParser):
         self.in_title = False
         self.in_h1 = False
         self.in_body = False
+        self.title_count = 0
         self.title = ""
         self.h1 = ""
         self.body_text = ""
         self.description = None
+        self.descriptions = []
         self.canonical = None
+        self.canonicals = []
+        self.keywords = []
         self.robots = None
+        self.robots_values = []
+        self.open_graph = {}
+        self.empty_resource_links = []
         self.image_sources = []
         self.card_icons = []
         self.current_select = None
@@ -143,16 +149,30 @@ class SeoParser(HTMLParser):
         attributes = dict(attrs)
         if tag == "title":
             self.in_title = True
+            self.title_count += 1
         elif tag == "body":
             self.in_body = True
         elif tag == "h1":
             self.in_h1 = True
         elif tag == "meta" and attributes.get("name") == "description":
             self.description = attributes.get("content")
+            self.descriptions.append(self.description)
+        elif tag == "meta" and attributes.get("name") == "keywords":
+            self.keywords.append(attributes.get("content"))
         elif tag == "meta" and attributes.get("name") == "robots":
             self.robots = attributes.get("content")
-        elif tag == "link" and attributes.get("rel") == "canonical":
-            self.canonical = attributes.get("href")
+            self.robots_values.append(self.robots)
+        elif tag == "meta" and attributes.get("property"):
+            prop = attributes["property"]
+            self.open_graph.setdefault(prop, []).append(attributes.get("content"))
+        elif tag == "link":
+            rel = attributes.get("rel")
+            href = attributes.get("href")
+            if rel == "canonical":
+                self.canonical = href
+                self.canonicals.append(href)
+            if rel in {"icon", "stylesheet", "preload"} and not href:
+                self.empty_resource_links.append(rel)
         elif tag == "img":
             self.image_sources.append(attributes.get("src", ""))
         elif tag == "svg" and attributes.get("data-card-icon"):
@@ -185,6 +205,62 @@ def canonical_for(route):
     return f"{SITE_ORIGIN}/" if route == "/" else f"{SITE_ORIGIN}{route}"
 
 
+GLOBAL_SEARCH_TERMS = ("rust", "cheminformatics", "cosmolkit")
+MIN_META_DESCRIPTION_LENGTH = 120
+MAX_META_DESCRIPTION_LENGTH = 160
+OPEN_GRAPH_PROPERTIES = ("og:title", "og:description", "og:url", "og:type")
+
+
+def validate_shared_metadata(route, parser, failures):
+    if parser.title_count != 1:
+        failures.append(f"{route}: expected one title, found {parser.title_count}")
+
+    if len(parser.descriptions) != 1:
+        failures.append(
+            f"{route}: expected one meta description, found {len(parser.descriptions)}"
+        )
+    elif not (
+        MIN_META_DESCRIPTION_LENGTH
+        <= len(parser.description.strip())
+        <= MAX_META_DESCRIPTION_LENGTH
+    ):
+        failures.append(
+            f"{route}: meta description length {len(parser.description.strip())} is outside "
+            f"{MIN_META_DESCRIPTION_LENGTH}-{MAX_META_DESCRIPTION_LENGTH} characters"
+        )
+
+    if len(parser.canonicals) != 1:
+        failures.append(
+            f"{route}: expected one canonical link, found {len(parser.canonicals)}"
+        )
+    elif parser.canonical != canonical_for(route):
+        failures.append(f"{route}: incorrect canonical {parser.canonical!r}")
+
+    if len(parser.keywords) != 1:
+        failures.append(f"{route}: expected one keywords tag, found {len(parser.keywords)}")
+
+    for prop in OPEN_GRAPH_PROPERTIES:
+        count = len(parser.open_graph.get(prop, []))
+        if count != 1:
+            failures.append(f"{route}: expected one {prop} tag, found {count}")
+
+    if parser.empty_resource_links:
+        failures.append(
+            f"{route}: empty resource links for {', '.join(parser.empty_resource_links)}"
+        )
+
+    normalized_description = (parser.description or "").lower()
+    normalized_body = parser.body_text.lower()
+    normalized_keywords = " ".join(parser.keywords).lower()
+    for term in GLOBAL_SEARCH_TERMS:
+        if term not in normalized_description:
+            failures.append(f"{route}: description is missing global term {term!r}")
+        if term not in normalized_body:
+            failures.append(f"{route}: prerendered body is missing global term {term!r}")
+        if term not in normalized_keywords:
+            failures.append(f"{route}: keywords are missing global term {term!r}")
+
+
 def main():
     public_dir = Path(sys.argv[1] if len(sys.argv) > 1 else "deploy/web/public")
     failures = []
@@ -199,11 +275,11 @@ def main():
 
         parser = SeoParser()
         parser.feed(html_path.read_text(encoding="utf-8"))
-        expected_canonical = canonical_for(route)
+        validate_shared_metadata(route, parser, failures)
+        if parser.robots and "noindex" in parser.robots.lower():
+            failures.append(f"{route}: published page must not be noindex")
         if parser.title.strip() != expected_title:
             failures.append(f"{route}: incorrect title {parser.title.strip()!r}")
-        if not parser.description or len(parser.description.strip()) < 40:
-            failures.append(f"{route}: missing useful meta description")
         for phrase in SEARCH_PHRASES.get(route, ()):
             if phrase not in parser.title.lower():
                 failures.append(f"{route}: title is missing {phrase!r}")
@@ -211,8 +287,51 @@ def main():
                 failures.append(f"{route}: description is missing {phrase!r}")
             if phrase not in parser.body_text.lower():
                 failures.append(f"{route}: prerendered body is missing {phrase!r}")
-        if parser.canonical != expected_canonical:
-            failures.append(f"{route}: incorrect canonical {parser.canonical!r}")
+        if route == "/rust-cheminformatics":
+            for phrase in (
+                "value semantics",
+                "copy-on-write",
+                "opparts",
+                "repository references",
+            ):
+                if phrase not in parser.body_text.lower():
+                    failures.append(
+                        f"{route}: prerendered article is missing {phrase!r}"
+                    )
+        if route == "/rdkit-alternative-rust":
+            for phrase in (
+                "operation contracts",
+                "opparts",
+                "removehs(sanitize=false)",
+                "repository references",
+            ):
+                if phrase not in parser.body_text.lower():
+                    failures.append(
+                        f"{route}: prerendered article is missing {phrase!r}"
+                    )
+        if route == "/rust-cheminformatics-libraries":
+            for phrase in (
+                "corpus acts as auditor",
+                "source-reproduction protocol",
+                "first divergent state boundary",
+                "repository references",
+            ):
+                if phrase not in parser.body_text.lower():
+                    failures.append(
+                        f"{route}: prerendered article is missing {phrase!r}"
+                    )
+        if route == "/validation":
+            for phrase in (
+                "three corpus layers",
+                "the most useful result was a failure",
+                "2026-08-20",
+                "binary roundtrips",
+                "validation is useful precisely because it is allowed to fail the project",
+            ):
+                if phrase not in parser.body_text.lower():
+                    failures.append(
+                        f"{route}: prerendered article is missing {phrase!r}"
+                    )
         if not parser.h1.strip():
             failures.append(f"{route}: missing prerendered H1")
         if route in CONVERSION_PRESETS:
@@ -223,6 +342,12 @@ def main():
                 failures.append(f"{route}: incorrect selected output format")
         if route in ("/", "/tools") and "" in parser.image_sources:
             failures.append(f"{route}: contains an empty image source")
+        if route == "/smiles-to-svg" and any(
+            source.startswith("data:image/svg+xml") for source in parser.image_sources
+        ):
+            failures.append(
+                "/smiles-to-svg: prerendered SVG data URL is unsafe for hydration"
+            )
         if route in CARD_ICONS:
             for icon in CARD_ICONS[route]:
                 if icon not in parser.card_icons:
@@ -236,10 +361,13 @@ def main():
 
         parser = SeoParser()
         parser.feed(html_path.read_text(encoding="utf-8"))
+        validate_shared_metadata(route, parser, failures)
         if parser.title.strip() != expected_title:
             failures.append(f"{route}: incorrect title {parser.title.strip()!r}")
-        if parser.canonical != canonical_for(route):
-            failures.append(f"{route}: incorrect canonical {parser.canonical!r}")
+        if len(parser.robots_values) != 1:
+            failures.append(
+                f"{route}: expected one robots tag, found {len(parser.robots_values)}"
+            )
         if parser.robots != "noindex, follow":
             failures.append(f"{route}: placeholder must be noindex, follow")
         if not parser.h1.strip():

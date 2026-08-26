@@ -65,7 +65,7 @@ pub fn CheckPains() -> Element {
     rsx! {
         Seo {
             title: "Check PAINS — Implementation Status | COSMolKit",
-            description: "Preview molecular structures for a future COSMolKit PAINS screening workflow. PAINS matching remains unavailable until validated core support is implemented.",
+            description: "Preview molecular structures for the planned COSMolKit PAINS workflow. Rust cheminformatics screening stays disabled until validated core support is available.",
             canonical: "https://tools.cosmol.org/check-pains",
         }
         div { class: "min-h-screen uu-backdrop m-0 pt-[74px]",

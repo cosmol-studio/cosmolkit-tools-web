@@ -44,7 +44,7 @@ pub fn Ecosystem() -> Element {
     rsx! {
         Seo {
             title: "COSMol Ecosystem — Rust-Powered Cheminformatics & Browser-Native Tools",
-            description: "Explore the open-source COSMol Rust cheminformatics ecosystem: COSMolKit provides the chemistry core, COSMol-viewer handles visualization, and COSMolKit Tools provides browser-native workflows.",
+            description: "Explore the COSMol open-source ecosystem: COSMolKit's Rust cheminformatics core, COSMol-viewer visualization, and browser-native molecular tools.",
             canonical: "https://tools.cosmol.org/ecosystem",
         }
         div { class: "min-h-screen uu-backdrop m-0 pt-[74px]",

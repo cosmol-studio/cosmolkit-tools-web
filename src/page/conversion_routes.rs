@@ -197,7 +197,7 @@ impl ConversionSlug {
         match self {
             Self::SmilesConverter => FormatConverterPreset::new(
                 "SMILES Converter Online — Powered by Rust | COSMolKit",
-                "Convert SMILES to SDF, MOL, PDB, or SVG online with COSMolKit. Browser-native molecular conversion powered by Rust and WebAssembly with no structure upload.",
+                "Convert SMILES to SDF, MOL, PDB, or SVG online with COSMolKit's Rust cheminformatics engine. Browser-local WebAssembly processing requires no upload.",
                 "https://tools.cosmol.org/smiles-converter",
                 "SMILES converter online",
                 "Convert SMILES to SDF, MOL, PDB, or SVG locally in your browser with COSMolKit, Rust, and WebAssembly.",
@@ -209,7 +209,7 @@ impl ConversionSlug {
                 output: ConversionOutput::Svg,
             } => FormatConverterPreset::new(
                 "SMILES to SVG — Molecular Structure Renderer | COSMolKit",
-                "Free browser SMILES renderer and chemical structure drawing tool. Convert SMILES to a scalable SVG molecule image locally with COSMolKit and WebAssembly.",
+                "Use this online SMILES renderer to create scalable SVG chemical structure drawings with COSMolKit's Rust cheminformatics core, locally in your browser.",
                 "https://tools.cosmol.org/smiles-to-svg",
                 "SMILES to SVG",
                 "Generate a scalable 2D molecular structure from SMILES locally in your browser.",
@@ -225,7 +225,7 @@ impl ConversionSlug {
                         "{input_label} to {output_label} Converter Online — Powered by Rust | COSMolKit"
                     ),
                     &format!(
-                        "Convert {input_label} to {output_label} online with COSMolKit. The browser-native Rust and WebAssembly workflow processes molecular data locally without an upload."
+                        "Convert {input_label} to {output_label} online with COSMolKit's Rust cheminformatics engine. Browser-native WebAssembly keeps molecular data on your device."
                     ),
                     &format!("https://tools.cosmol.org/{slug}"),
                     &format!("{input_label} to {output_label} converter"),

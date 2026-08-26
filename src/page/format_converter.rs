@@ -47,7 +47,7 @@ impl FormatConverterPreset {
     pub(crate) fn general() -> Self {
         Self::new(
             "Molecular Format Converter — SDF, SMILES, MOL2, PDB | COSMolKit",
-            "Convert SDF to SMILES, SMILES to SDF, MOL2 to PDB, PDB to SMILES, mmCIF and XYZ files, or molecular structures to SVG locally with COSMolKit.",
+            "Convert SMILES, SDF, MOL, MOL2, PDB, mmCIF, XYZ, and SVG online with COSMolKit's Rust cheminformatics core. Files stay in your browser.",
             "https://tools.cosmol.org/format-converter",
             "Molecular format converter",
             "Convert between SMILES, SDF, MOL, MOL2, PDB, mmCIF, XYZ, and SVG locally while preserving the chemical graph and available coordinates.",

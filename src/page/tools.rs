@@ -10,7 +10,7 @@ pub fn ToolDirectory() -> Element {
     rsx! {
         Seo {
             title: "Browser-Based Cheminformatics Tools Powered by Rust — COSMolKit",
-            description: "Free browser-based cheminformatics tools powered by Rust and COSMolKit for molecular properties, SMILES canonicalization, format conversion, SVG depiction, ETKDG conformers, and InChI workflows.",
+            description: "Use browser-based molecular tools powered by COSMolKit's Rust cheminformatics core for format conversion, SVG depiction, conformers, InChI, and descriptors.",
             canonical: "https://tools.cosmol.org/tools",
         }
         div { class: "min-h-screen uu-backdrop m-0 pt-[74px]",

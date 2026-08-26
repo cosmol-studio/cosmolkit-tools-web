@@ -157,6 +157,22 @@ fn sitemap_contains_each_finished_route_once_and_excludes_pains() {
         );
     }
 
+    for route in [
+        "/blog",
+        "/rust-cheminformatics",
+        "/rdkit-alternative-rust",
+        "/rust-cheminformatics-libraries",
+        "/validation",
+    ] {
+        let url = production_url(route);
+        assert!(expected_urls.insert(url.clone()));
+        assert_eq!(
+            sitemap.matches(&format!("<loc>{url}</loc>")).count(),
+            1,
+            "{url} must occur exactly once"
+        );
+    }
+
     for (route, _) in CORE_CONVERSION_ROUTES {
         let url = production_url(route);
         assert!(expected_urls.insert(url.clone()));
@@ -168,18 +184,6 @@ fn sitemap_contains_each_finished_route_once_and_excludes_pains() {
     }
 
     assert!(!sitemap.contains("/check-pains"));
-    for placeholder in [
-        "/blog",
-        "/rust-cheminformatics",
-        "/rdkit-alternative-rust",
-        "/rust-cheminformatics-libraries",
-        "/validation",
-    ] {
-        assert!(
-            !sitemap.contains(placeholder),
-            "unfinished blog route must not be in the sitemap: {placeholder}"
-        );
-    }
     assert!(!sitemap.contains("https://tools.cosmol.org/tools/"));
     let mut sitemap_urls = HashSet::new();
     for url in sitemap
@@ -233,10 +237,22 @@ fn production_checks_reject_unsupported_conversion_pages() {
 }
 
 #[test]
-fn blog_routes_are_crawlable_but_noindex_until_published() {
+fn smiles_svg_preview_is_created_after_hydration() {
+    let page =
+        fs::read_to_string("src/page/smiles_to_svg.rs").expect("SMILES to SVG source should exist");
+    let check = fs::read_to_string("scripts/check_ssg_output.py").expect("SSG check should exist");
+
+    assert!(page.contains("None::<Result<RenderedMolecule, String>>"));
+    assert!(page.contains("use_effect(move ||"));
+    assert!(check.contains("prerendered SVG data URL is unsafe for hydration"));
+}
+
+#[test]
+fn blog_routes_distinguish_published_and_placeholder_content() {
     let routes = fs::read_to_string("src/route.rs").expect("route source should exist");
     let navbar = fs::read_to_string("src/component/navbar.rs").expect("navbar should exist");
     let blog = fs::read_to_string("src/page/blog.rs").expect("blog pages should exist");
+    let build = fs::read_to_string("build.rs").expect("build script should exist");
 
     for route in [
         "/blog",
@@ -251,9 +267,53 @@ fn blog_routes_are_crawlable_but_noindex_until_published() {
 
     assert!(navbar.contains("to: Route::Blog {}"));
     assert!(navbar.contains("\"Blog\""));
-    assert_eq!(blog.matches("content: \"noindex, follow\"").count(), 2);
+    assert_eq!(blog.matches("content: \"noindex, follow\"").count(), 0);
+    assert!(blog.contains("PublishedBlogArticle { html: RUST_CHEMINFORMATICS_ARTICLE }"));
+    assert!(
+        blog.contains(
+            "PublishedBlogArticle { html: RUST_CHEMINFORMATICS_STATE_MANAGEMENT_ARTICLE }"
+        )
+    );
+    assert!(
+        blog.contains("PublishedBlogArticle { html: RUST_CHEMINFORMATICS_SOURCE_PORTING_ARTICLE }")
+    );
+    assert!(
+        blog.contains("PublishedBlogArticle { html: RUST_CHEMINFORMATICS_VALIDATION_ARTICLE }")
+    );
+    assert!(blog.contains("dangerous_inner_html: html"));
+    assert!(build.contains("content/rust-cheminformatics.md"));
+    assert!(build.contains("rust_cheminformatics.html"));
+    assert!(build.contains("content/rust-cheminformatics-state-management.md"));
+    assert!(build.contains("rust_cheminformatics_state_management.html"));
+    assert!(build.contains("content/rust-cheminformatics-source-porting.md"));
+    assert!(build.contains("rust_cheminformatics_source_porting.html"));
+    assert!(build.contains("content/rust-cheminformatics-validation.md"));
+    assert!(build.contains("rust_cheminformatics_validation.html"));
     assert!(!blog.contains("use cosmolkit"));
     assert!(!blog.contains("cosmol_viewer"));
+}
+
+#[test]
+fn blog_index_matches_the_planned_non_batch_series() {
+    let blog = fs::read_to_string("src/page/blog.rs").expect("blog source should exist");
+
+    assert_eq!(blog.matches("published: true").count(), 4);
+    assert_eq!(blog.matches("published: false").count(), 0);
+
+    for title in [
+        "Rust Cheminformatics Beyond RDKit Bindings",
+        "Rust Cheminformatics State Management",
+        "Rust Cheminformatics Porting",
+        "Rust Cheminformatics Validation",
+    ] {
+        assert!(
+            blog.contains(title),
+            "blog is missing planned title {title}"
+        );
+    }
+
+    assert!(!blog.contains("Rust Cheminformatics at Scale"));
+    assert!(!blog.contains("Batch Molecular Processing"));
 }
 
 #[test]
@@ -287,6 +347,7 @@ fn seo_component_emits_standard_and_open_graph_tags() {
     for marker in [
         "document::Title",
         "name: \"description\"",
+        "name: \"keywords\"",
         "rel: \"canonical\"",
         "property: \"og:title\"",
         "property: \"og:description\"",
@@ -295,6 +356,19 @@ fn seo_component_emits_standard_and_open_graph_tags() {
     ] {
         assert!(source.contains(marker), "SEO component is missing {marker}");
     }
+
+    for keyword in ["Rust", "cheminformatics", "COSMolKit"] {
+        assert!(
+            source.contains(keyword),
+            "SEO component is missing global keyword {keyword}"
+        );
+    }
+}
+
+#[test]
+fn shared_footer_reinforces_rust_cheminformatics_context() {
+    let source = fs::read_to_string("src/component/navbar.rs").expect("navbar should exist");
+    assert!(source.contains("Rust cheminformatics powered by COSMolKit"));
 }
 
 #[test]

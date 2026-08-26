@@ -160,7 +160,7 @@ pub fn MolecularProperties() -> Element {
     rsx! {
         Seo {
             title: "Molecular Properties Calculator — MW, TPSA, logP | COSMolKit",
-            description: "Calculate molecular formula, molecular weight, exact mass, heavy atoms, HBD, HBA, TPSA, rotatable bonds, logP and formal charge from SMILES locally.",
+            description: "Calculate molecular weight, exact mass, TPSA, logP, HBD, HBA, and more online with COSMolKit's Rust cheminformatics core, entirely in your browser.",
             canonical: "https://tools.cosmol.org/molecular-properties",
         }
         div { class: "min-h-screen uu-backdrop m-0 pt-[74px]",

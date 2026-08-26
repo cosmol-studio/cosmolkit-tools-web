@@ -169,7 +169,7 @@ pub fn InchiTool() -> Element {
     rsx! {
         Seo {
             title: "InChI Converter — InChI, InChIKey & Molecular Structure | COSMolKit",
-            description: "Free InChI converter and InChIKey generator. Convert SMILES to InChI or InChIKey, InChI to SMILES or a molecular structure, and InChI to InChIKey locally.",
+            description: "Convert SMILES and InChI or generate InChIKey online with COSMolKit's Rust cheminformatics core. Molecular identifiers stay private in your browser.",
             canonical: "https://tools.cosmol.org/inchi",
         }
         div { class: "min-h-screen uu-backdrop m-0 pt-[74px]",
