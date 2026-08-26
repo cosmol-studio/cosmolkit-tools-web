@@ -2,6 +2,7 @@ use dioxus::prelude::*;
 
 const SEO_KEYWORDS: &str =
     "Rust cheminformatics, COSMolKit, browser-based cheminformatics, WebAssembly molecular tools";
+const RSS_FEED_URL: &str = "https://tools.cosmol.org/feed.xml";
 
 #[component]
 pub fn Seo(title: String, description: String, canonical: String) -> Element {
@@ -18,6 +19,12 @@ pub fn Seo(title: String, description: String, canonical: String) -> Element {
             document::Meta { name: "description", content: "{description}" }
             document::Meta { name: "keywords", content: SEO_KEYWORDS }
             document::Link { rel: "canonical", href: "{canonical}" }
+            document::Link {
+                rel: "alternate",
+                r#type: "application/rss+xml",
+                title: "COSMolKit Blog",
+                href: RSS_FEED_URL,
+            }
             document::Meta { property: "og:title", content: "{title}" }
             document::Meta { property: "og:description", content: "{description}" }
             document::Meta { property: "og:url", content: "{canonical}" }
@@ -52,6 +59,18 @@ fn sync_browser_seo(title: &str, description: &str, canonical: &str) {
         "link[rel='canonical']",
         "link",
         &[("rel", "canonical"), ("href", canonical)],
+        None,
+    );
+    sync_unique_head_element(
+        &document,
+        "link[rel='alternate'][type='application/rss+xml']",
+        "link",
+        &[
+            ("rel", "alternate"),
+            ("type", "application/rss+xml"),
+            ("title", "COSMolKit Blog"),
+            ("href", RSS_FEED_URL),
+        ],
         None,
     );
     for (property, content) in [

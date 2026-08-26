@@ -93,7 +93,8 @@ fn production_url(route: &str) -> String {
 
 #[test]
 fn robots_allows_crawling_and_references_the_production_sitemap() {
-    let robots = fs::read_to_string("robots.txt").expect("robots.txt should exist");
+    let robots =
+        fs::read_to_string("deployment/public/robots.txt").expect("robots.txt should exist");
     assert!(robots.contains("User-agent: *"));
     assert!(robots.contains("Allow: /"));
     assert!(robots.contains("Sitemap: https://tools.cosmol.org/sitemap.xml"));
@@ -102,16 +103,15 @@ fn robots_allows_crawling_and_references_the_production_sitemap() {
 #[test]
 fn indexnow_key_and_deployment_notification_are_configured() {
     const KEY: &str = "b2d03e0f-cc00-4050-8e29-3316108be26b";
-    let key_file = format!("{KEY}.txt");
-    let key_contents = fs::read_to_string(&key_file).expect("IndexNow key file should exist");
     let workflow = fs::read_to_string(".github/workflows/depoly.yml")
         .expect("deployment workflow should exist");
     let notifier =
         fs::read_to_string("scripts/notify_indexnow.py").expect("IndexNow notifier should exist");
 
-    assert_eq!(key_contents.trim(), KEY);
     assert!(workflow.contains(&format!("INDEXNOW_KEY: {KEY}")));
-    assert!(workflow.contains("cp \"${INDEXNOW_KEY}.txt\""));
+    assert!(workflow.contains("cp -R deployment/public/. deploy/web/public/"));
+    assert!(workflow.contains("printf '%s\\n' \"$INDEXNOW_KEY\""));
+    assert!(workflow.contains("deploy/web/public/${INDEXNOW_KEY}.txt"));
     assert!(workflow.contains("python scripts/notify_indexnow.py --dry-run"));
     assert!(workflow.contains("python scripts/notify_indexnow.py"));
     assert!(workflow.contains("github.event_name == 'push'"));
@@ -122,7 +122,8 @@ fn indexnow_key_and_deployment_notification_are_configured() {
 
 #[test]
 fn legacy_tool_routes_redirect_to_root_level_urls() {
-    let redirects = fs::read_to_string("_redirects").expect("Cloudflare redirects should exist");
+    let redirects = fs::read_to_string("deployment/public/_redirects")
+        .expect("Cloudflare redirects should exist");
 
     for (old_route, new_route) in [
         ("/tools/smiles-to-svg", "/smiles-to-svg"),
@@ -144,7 +145,8 @@ fn legacy_tool_routes_redirect_to_root_level_urls() {
 
 #[test]
 fn sitemap_contains_each_finished_route_once_and_excludes_pains() {
-    let sitemap = fs::read_to_string("sitemap.xml").expect("sitemap.xml should exist");
+    let sitemap =
+        fs::read_to_string("deployment/public/sitemap.xml").expect("sitemap.xml should exist");
     let mut expected_urls = HashSet::new();
 
     for (route, _) in FINISHED_ROUTES {
@@ -230,7 +232,7 @@ fn production_checks_reject_unsupported_conversion_pages() {
     assert!(workflow.contains("rm -rf target/dx/cosmolkit-tools-web/release/web/public"));
     assert!(check.contains("unsupported conversion page was prerendered"));
     assert!(
-        !fs::read_to_string("sitemap.xml")
+        !fs::read_to_string("deployment/public/sitemap.xml")
             .unwrap()
             .contains("pdb-to-svg")
     );
@@ -349,6 +351,9 @@ fn seo_component_emits_standard_and_open_graph_tags() {
         "name: \"description\"",
         "name: \"keywords\"",
         "rel: \"canonical\"",
+        "rel: \"alternate\"",
+        "application/rss+xml",
+        "https://tools.cosmol.org/feed.xml",
         "property: \"og:title\"",
         "property: \"og:description\"",
         "property: \"og:url\"",

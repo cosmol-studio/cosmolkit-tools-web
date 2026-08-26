@@ -1,0 +1,51 @@
+{
+  "feed": {
+    "title": "COSMolKit Blog",
+    "link": "https://tools.cosmol.org/blog",
+    "self_url": "https://tools.cosmol.org/feed.xml",
+    "description": "Technical articles about Rust cheminformatics, molecular state management, source-backed RDKit ports, and large-scale validation.",
+    "language": "en"
+  },
+  "articles": [
+    {
+      "source": "content/rust-cheminformatics.md",
+      "path": "/rust-cheminformatics",
+      "canonical_url": "https://tools.cosmol.org/rust-cheminformatics",
+      "title": "Rust Cheminformatics Beyond RDKit Bindings: Redesigning Molecular APIs for Rust",
+      "description": "Rust cheminformatics preserves RDKit chemistry without cloning its architecture. COSMolKit uses value semantics, explicit mutation, and operation contracts.",
+      "tags": ["rust", "cheminformatics", "opensource", "architecture"],
+      "published_at": "2026-08-23T09:00:00+08:00",
+      "author": "wjt@cosmol.org (95028)"
+    },
+    {
+      "source": "content/rust-cheminformatics-state-management.md",
+      "path": "/rdkit-alternative-rust",
+      "canonical_url": "https://tools.cosmol.org/rdkit-alternative-rust",
+      "title": "Rust Cheminformatics State Management and Molecular Mutation",
+      "description": "Learn how COSMolKit uses operation contracts, strict CI, and source-backed ports to make AI-assisted Rust cheminformatics state management safer.",
+      "tags": ["rust", "cheminformatics", "ai", "architecture"],
+      "published_at": "2026-08-24T09:00:00+08:00",
+      "author": "wjt@cosmol.org (95028)"
+    },
+    {
+      "source": "content/rust-cheminformatics-source-porting.md",
+      "path": "/rust-cheminformatics-libraries",
+      "canonical_url": "https://tools.cosmol.org/rust-cheminformatics-libraries",
+      "title": "Rust Cheminformatics: Porting RDKit Source Semantics to Rust",
+      "description": "Learn why COSMolKit uses source-backed Rust cheminformatics ports to preserve RDKit semantics, trace mismatches upstream, and retain exact regression evidence.",
+      "tags": ["rust", "cheminformatics", "opensource", "testing"],
+      "published_at": "2026-08-25T09:00:00+08:00",
+      "author": "wjt@cosmol.org (95028)"
+    },
+    {
+      "source": "content/rust-cheminformatics-validation.md",
+      "path": "/validation",
+      "canonical_url": "https://tools.cosmol.org/validation",
+      "title": "Rust Cheminformatics Validation: From ChEMBL 37 to Billions of Exact RDKit Comparisons",
+      "description": "See how COSMolKit validates Rust cheminformatics against ChEMBL 37 with exact RDKit comparisons across molecular state, algorithms, RNG, batch, and concurrency.",
+      "tags": ["rust", "cheminformatics", "testing", "datascience"],
+      "published_at": "2026-08-26T09:00:00+08:00",
+      "author": "wjt@cosmol.org (95028)"
+    }
+  ]
+}

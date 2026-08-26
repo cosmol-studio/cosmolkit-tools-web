@@ -61,10 +61,9 @@ jobs:
           "$DIOXUS_CLI_ROOT/bin/dx" build -r --web --fullstack true --ssg --features "ssg wasm-split" --wasm-split --force-sequential --debug-symbols false
           mkdir -p deploy/web/public
           cp -R target/dx/cosmolkit-tools-web/release/web/public/. deploy/web/public/
-          cp robots.txt deploy/web/public/robots.txt
-          cp sitemap.xml deploy/web/public/sitemap.xml
-          cp _redirects deploy/web/public/_redirects
-          cp "${INDEXNOW_KEY}.txt" deploy/web/public/"${INDEXNOW_KEY}.txt"
+          cp -R deployment/public/. deploy/web/public/
+          printf '%s\n' "$INDEXNOW_KEY" > "deploy/web/public/${INDEXNOW_KEY}.txt"
+          python scripts/generate_feed.py deploy/web/public deploy/web/public/feed.xml
           python scripts/notify_indexnow.py --dry-run > /dev/null
           python scripts/check_ssg_output.py deploy/web/public
 

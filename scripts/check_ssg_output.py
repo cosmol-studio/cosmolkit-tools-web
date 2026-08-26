@@ -1,10 +1,20 @@
+from datetime import datetime, timezone
+from email.utils import format_datetime
 from html.parser import HTMLParser
 from pathlib import Path
+import json
 import sys
+from urllib.parse import urlparse
+import xml.etree.ElementTree as ElementTree
 
 
 SITE_ORIGIN = "https://tools.cosmol.org"
-INDEXNOW_KEY_FILE = "b2d03e0f-cc00-4050-8e29-3316108be26b.txt"
+FEED_URL = f"{SITE_ORIGIN}/feed.xml"
+CONTENT_NAMESPACE = "http://purl.org/rss/1.0/modules/content/"
+ATOM_NAMESPACE = "http://www.w3.org/2005/Atom"
+ARTICLE_METADATA_PATH = Path(__file__).resolve().parents[1] / "content" / "articles.json"
+INDEXNOW_KEY = "b2d03e0f-cc00-4050-8e29-3316108be26b"
+INDEXNOW_KEY_FILE = f"{INDEXNOW_KEY}.txt"
 PAGES = {
     "/": "COSMolKit — Browser-Native Cheminformatics Powered by Rust",
     "/tools": "Browser-Based Cheminformatics Tools Powered by Rust — COSMolKit",
@@ -135,6 +145,7 @@ class SeoParser(HTMLParser):
         self.descriptions = []
         self.canonical = None
         self.canonicals = []
+        self.feed_links = []
         self.keywords = []
         self.robots = None
         self.robots_values = []
@@ -171,6 +182,8 @@ class SeoParser(HTMLParser):
             if rel == "canonical":
                 self.canonical = href
                 self.canonicals.append(href)
+            if rel == "alternate" and attributes.get("type") == "application/rss+xml":
+                self.feed_links.append(href)
             if rel in {"icon", "stylesheet", "preload"} and not href:
                 self.empty_resource_links.append(rel)
         elif tag == "img":
@@ -201,6 +214,39 @@ class SeoParser(HTMLParser):
             self.body_text += data
 
 
+class FeedContentParser(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.h1_count = 0
+        self.invalid_urls = []
+
+    def handle_starttag(self, tag, attrs):
+        if tag == "h1":
+            self.h1_count += 1
+
+        attributes = dict(attrs)
+        for attribute in ("href", "src"):
+            value = attributes.get(attribute)
+            if value and not self._is_allowed(value):
+                self.invalid_urls.append((tag, attribute, value))
+
+        srcset = attributes.get("srcset")
+        if srcset:
+            for candidate in srcset.split(","):
+                value = candidate.strip().split(" ", 1)[0]
+                if value and not self._is_allowed(value):
+                    self.invalid_urls.append((tag, "srcset", value))
+
+    def handle_startendtag(self, tag, attrs):
+        self.handle_starttag(tag, attrs)
+
+    @staticmethod
+    def _is_allowed(value):
+        if value.startswith("#"):
+            return True
+        return urlparse(value).scheme in {"https", "mailto"}
+
+
 def canonical_for(route):
     return f"{SITE_ORIGIN}/" if route == "/" else f"{SITE_ORIGIN}{route}"
 
@@ -209,6 +255,124 @@ GLOBAL_SEARCH_TERMS = ("rust", "cheminformatics", "cosmolkit")
 MIN_META_DESCRIPTION_LENGTH = 120
 MAX_META_DESCRIPTION_LENGTH = 160
 OPEN_GRAPH_PROPERTIES = ("og:title", "og:description", "og:url", "og:type")
+
+
+def article_published_at(article):
+    value = article.get("published_at")
+    if not value:
+        return datetime.min.replace(tzinfo=timezone.utc)
+    return datetime.fromisoformat(value.replace("Z", "+00:00")).astimezone(timezone.utc)
+
+
+def validate_feed(public_dir, failures):
+    feed_path = public_dir / "feed.xml"
+    try:
+        root = ElementTree.parse(feed_path).getroot()
+    except (OSError, ElementTree.ParseError) as error:
+        failures.append(f"feed.xml: invalid or missing RSS XML: {error}")
+        return
+
+    if root.tag != "rss" or root.get("version") != "2.0":
+        failures.append("feed.xml: expected an RSS 2.0 root element")
+        return
+
+    channel = root.find("channel")
+    if channel is None:
+        failures.append("feed.xml: missing channel")
+        return
+
+    metadata = json.loads(ARTICLE_METADATA_PATH.read_text(encoding="utf-8"))
+    feed_metadata = metadata["feed"]
+    articles = sorted(
+        metadata["articles"],
+        key=article_published_at,
+        reverse=True,
+    )
+    expected_channel = {
+        "title": feed_metadata["title"],
+        "link": feed_metadata["link"],
+        "description": feed_metadata["description"],
+        "language": feed_metadata["language"],
+    }
+    for tag, expected in expected_channel.items():
+        if channel.findtext(tag) != expected:
+            failures.append(f"feed.xml: incorrect channel {tag}")
+
+    self_link = channel.find(f"{{{ATOM_NAMESPACE}}}link")
+    if self_link is None or self_link.attrib != {
+        "href": feed_metadata["self_url"],
+        "rel": "self",
+        "type": "application/rss+xml",
+    }:
+        failures.append("feed.xml: missing or incorrect atom self link")
+
+    items = channel.findall("item")
+    if len(items) != len(articles):
+        failures.append(
+            f"feed.xml: expected {len(articles)} items, found {len(items)}"
+        )
+        return
+
+    guids = set()
+    for item, article in zip(items, articles):
+        canonical = article["canonical_url"]
+        article_page = public_dir / article["path"].lstrip("/") / "index.html"
+        page_parser = SeoParser()
+        page_parser.feed(article_page.read_text(encoding="utf-8"))
+        if page_parser.canonical != canonical:
+            failures.append(
+                f"feed.xml: metadata canonical differs from page for {article['path']}"
+            )
+        if page_parser.description != article["description"]:
+            failures.append(
+                f"feed.xml: metadata description differs from page for {article['path']}"
+            )
+
+        expected_values = {
+            "title": article["title"],
+            "link": canonical,
+            "guid": canonical,
+            "description": article["description"],
+        }
+        for tag, expected in expected_values.items():
+            if item.findtext(tag) != expected:
+                failures.append(f"feed.xml: incorrect {tag} for {article['path']}")
+
+        guid = item.find("guid")
+        if guid is None or guid.get("isPermaLink") != "true":
+            failures.append(f"feed.xml: invalid permalink guid for {article['path']}")
+        elif guid.text in guids:
+            failures.append(f"feed.xml: duplicate guid {guid.text}")
+        else:
+            guids.add(guid.text)
+
+        categories = [element.text for element in item.findall("category")]
+        if categories != article["tags"]:
+            failures.append(f"feed.xml: incorrect categories for {article['path']}")
+
+        expected_published_at = (
+            format_datetime(article_published_at(article), usegmt=True)
+            if article.get("published_at")
+            else None
+        )
+        if item.findtext("pubDate") != expected_published_at:
+            failures.append(f"feed.xml: pubDate does not match metadata for {article['path']}")
+        if item.findtext("author") != article.get("author"):
+            failures.append(f"feed.xml: author does not match metadata for {article['path']}")
+
+        content = item.findtext(f"{{{CONTENT_NAMESPACE}}}encoded")
+        if not content:
+            failures.append(f"feed.xml: missing full content for {article['path']}")
+            continue
+        parser = FeedContentParser()
+        parser.feed(content)
+        if parser.h1_count:
+            failures.append(f"feed.xml: body repeats the title h1 for {article['path']}")
+        if parser.invalid_urls:
+            failures.append(
+                f"feed.xml: non-absolute content URLs for {article['path']}: "
+                f"{parser.invalid_urls!r}"
+            )
 
 
 def validate_shared_metadata(route, parser, failures):
@@ -243,6 +407,12 @@ def validate_shared_metadata(route, parser, failures):
         count = len(parser.open_graph.get(prop, []))
         if count != 1:
             failures.append(f"{route}: expected one {prop} tag, found {count}")
+
+    if parser.feed_links != [FEED_URL]:
+        failures.append(
+            f"{route}: expected one RSS discovery link to {FEED_URL}, "
+            f"found {parser.feed_links!r}"
+        )
 
     if parser.empty_resource_links:
         failures.append(
@@ -379,9 +549,25 @@ def main():
         if "-to-" in route and route not in known_routes:
             failures.append(f"unsupported conversion page was prerendered: {route}")
 
-    for static_name in ("robots.txt", "sitemap.xml", "_redirects", INDEXNOW_KEY_FILE):
+    validate_feed(public_dir, failures)
+
+    for static_name in (
+        "robots.txt",
+        "sitemap.xml",
+        "feed.xml",
+        "_redirects",
+        "_headers",
+        INDEXNOW_KEY_FILE,
+    ):
         if not (public_dir / static_name).exists():
             failures.append(f"missing deployed static file: {static_name}")
+
+    indexnow_key_path = public_dir / INDEXNOW_KEY_FILE
+    if (
+        indexnow_key_path.exists()
+        and indexnow_key_path.read_text(encoding="utf-8").strip() != INDEXNOW_KEY
+    ):
+        failures.append(f"deployed IndexNow key is incorrect: {INDEXNOW_KEY_FILE}")
 
     if failures:
         raise SystemExit("SSG validation failed:\n- " + "\n- ".join(failures))

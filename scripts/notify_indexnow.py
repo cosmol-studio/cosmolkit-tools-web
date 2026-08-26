@@ -6,7 +6,6 @@ import time
 import urllib.error
 import urllib.request
 import xml.etree.ElementTree as ET
-from pathlib import Path
 from urllib.parse import urlparse
 
 
@@ -179,7 +178,7 @@ def main():
     )
     parser.add_argument(
         "--sitemap",
-        default="sitemap.xml",
+        default="deployment/public/sitemap.xml",
     )
     parser.add_argument(
         "--dry-run",
@@ -210,21 +209,7 @@ def main():
             "INDEXNOW_KEY must be 8-128 letters, digits, or hyphens"
         )
 
-    key_file = Path(f"{key}.txt")
-
-    if not key_file.is_file():
-        raise ValueError(f"{key_file} must exist")
-
-    local_key = key_file.read_text(
-        encoding="utf-8"
-    ).strip()
-
-    if local_key != key:
-        raise ValueError(
-            f"{key_file} must contain exactly the IndexNow key"
-        )
-
-    key_location = f"{SITE_ORIGIN}/{key_file.name}"
+    key_location = f"{SITE_ORIGIN}/{key}.txt"
     urls = sitemap_urls(args.sitemap)
 
     payload = {
