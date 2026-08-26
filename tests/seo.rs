@@ -363,6 +363,20 @@ fn seo_component_emits_standard_and_open_graph_tags() {
             "SEO component is missing global keyword {keyword}"
         );
     }
+
+    assert!(source.contains("sync_browser_seo"));
+    assert!(source.contains("sync_unique_head_element"));
+    assert!(source.contains("element.remove()"));
+    assert!(source.contains("target_arch = \"wasm32\", feature = \"ssg\""));
+}
+
+#[test]
+fn production_wasm_does_not_reinsert_ssg_document_assets() {
+    let source = fs::read_to_string("src/main.rs").expect("app source should exist");
+
+    assert!(source.contains("DocumentAssets {}"));
+    assert!(source.contains("fn DocumentAssets() -> Element"));
+    assert!(source.contains("target_arch = \"wasm32\", feature = \"ssg\""));
 }
 
 #[test]
