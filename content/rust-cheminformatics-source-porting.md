@@ -2,7 +2,7 @@
 
 COSMolKit currently validates its parity-covered Rust cheminformatics surfaces against pinned RDKit `2026.03.1` using three complementary corpus tiers, culminating in the complete ChEMBL 37 structure table. The current extended profile covers **2,897,819 source records**, **31 validation phases**, and **3,968 shard tasks**. Its consolidated accepted evidence records **2,931,581,192 matching checks with zero blocking mismatch**, with distance-geometry validation additionally traversing more than **2.75 billion matrix entries**.
 
-These are not simply “molecules that produced the same final string.” Depending on the declared parity boundary, COSMolKit compares exact molecular state, fingerprints, parameter branches, serialization behavior, operation composition, batch and concurrent execution, stochastic outcomes, matrices, coordinates, energies, gradients, and errors. The exact scope is documented separately in [`VALIDATION.md`](https://github.com/cosmol-studio/COSMolKit/blob/main/VALIDATION.md); a later article in this series will focus specifically on how that evidence is constructed.
+These are not simply “molecules that produced the same final string.” Depending on the declared parity boundary, COSMolKit compares exact molecular state, fingerprints, parameter branches, serialization behavior, operation composition, batch and concurrent execution, stochastic outcomes, matrices, coordinates, energies, gradients, and errors. The exact scope is documented separately in [`VALIDATION.md`](https://github.com/cosmol-studio/COSMolKit/blob/main/VALIDATION.md).
 
 The more interesting question for this article is not how large the validation corpus became.
 
@@ -485,11 +485,10 @@ It is to **port the semantics that produce those outputs, then use the largest p
 
 That is the distinction COSMolKit is trying to make in Rust cheminformatics.
 
-## Repository References
+## COSMolKit Resources
 
-* [COSMolKit](https://github.com/cosmol-studio/COSMolKit)
-* [Source-Reproduction Protocol](https://github.com/cosmol-studio/COSMolKit/blob/main/dev/source_reproduction_protocol.md)
-* [Source-Bisection Debugging Protocol](https://github.com/cosmol-studio/COSMolKit/blob/main/dev/source_bisection_debugging_protocol.md)
-* [Operation System Standard](https://github.com/cosmol-studio/COSMolKit/blob/main/dev/operation_system_standard.md)
-* [Current Porting Inventory](https://github.com/cosmol-studio/COSMolKit/blob/main/dev/porting_inventory.md)
-* [Validation Scope and Evidence](https://github.com/cosmol-studio/COSMolKit/blob/main/VALIDATION.md)
+[Source repository](https://github.com/cosmol-studio/COSMolKit) ·
+[Documentation](https://kit.cosmol.org/) ·
+[Web tools](https://tools.cosmol.org/) ·
+[Rust crate](https://crates.io/crates/cosmolkit) ·
+[Python package](https://pypi.org/project/cosmolkit/)

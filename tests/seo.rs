@@ -110,6 +110,7 @@ fn indexnow_key_and_deployment_notification_are_configured() {
 
     assert!(workflow.contains(&format!("INDEXNOW_KEY: {KEY}")));
     assert!(workflow.contains("cp -R deployment/public/. deploy/web/public/"));
+    assert!(workflow.contains("python scripts/flatten_ssg_routes.py deploy/web/public"));
     assert!(workflow.contains("printf '%s\\n' \"$INDEXNOW_KEY\""));
     assert!(workflow.contains("deploy/web/public/${INDEXNOW_KEY}.txt"));
     assert!(workflow.contains("python scripts/notify_indexnow.py --dry-run"));
@@ -187,6 +188,18 @@ fn sitemap_contains_each_finished_route_once_and_excludes_pains() {
 
     assert!(!sitemap.contains("/check-pains"));
     assert!(!sitemap.contains("https://tools.cosmol.org/tools/"));
+    assert!(
+        fs::read_to_string("deployment/public/404.html").is_ok(),
+        "deployment must include a top-level 404.html"
+    );
+    let redirects = fs::read_to_string("deployment/public/_redirects")
+        .expect("Cloudflare redirects should exist");
+    assert!(
+        !redirects
+            .lines()
+            .any(|line| line.trim_end().ends_with(" 200")),
+        "_redirects must not contain clean-URL 200 rewrites"
+    );
     let mut sitemap_urls = HashSet::new();
     for url in sitemap
         .split("<loc>")
@@ -194,6 +207,19 @@ fn sitemap_contains_each_finished_route_once_and_excludes_pains() {
         .filter_map(|entry| entry.split_once("</loc>"))
     {
         assert!(url.0.starts_with("https://tools.cosmol.org"));
+        if url.0 != "https://tools.cosmol.org/" {
+            assert!(
+                !url.0.ends_with('/'),
+                "sitemap URL has trailing slash: {}",
+                url.0
+            );
+            let path = url.0.strip_prefix("https://tools.cosmol.org").unwrap();
+            let rule = format!("{path}/ {path} 301");
+            assert!(
+                redirects.lines().any(|line| line == rule),
+                "missing trailing-slash redirect: {rule}"
+            );
+        }
         assert!(
             sitemap_urls.insert(url.0.to_string()),
             "duplicate sitemap URL: {}",
@@ -358,6 +384,21 @@ fn seo_component_emits_standard_and_open_graph_tags() {
         "property: \"og:description\"",
         "property: \"og:url\"",
         "property: \"og:type\"",
+        "application/ld+json",
+        "https://schema.org",
+        "WebSite",
+        "SoftwareApplication",
+        "applicationCategory",
+        "DeveloperApplication",
+        "operatingSystem",
+        "downloadUrl",
+        "codeRepository",
+        "https://kit.cosmol.org/",
+        "https://github.com/cosmol-studio",
+        "WebPage",
+        "BlogPosting",
+        "datePublished",
+        "author_name",
     ] {
         assert!(source.contains(marker), "SEO component is missing {marker}");
     }
@@ -372,7 +413,9 @@ fn seo_component_emits_standard_and_open_graph_tags() {
     assert!(source.contains("sync_browser_seo"));
     assert!(source.contains("sync_unique_head_element"));
     assert!(source.contains("element.remove()"));
-    assert!(source.contains("target_arch = \"wasm32\", feature = \"ssg\""));
+    assert!(source.contains("target_arch = \"wasm32\""));
+    assert!(source.contains("fn json_escape"));
+    assert!(source.contains("fn json_ld"));
 }
 
 #[test]

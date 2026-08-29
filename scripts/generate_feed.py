@@ -14,6 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 METADATA_PATH = ROOT / "content" / "articles.json"
 CONTENT_NAMESPACE = "http://purl.org/rss/1.0/modules/content/"
 ATOM_NAMESPACE = "http://www.w3.org/2005/Atom"
+FRAGILE_MONOSPACE_GLYPHS = frozenset("┌┐└┘├┤┬┴┼│─▼")
 VOID_ELEMENTS = {
     "area",
     "base",
@@ -209,7 +210,7 @@ def validate_metadata(feed, articles):
 
 
 def extract_article(public_dir, article):
-    html_path = public_dir / article["path"].lstrip("/") / "index.html"
+    html_path = public_dir / f"{article['path'].lstrip('/')}.html"
     extractor = ArticleExtractor()
     extractor.feed(html_path.read_text(encoding="utf-8"))
     title, body = extractor.result()
@@ -217,6 +218,12 @@ def extract_article(public_dir, article):
         raise ValueError(f"metadata title does not match prerendered h1: {html_path}")
     if "]]>" in body:
         raise ValueError(f"article body contains a CDATA terminator: {html_path}")
+    fragile_glyphs = sorted(FRAGILE_MONOSPACE_GLYPHS.intersection(body))
+    if fragile_glyphs:
+        raise ValueError(
+            f"article body contains glyphs that do not align reliably on DEV: "
+            f"{''.join(fragile_glyphs)}"
+        )
 
     validator = EmbeddedUrlValidator()
     validator.feed(body)

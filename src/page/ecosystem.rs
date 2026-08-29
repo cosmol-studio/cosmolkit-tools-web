@@ -43,7 +43,7 @@ const PROJECTS: [Project; 3] = [
 pub fn Ecosystem() -> Element {
     rsx! {
         Seo {
-            title: "COSMol Ecosystem — Rust-Powered Cheminformatics & Browser-Native Tools",
+            title: "COSMol Ecosystem | Browser-Native Rust Cheminformatics",
             description: "Explore the COSMol open-source ecosystem: COSMolKit's Rust cheminformatics core, COSMol-viewer visualization, and browser-native molecular tools.",
             canonical: "https://tools.cosmol.org/ecosystem",
         }

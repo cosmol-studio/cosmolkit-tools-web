@@ -15,6 +15,13 @@ ATOM_NAMESPACE = "http://www.w3.org/2005/Atom"
 ARTICLE_METADATA_PATH = Path(__file__).resolve().parents[1] / "content" / "articles.json"
 INDEXNOW_KEY = "b2d03e0f-cc00-4050-8e29-3316108be26b"
 INDEXNOW_KEY_FILE = f"{INDEXNOW_KEY}.txt"
+ARTICLE_RESOURCE_LINKS = {
+    "Source repository": "https://github.com/cosmol-studio/COSMolKit",
+    "Documentation": "https://kit.cosmol.org/",
+    "Web tools": "https://tools.cosmol.org/",
+    "Rust crate": "https://crates.io/crates/cosmolkit",
+    "Python package": "https://pypi.org/project/cosmolkit/",
+}
 PAGES = {
     "/": "COSMolKit — Browser-Native Cheminformatics Powered by Rust",
     "/tools": "Browser-Based Cheminformatics Tools Powered by Rust — COSMolKit",
@@ -63,12 +70,12 @@ PAGES = {
     "/inchi": "InChI Converter — InChI, InChIKey & Molecular Structure | COSMolKit",
     "/molecular-properties": "Molecular Properties Calculator — MW, TPSA, logP | COSMolKit",
     "/smiles-canonicalizer": "SMILES Canonicalizer — Canonical & Isomeric SMILES | COSMolKit",
-    "/ecosystem": "COSMol Ecosystem — Rust-Powered Cheminformatics & Browser-Native Tools",
+    "/ecosystem": "COSMol Ecosystem | Browser-Native Rust Cheminformatics",
     "/blog": "COSMolKit Blog — Rust Cheminformatics Notes",
-    "/rust-cheminformatics": "Rust Cheminformatics Beyond RDKit Bindings | COSMolKit",
-    "/rdkit-alternative-rust": "Rust Cheminformatics State Management and Molecular Mutation | COSMolKit",
-    "/rust-cheminformatics-libraries": "Rust Cheminformatics: Porting RDKit Source Semantics to Rust | COSMolKit",
-    "/validation": "Rust Cheminformatics Validation on ChEMBL 37 | COSMolKit",
+    "/rust-cheminformatics": "Rust Cheminformatics Beyond RDKit | COSMolKit",
+    "/rdkit-alternative-rust": "Rust Cheminformatics State Management | COSMolKit",
+    "/rust-cheminformatics-libraries": "Porting RDKit Chemistry Semantics to Rust | COSMolKit",
+    "/validation": "COSMolKit Validation: ChEMBL 37 vs RDKit | COSMolKit",
 }
 PLACEHOLDER_PAGES = {}
 CONVERSION_PRESETS = {
@@ -247,8 +254,64 @@ class FeedContentParser(HTMLParser):
         return urlparse(value).scheme in {"https", "mailto"}
 
 
+class ArticleLinksParser(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.in_article = False
+        self.in_h2 = False
+        self.h2_text = ""
+        self.in_resource_section = False
+        self.current_link = None
+        self.current_link_text = ""
+        self.links = []
+        self.resource_headings = 0
+        self.resource_links = []
+
+    def handle_starttag(self, tag, attrs):
+        attributes = dict(attrs)
+        if tag == "article":
+            self.in_article = True
+        elif self.in_article and tag == "h2":
+            self.in_h2 = True
+            self.h2_text = ""
+        elif self.in_article and tag == "a":
+            self.current_link = attributes.get("href")
+            self.current_link_text = ""
+            if self.current_link:
+                self.links.append(self.current_link)
+
+    def handle_endtag(self, tag):
+        if tag == "article":
+            self.in_article = False
+            self.in_resource_section = False
+        elif self.in_article and tag == "h2" and self.in_h2:
+            self.in_h2 = False
+            if self.h2_text.strip() == "COSMolKit Resources":
+                self.resource_headings += 1
+                self.in_resource_section = True
+            else:
+                self.in_resource_section = False
+        elif self.in_article and tag == "a" and self.current_link is not None:
+            if self.in_resource_section:
+                self.resource_links.append(
+                    (self.current_link_text.strip(), self.current_link)
+                )
+            self.current_link = None
+            self.current_link_text = ""
+
+    def handle_data(self, data):
+        if self.in_h2:
+            self.h2_text += data
+        if self.current_link is not None:
+            self.current_link_text += data
+
+
 def canonical_for(route):
     return f"{SITE_ORIGIN}/" if route == "/" else f"{SITE_ORIGIN}{route}"
+
+
+def public_page_path(public_dir, route):
+    return public_dir / "index.html" if route == "/" else public_dir / f"{route.lstrip('/')}.html"
 
 
 GLOBAL_SEARCH_TERMS = ("rust", "cheminformatics", "cosmolkit")
@@ -316,7 +379,7 @@ def validate_feed(public_dir, failures):
     guids = set()
     for item, article in zip(items, articles):
         canonical = article["canonical_url"]
-        article_page = public_dir / article["path"].lstrip("/") / "index.html"
+        article_page = public_page_path(public_dir, article["path"])
         page_parser = SeoParser()
         page_parser.feed(article_page.read_text(encoding="utf-8"))
         if page_parser.canonical != canonical:
@@ -375,6 +438,41 @@ def validate_feed(public_dir, failures):
             )
 
 
+def validate_article_links(public_dir, articles, failures):
+    article_by_path = {article["path"]: article for article in articles}
+    article_order = {
+        article["path"]: (article_published_at(article), index)
+        for index, article in enumerate(articles)
+    }
+
+    for article in articles:
+        html_path = public_page_path(public_dir, article["path"])
+        parser = ArticleLinksParser()
+        parser.feed(html_path.read_text(encoding="utf-8"))
+
+        if parser.resource_headings != 1:
+            failures.append(
+                f"{article['path']}: expected one COSMolKit Resources heading, "
+                f"found {parser.resource_headings}"
+            )
+
+        expected_resources = list(ARTICLE_RESOURCE_LINKS.items())
+        if parser.resource_links != expected_resources:
+            failures.append(
+                f"{article['path']}: resource links do not match the required "
+                f"repository, documentation, tools, crate, and package links"
+            )
+
+        current_order = article_order[article["path"]]
+        for href in parser.links:
+            target_path = urlparse(href).path.rstrip("/") or "/"
+            target_article = article_by_path.get(target_path)
+            if target_article and article_order[target_path] > current_order:
+                failures.append(
+                    f"{article['path']}: links to later article {target_path}"
+                )
+
+
 def validate_shared_metadata(route, parser, failures):
     if parser.title_count != 1:
         failures.append(f"{route}: expected one title, found {parser.title_count}")
@@ -431,14 +529,45 @@ def validate_shared_metadata(route, parser, failures):
             failures.append(f"{route}: keywords are missing global term {term!r}")
 
 
+def validate_url_normalization(public_dir, failures):
+    sitemap_path = public_dir / "sitemap.xml"
+    redirects_path = public_dir / "_redirects"
+    if not sitemap_path.exists() or not redirects_path.exists():
+        return
+
+    try:
+        root = ElementTree.parse(sitemap_path).getroot()
+    except ElementTree.ParseError as error:
+        failures.append(f"sitemap.xml: invalid XML while checking URL normalization: {error}")
+        return
+
+    redirects = {
+        line.strip()
+        for line in redirects_path.read_text(encoding="utf-8").splitlines()
+        if line.strip() and not line.lstrip().startswith("#")
+    }
+    namespace = "{http://www.sitemaps.org/schemas/sitemap/0.9}"
+    for loc in root.findall(f"{namespace}url/{namespace}loc"):
+        value = (loc.text or "").strip()
+        parsed = urlparse(value)
+        if parsed.path == "/":
+            continue
+        if parsed.path.endswith("/"):
+            failures.append(f"sitemap.xml: URL must not have a trailing slash: {value}")
+            continue
+        expected_redirect = f"{parsed.path}/ {parsed.path} 301"
+        if expected_redirect not in redirects:
+            failures.append(
+                f"_redirects: missing trailing-slash redirect: {expected_redirect}"
+            )
+
+
 def main():
     public_dir = Path(sys.argv[1] if len(sys.argv) > 1 else "deploy/web/public")
     failures = []
 
     for route, expected_title in PAGES.items():
-        html_path = public_dir / route.lstrip("/") / "index.html"
-        if route == "/":
-            html_path = public_dir / "index.html"
+        html_path = public_page_path(public_dir, route)
         if not html_path.exists():
             failures.append(f"missing generated page: {html_path}")
             continue
@@ -462,7 +591,6 @@ def main():
                 "value semantics",
                 "copy-on-write",
                 "opparts",
-                "repository references",
             ):
                 if phrase not in parser.body_text.lower():
                     failures.append(
@@ -473,7 +601,6 @@ def main():
                 "operation contracts",
                 "opparts",
                 "removehs(sanitize=false)",
-                "repository references",
             ):
                 if phrase not in parser.body_text.lower():
                     failures.append(
@@ -484,7 +611,6 @@ def main():
                 "corpus acts as auditor",
                 "source-reproduction protocol",
                 "first divergent state boundary",
-                "repository references",
             ):
                 if phrase not in parser.body_text.lower():
                     failures.append(
@@ -524,7 +650,7 @@ def main():
                     failures.append(f"{route}: missing embedded card icon {icon}")
 
     for route, expected_title in PLACEHOLDER_PAGES.items():
-        html_path = public_dir / route.lstrip("/") / "index.html"
+        html_path = public_page_path(public_dir, route)
         if not html_path.exists():
             failures.append(f"missing generated placeholder page: {html_path}")
             continue
@@ -544,23 +670,34 @@ def main():
             failures.append(f"{route}: missing prerendered H1")
 
     known_routes = set(PAGES) | set(PLACEHOLDER_PAGES)
-    for html_path in public_dir.glob("*/index.html"):
-        route = f"/{html_path.parent.name}"
+    for html_path in public_dir.glob("*.html"):
+        if html_path.name in {"index.html", "404.html"}:
+            continue
+        route = f"/{html_path.stem}"
         if "-to-" in route and route not in known_routes:
             failures.append(f"unsupported conversion page was prerendered: {route}")
 
+    for route_dir in public_dir.iterdir():
+        if route_dir.is_dir() and (route_dir / "index.html").exists():
+            failures.append(f"route was not flattened: {route_dir.name}")
+
+    article_metadata = json.loads(ARTICLE_METADATA_PATH.read_text(encoding="utf-8"))
+    validate_article_links(public_dir, article_metadata["articles"], failures)
     validate_feed(public_dir, failures)
 
     for static_name in (
         "robots.txt",
         "sitemap.xml",
         "feed.xml",
+        "404.html",
         "_redirects",
         "_headers",
         INDEXNOW_KEY_FILE,
     ):
         if not (public_dir / static_name).exists():
             failures.append(f"missing deployed static file: {static_name}")
+
+    validate_url_normalization(public_dir, failures)
 
     indexnow_key_path = public_dir / INDEXNOW_KEY_FILE
     if (

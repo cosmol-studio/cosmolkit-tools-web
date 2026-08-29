@@ -62,6 +62,7 @@ jobs:
           mkdir -p deploy/web/public
           cp -R target/dx/cosmolkit-tools-web/release/web/public/. deploy/web/public/
           cp -R deployment/public/. deploy/web/public/
+          python scripts/flatten_ssg_routes.py deploy/web/public
           printf '%s\n' "$INDEXNOW_KEY" > "deploy/web/public/${INDEXNOW_KEY}.txt"
           python scripts/generate_feed.py deploy/web/public deploy/web/public/feed.xml
           python scripts/notify_indexnow.py --dry-run > /dev/null

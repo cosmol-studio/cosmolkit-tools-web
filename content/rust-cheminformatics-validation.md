@@ -221,3 +221,11 @@ That is what the current **2.93 billion matching checks** are intended to repres
 > **Within the explicitly documented parity-covered boundaries, the current accepted evidence reproduces pinned RDKit behavior across the recorded chemical, parameter, state, and execution surfaces with zero blocking mismatch.**
 
 That is the standard COSMolKit uses when it says **RDKit parity**.
+
+## COSMolKit Resources
+
+[Source repository](https://github.com/cosmol-studio/COSMolKit) ·
+[Documentation](https://kit.cosmol.org/) ·
+[Web tools](https://tools.cosmol.org/) ·
+[Rust crate](https://crates.io/crates/cosmolkit) ·
+[Python package](https://pypi.org/project/cosmolkit/)

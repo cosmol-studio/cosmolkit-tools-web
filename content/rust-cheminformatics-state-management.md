@@ -36,8 +36,6 @@ Instead, we try to move as many of those obligations as possible into executable
 
 That is the purpose of the COSMolKit operation system.
 
----
-
 ## The Bottleneck Has Moved
 
 Before modern coding agents, porting a mature cheminformatics routine was expensive largely because writing the code itself was expensive.
@@ -115,8 +113,6 @@ The first is a local code problem.
 
 The second is a system problem.
 
----
-
 ## Mature Libraries Contain More Semantics Than Their APIs Reveal
 
 RDKit is a mature C++ codebase.
@@ -152,8 +148,6 @@ There is also no safe universal rule saying that apparently unaffected state sho
 The correct transition depends on the source-defined behavior.
 
 This is why source-backed porting and state-management contracts have to work together.
-
----
 
 ## Agent Speed Magnifies Hidden-State Risk
 
@@ -200,8 +194,6 @@ The better approach is:
 > Make dependent-state obligations explicit enough that the implementation cannot quietly ignore them.
 
 That is the direction of COSMolKit's operation system.
-
----
 
 ## Do Not Make Correctness Depend on the Agent Remembering Everything
 
@@ -253,8 +245,6 @@ The registry is therefore not just metadata.
 
 In strict builds, important parts of it have execution owners and runtime checks.
 
----
-
 ## Mutation Authority Is a Capability
 
 One of the most important registry concepts is `access`.
@@ -292,8 +282,6 @@ This is especially valuable in an agent-driven codebase.
 An agent can make an implementation mistake.
 
 But a mistake that crosses a declared capability boundary can be detected structurally rather than waiting for a chemically visible failure.
-
----
 
 ## `OpParts`: The Agent Does Not Receive the Whole Mutable Molecule
 
@@ -333,23 +321,23 @@ The separation can be viewed as:
 
 ```text
                 Pinned Source
-                     │
-                     │ defines chemistry
-                     ▼
+                     |
+                     | defines chemistry
+                     v
              Operation Body
-                     │
-                     │ requests state changes
-                     ▼
+                     |
+                     | requests state changes
+                     v
                  OpParts
-          ┌──────────┼──────────┐
-          │          │          │
+          +----------+----------+
+          |          |          |
        access     mapping    derived state
-          │          │          │
-          └──────────┼──────────┘
-                     ▼
+          |          |          |
+          +----------+----------+
+                     v
                   finish()
-                     │
-                     ▼
+                     |
+                     v
                  strict CI
 ```
 
@@ -358,8 +346,6 @@ The chemistry implementation says what should happen.
 The operation framework controls how that transition is allowed to touch shared molecular state.
 
 This distinction is one of the main safeguards against agent-generated architectural drift.
-
----
 
 ## Rust Privacy Is Part of the Guardrail
 
@@ -398,8 +384,6 @@ An agent trying to make a test pass will naturally prefer the shortest path avai
 
 The architecture should make the shortest path the correct one.
 
----
-
 ## Write-Owned State Should Have One Timeline
 
 Another subtle rule prevents stale-state bugs inside one operation.
@@ -410,14 +394,14 @@ A dangerous implementation shape would be:
 
 ```text
 read old topology
-      │
-      ├───────────────┐
-      │               │
-mutate working        │
-topology              │
-      │               │
-      ▼               │
-continue reading <────┘
+      |
+      +---------------+
+      |               |
+mutate working        |
+topology              |
+      |               |
+      v               |
+continue reading <----+
 old topology
 ```
 
@@ -429,11 +413,11 @@ Conceptually:
 
 ```text
 begin topology
-      │
-      ├── inspect
-      ├── calculate
-      ├── mutate
-      └── return/commit
+      |
+      +-- inspect
+      +-- calculate
+      +-- mutate
+      +-- return/commit
 ```
 
 Fallible mutation APIs are scoped so the current owned block returns to the working molecule on both success and error.
@@ -441,8 +425,6 @@ Fallible mutation APIs are scoped so the current owned block returns to the work
 This matters because agent-generated code frequently uses `?` aggressively.
 
 Without a structured mutation scope, it is easy for an early return to leave state in an unexpected intermediate representation.
-
----
 
 ## Strong and Weak Topology Operations
 
@@ -505,8 +487,6 @@ An agent should not have to rediscover from scratch whether an operation needs t
 
 That fact should be part of the registered operation contract.
 
----
-
 ## Topology Mapping Must Be Explicit
 
 Consider removing atom 4 from a six-atom molecule.
@@ -565,8 +545,6 @@ Rust's borrow checker cannot detect this category of bug.
 
 The operation contract can at least force the implementation to acknowledge that the problem exists.
 
----
-
 ## Block Access and Derived-State Effects Are Different Questions
 
 A particularly important design decision in the current operation system is that state access and derived-state obligations are separate axes.
@@ -600,8 +578,6 @@ Likewise, declaring recomputation does not itself grant unrelated block access.
 
 This separation makes the contract harder to accidentally overinterpret.
 
----
-
 ## Four Derived-State Outcomes
 
 The current molecule operation model classifies affected derived state into four pairwise-disjoint categories:
@@ -630,8 +606,6 @@ The previous value remains valid.
 The source requires a state transition that cannot be truthfully described by the other three categories.
 
 This final category is intentionally narrow.
-
----
 
 ## Preservation Should Require Evidence
 
@@ -679,8 +653,6 @@ framework:
 
 This is precisely the kind of responsibility that should not depend only on an agent's local reasoning.
 
----
-
 ## Why an Escape Hatch Is Still Necessary
 
 A contract system becomes dangerous if it forces real source semantics into an oversimplified model.
@@ -713,8 +685,6 @@ This is a good example of an important project principle:
 > The architecture must constrain the port, but it must not rewrite source semantics merely to make the architecture prettier.
 
 If RDKit defines an awkward but observable transition, the Rust design should model it honestly.
-
----
 
 ## `RemoveHs(sanitize=false)`: A Real Agent-Era Failure Mode
 
@@ -766,8 +736,6 @@ and still miss source-defined molecular state semantics.
 
 That is exactly the category of mistake the operation system is trying to make harder.
 
----
-
 ## Strict Mode Turns Architecture Into an Executable Guardrail
 
 A design document is useful.
@@ -818,8 +786,6 @@ For example, `io_roundtrip` is currently registry metadata and operation-specifi
 
 A contract system should not claim enforcement it does not actually have.
 
----
-
 ## Strict Mode Is Especially Valuable for Agent-Generated Code
 
 A human developer reading the operation-system design might remember:
@@ -860,8 +826,6 @@ They are much more dangerous when correctness depends on invisible conventions.
 
 The operation system tries to convert conventions into feedback.
 
----
-
 ## The Goal Is Not to Trust the Agent More
 
 This distinction is worth stating clearly.
@@ -895,8 +859,6 @@ Did its error path respect the operation lifecycle?
 ```
 
 That distinction gives COSMolKit a layered correctness model.
-
----
 
 ## Four Different Correctness Layers
 
@@ -932,27 +894,25 @@ Conceptually:
 
 ```text
              RDKit Source
-                 │
-                 ▼
+                 |
+                 v
          Source-Backed Port
-                 │
-                 ▼
+                 |
+                 v
           Operation Contract
-          ┌──────┼──────┐
-          │      │      │
+          +------+-------+
+          |      |      |
        access  mapping  effects
-          │      │      │
-          └──────┼──────┘
-                 ▼
+          |      |      |
+          +------+-------+
+                 v
               strict
-                 │
-                 ▼
+                 |
+                 v
         RDKit parity validation
 ```
 
 No single layer replaces the others.
-
----
 
 ## Contracts Do Not Prove Chemistry
 
@@ -994,8 +954,6 @@ A molecule may pass all invariants and still fail parity.
 This separation is critical.
 
 Otherwise, a sophisticated architecture could create false confidence.
-
----
 
 ## The Real Enemy Is Composition
 
@@ -1061,8 +1019,6 @@ This does not eliminate composition bugs.
 
 But it reduces the amount of undocumented state that can leak from one operation into another.
 
----
-
 ## Manufacturing Some of the Discipline That Time Normally Provides
 
 Mature scientific libraries acquire robustness through multiple forces:
@@ -1102,8 +1058,6 @@ A useful way to think about it is:
 > Operation contracts try to manufacture some of the integration discipline that mature libraries normally acquire only after years of production use.
 
 That is particularly valuable when implementation throughput is agent-amplified.
-
----
 
 ## Release Builds Should Not Pay the Full Contract Cost
 
@@ -1146,8 +1100,6 @@ Otherwise the project would validate one implementation and ship another.
 
 Strict mode is therefore a development guardrail, not an alternate chemistry engine.
 
----
-
 ## Agent Development Makes Fail-Closed Behavior More Important
 
 There is another related principle.
@@ -1177,8 +1129,6 @@ failing row inside a claimed parity boundary
 Once a capability is claimed as parity-covered, individual mismatches cannot be carved out after the fact and renamed unsupported.
 
 This is another place where architecture helps contain the tendency of high-throughput development to optimize for immediate green tests.
-
----
 
 ## Source Porting and Operation Contracts Solve Different Problems
 
@@ -1226,8 +1176,6 @@ without source-backed port
 ```
 
 The two disciplines are complementary.
-
----
 
 ## Large-Scale Validation Is the Final Layer, Not the First Design Tool
 
@@ -1287,8 +1235,6 @@ The corpus verifies the implementation.
 
 It should not become the algorithm.
 
----
-
 ## Agent Throughput Without Semantic Throughput Is Dangerous
 
 AI agents make it possible to move faster than previous scientific software projects.
@@ -1338,8 +1284,6 @@ That does not make large-scale agent development automatically safe.
 
 It makes safety a first-class engineering problem rather than an assumption.
 
----
-
 ## A Different Role for Architecture in the Agent Era
 
 Traditional software architecture is often discussed in terms of maintainability:
@@ -1381,8 +1325,6 @@ This is a different way to think about software design.
 The architecture is not only for humans who read the code later.
 
 It is also part of the feedback environment in which agents write the code now.
-
----
 
 ## The Goal Is Fewer Trust Assumptions
 
@@ -1431,13 +1373,10 @@ Together, these layers provide a path toward something that matters increasingly
 
 For Rust cheminformatics, that may be one of the most important architectural problems to solve.
 
-## Repository References
+## COSMolKit Resources
 
-* [COSMolKit](https://github.com/cosmol-studio/COSMolKit)
-* [Operation System Standard](https://github.com/cosmol-studio/COSMolKit/blob/main/dev/operation_system_standard.md)
-* [Derived Effects Permission Model](https://github.com/cosmol-studio/COSMolKit/blob/main/dev/derived_effects_permission_model.md)
-* [Source-Reproduction Protocol](https://github.com/cosmol-studio/COSMolKit/blob/main/dev/source_reproduction_protocol.md)
-* [Source-Bisection Debugging Protocol](https://github.com/cosmol-studio/COSMolKit/blob/main/dev/source_bisection_debugging_protocol.md)
-* [Parity Testing Contract](https://github.com/cosmol-studio/COSMolKit/blob/main/dev/parity_testing_contract.md)
-* [Development Operating Manual](https://github.com/cosmol-studio/COSMolKit/blob/main/dev/README.md)
-* [Validation Scope and Evidence](https://github.com/cosmol-studio/COSMolKit/blob/main/VALIDATION.md)
+[Source repository](https://github.com/cosmol-studio/COSMolKit) ·
+[Documentation](https://kit.cosmol.org/) ·
+[Web tools](https://tools.cosmol.org/) ·
+[Rust crate](https://crates.io/crates/cosmolkit) ·
+[Python package](https://pypi.org/project/cosmolkit/)

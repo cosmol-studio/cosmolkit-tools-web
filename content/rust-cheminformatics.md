@@ -122,14 +122,14 @@ Conceptually:
 
 ```text
 mol
- │
- ├── with_hydrogens() ──────> mol_h
- │
- └── remains unchanged
+ |
+ +-- with_hydrogens() ------> mol_h
+ |
+ +-- remains unchanged
 
 mol_h
- │
- └── with_2d_coordinates() ─> mol_2d
+ |
+ +-- with_2d_coordinates() -> mol_2d
 ```
 
 A transformation produces another molecular value.
@@ -172,16 +172,16 @@ Conceptually:
 
 ```text
 Molecule A
- ├── topology ───────┐
- ├── coordinates ────┼──── shared
- └── properties ─────┘
+ +-- topology -------+
+ +-- coordinates ----+---- shared
+ +-- properties -----+
 
         with_hydrogens()
 
 Molecule B
- ├── topology'       ← changed
- ├── coordinates'    ← remapped when necessary
- └── properties ───── shared if unchanged
+ +-- topology'       <- changed
+ +-- coordinates'    <- remapped when necessary
+ +-- properties ----- shared if unchanged
 ```
 
 The important distinction is:
@@ -366,19 +366,19 @@ Conceptually:
 
 ```text
           Operation Contract
-                 │
-                 ▼
+                 |
+                 v
               OpParts
-         ┌───────┼────────┐
-         │       │        │
+         +-------+--------+
+         |       |        |
      topology coordinates properties
-         │       │        │
-         └──── controlled ┘
-                 │
-                 ▼
+         |       |        |
+         +---- controlled +
+                 |
+                 v
           chemistry logic
-                 │
-                 ▼
+                 |
+                 v
               result
 ```
 
@@ -676,10 +676,10 @@ can remain a structured dataset state instead of becoming an exception-handling 
 Record correspondence remains visible:
 
 ```text
-input[0] ───────────── output[0]
-input[1] ───────────── output[1]
-input[2] ─ failed ──── error[2]
-input[3] ───────────── output[3]
+input[0] ------------- output[0]
+input[1] ------------- output[1]
+input[2] -- failed --- error[2]
+input[3] ------------- output[3]
 ```
 
 This is why batch processing belongs in the architectural story.
@@ -745,20 +745,20 @@ The aim is to preserve source-defined chemistry where compatibility matters whil
 
 ```text
       RDKit-compatible semantics
-                │
-                ▼
+                |
+                v
        source-backed chemistry
-                │
-                ▼
+                |
+                v
        Rust molecular values
-                │
-        ┌───────┼────────┐
-        │       │        │
+                |
+        +-------+--------+
+        |       |        |
      explicit  state   copy-on-write
      mutation  rules
-        │       │        │
-        └───────┼────────┘
-                ▼
+        |       |        |
+        +-------+--------+
+                v
       scalar + batch workflows
 ```
 
@@ -774,15 +774,10 @@ The opportunity for Rust cheminformatics is to separate those concerns:
 
 > **Keep the semantics that are difficult to rediscover. Redesign the architecture that we now know how to make safer.**
 
-The next articles in this series go deeper into the two systems that make this separation practical: executable operation contracts for agent-driven molecular-state changes, and source-backed porting discipline for reproducing RDKit semantics without accumulating heuristic semantic debt.
+## COSMolKit Resources
 
-## Repository References
-
-* [COSMolKit](https://github.com/cosmol-studio/COSMolKit)
-* [Policy Invariants](https://github.com/cosmol-studio/COSMolKit/blob/main/dev/policy_invariants.md)
-* [Operation System Standard](https://github.com/cosmol-studio/COSMolKit/blob/main/dev/operation_system_standard.md)
-* [Derived Effects Permission Model](https://github.com/cosmol-studio/COSMolKit/blob/main/dev/derived_effects_permission_model.md)
-* [In-Place Operation API Design](https://github.com/cosmol-studio/COSMolKit/blob/main/dev/inplace_operation_api_design.md)
-* [Source-Reproduction Protocol](https://github.com/cosmol-studio/COSMolKit/blob/main/dev/source_reproduction_protocol.md)
-* [Current Porting Inventory](https://github.com/cosmol-studio/COSMolKit/blob/main/dev/porting_inventory.md)
-* [COSMolKit Python Documentation](https://kit.cosmol.org/)
+[Source repository](https://github.com/cosmol-studio/COSMolKit) ·
+[Documentation](https://kit.cosmol.org/) ·
+[Web tools](https://tools.cosmol.org/) ·
+[Rust crate](https://crates.io/crates/cosmolkit) ·
+[Python package](https://pypi.org/project/cosmolkit/)

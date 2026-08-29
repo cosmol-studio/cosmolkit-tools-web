@@ -24,7 +24,7 @@
       "title": "Rust Cheminformatics State Management and Molecular Mutation",
       "description": "Learn how COSMolKit uses operation contracts, strict CI, and source-backed ports to make AI-assisted Rust cheminformatics state management safer.",
       "tags": ["rust", "cheminformatics", "ai", "architecture"],
-      "published_at": "2026-08-24T09:00:00+08:00",
+      "published_at": "2026-08-28T08:00:00+08:00",
       "author": "wjt@cosmol.org (95028)"
     },
     {
@@ -34,7 +34,7 @@
       "title": "Rust Cheminformatics: Porting RDKit Source Semantics to Rust",
       "description": "Learn why COSMolKit uses source-backed Rust cheminformatics ports to preserve RDKit semantics, trace mismatches upstream, and retain exact regression evidence.",
       "tags": ["rust", "cheminformatics", "opensource", "testing"],
-      "published_at": "2026-08-25T09:00:00+08:00",
+      "published_at": "2026-08-28T08:00:00+08:00",
       "author": "wjt@cosmol.org (95028)"
     },
     {
@@ -44,7 +44,7 @@
       "title": "Rust Cheminformatics Validation: From ChEMBL 37 to Billions of Exact RDKit Comparisons",
       "description": "See how COSMolKit validates Rust cheminformatics against ChEMBL 37 with exact RDKit comparisons across molecular state, algorithms, RNG, batch, and concurrency.",
       "tags": ["rust", "cheminformatics", "testing", "datascience"],
-      "published_at": "2026-08-26T09:00:00+08:00",
+      "published_at": "2026-08-28T08:00:00+08:00",
       "author": "wjt@cosmol.org (95028)"
     }
   ]
