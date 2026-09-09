@@ -2,6 +2,8 @@ use dioxus::prelude::*;
 
 use crate::component::Seo;
 
+include!(concat!(env!("OUT_DIR"), "/article_metadata.rs"));
+
 const RUST_CHEMINFORMATICS_ARTICLE: &str =
     include_str!(concat!(env!("OUT_DIR"), "/rust_cheminformatics.html"));
 const RUST_CHEMINFORMATICS_STATE_MANAGEMENT_ARTICLE: &str = include_str!(concat!(
@@ -106,7 +108,8 @@ pub fn RustCheminformatics() -> Element {
             title: "Rust Cheminformatics Beyond RDKit | COSMolKit",
             description: "Rust cheminformatics preserves RDKit chemistry without cloning its architecture. COSMolKit uses value semantics, explicit mutation, and operation contracts.",
             canonical: "https://tools.cosmol.org/rust-cheminformatics",
-            published_at: "2026-08-23T09:00:00+08:00".to_string(),
+            published_at: article_published_at("/rust-cheminformatics").to_string(),
+            headline: article_headline("/rust-cheminformatics").to_string(),
             author_name: "95028".to_string(),
             author_email: "wjt@cosmol.org".to_string(),
         }
@@ -126,7 +129,8 @@ pub fn RdkitAlternativeRust() -> Element {
             title: "Rust Cheminformatics State Management | COSMolKit",
             description: "Learn how COSMolKit uses operation contracts, strict CI, and source-backed ports to make AI-assisted Rust cheminformatics state management safer.",
             canonical: "https://tools.cosmol.org/rdkit-alternative-rust",
-            published_at: "2026-08-28T08:00:00+08:00".to_string(),
+            published_at: article_published_at("/rdkit-alternative-rust").to_string(),
+            headline: article_headline("/rdkit-alternative-rust").to_string(),
             author_name: "95028".to_string(),
             author_email: "wjt@cosmol.org".to_string(),
         }
@@ -146,7 +150,8 @@ pub fn RustCheminformaticsLibraries() -> Element {
             title: "Porting RDKit Chemistry Semantics to Rust | COSMolKit",
             description: "Learn why COSMolKit uses source-backed Rust cheminformatics ports to preserve RDKit semantics, trace mismatches upstream, and retain exact regression evidence.",
             canonical: "https://tools.cosmol.org/rust-cheminformatics-libraries",
-            published_at: "2026-08-28T08:00:00+08:00".to_string(),
+            published_at: article_published_at("/rust-cheminformatics-libraries").to_string(),
+            headline: article_headline("/rust-cheminformatics-libraries").to_string(),
             author_name: "95028".to_string(),
             author_email: "wjt@cosmol.org".to_string(),
         }
@@ -176,7 +181,8 @@ pub fn Validation() -> Element {
             title: "COSMolKit Validation: ChEMBL 37 vs RDKit | COSMolKit",
             description: "See how COSMolKit validates Rust cheminformatics against ChEMBL 37 with exact RDKit comparisons across molecular state, algorithms, RNG, batch, and concurrency.",
             canonical: "https://tools.cosmol.org/validation",
-            published_at: "2026-08-28T08:00:00+08:00".to_string(),
+            published_at: article_published_at("/validation").to_string(),
+            headline: article_headline("/validation").to_string(),
             author_name: "95028".to_string(),
             author_email: "wjt@cosmol.org".to_string(),
         }

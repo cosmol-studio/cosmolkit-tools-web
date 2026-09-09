@@ -18,7 +18,7 @@ pub fn Navbar() -> Element {
                     to: Route::Home {},
                     span {
                         class: "text-[#4b96ff] max-[800px]:block",
-                        "COSMolkit"
+                        "COSMolKit"
                     }
                     span {
                         class: "max-[800px]:block",

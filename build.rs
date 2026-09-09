@@ -8,12 +8,14 @@ use pulldown_cmark::{Options, Parser, html};
 
 fn main() {
     println!("cargo:rerun-if-changed=build.rs");
+    println!("cargo:rerun-if-changed=content/articles.json");
     println!("cargo:rerun-if-changed=content/rust-cheminformatics.md");
     println!("cargo:rerun-if-changed=content/rust-cheminformatics-state-management.md");
     println!("cargo:rerun-if-changed=content/rust-cheminformatics-source-porting.md");
     println!("cargo:rerun-if-changed=content/rust-cheminformatics-validation.md");
 
     let out_dir = PathBuf::from(env::var("OUT_DIR").expect("OUT_DIR should be set"));
+    build_article_metadata(&out_dir);
     build_markdown_article(
         "content/rust-cheminformatics.md",
         "rust_cheminformatics.html",
@@ -39,6 +41,40 @@ fn main() {
     let bytes = postcard::to_allocvec(&scene).expect("serialize home scene");
 
     fs::write(out_dir.join("home_scene.postcard"), bytes).expect("write precomputed home scene");
+}
+
+fn build_article_metadata(out_dir: &Path) {
+    use std::fmt::Write;
+
+    let metadata: serde_json::Value = serde_json::from_str(
+        &fs::read_to_string("content/articles.json").expect("read article metadata"),
+    )
+    .expect("parse article metadata");
+    let articles = metadata["articles"].as_array().expect("articles array");
+    let mut generated = String::new();
+    for (field, function) in [
+        ("published_at", "article_published_at"),
+        ("title", "article_headline"),
+    ] {
+        let mut paths = std::collections::HashSet::new();
+        writeln!(
+            generated,
+            "fn {function}(path: &str) -> &'static str {{\n    match path {{"
+        )
+        .expect("write article metadata function");
+        for article in articles {
+            let path = article["path"].as_str().expect("article path");
+            let value = article[field]
+                .as_str()
+                .filter(|value| !value.is_empty())
+                .unwrap_or_else(|| panic!("missing article {field}: {path}"));
+            assert!(paths.insert(path), "duplicate article path: {path}");
+            writeln!(generated, "        {path:?} => {value:?},")
+                .expect("write article metadata mapping");
+        }
+        generated.push_str("        _ => panic!(\"missing article metadata\"),\n    }\n}\n");
+    }
+    fs::write(out_dir.join("article_metadata.rs"), generated).expect("write article metadata");
 }
 
 fn build_markdown_article(source: &str, output: &str, out_dir: &Path) {

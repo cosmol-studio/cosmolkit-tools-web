@@ -1,5 +1,30 @@
 use std::{collections::HashSet, fs, path::Path};
 
+include!(concat!(env!("OUT_DIR"), "/article_metadata.rs"));
+
+#[test]
+fn blog_publication_dates_and_headlines_come_from_article_metadata() {
+    let metadata: serde_json::Value = serde_json::from_str(
+        &fs::read_to_string("content/articles.json").expect("article metadata should exist"),
+    )
+    .expect("article metadata should be valid JSON");
+    let blog = fs::read_to_string("src/page/blog.rs").expect("blog pages should exist");
+    for article in metadata["articles"].as_array().unwrap() {
+        let path = article["path"].as_str().unwrap();
+        assert_eq!(
+            article_published_at(path),
+            article["published_at"].as_str().unwrap(),
+            "publication date differs for {path}"
+        );
+        assert!(blog.contains(&format!(
+            "published_at: article_published_at({path:?}).to_string()"
+        )));
+        assert_eq!(article_headline(path), article["title"].as_str().unwrap());
+        assert!(blog.contains(&format!("headline: article_headline({path:?}).to_string()")));
+    }
+    assert!(!blog.contains("published_at: \""));
+}
+
 const FINISHED_ROUTES: [(&str, &str); 9] = [
     ("/", "src/page/home.rs"),
     ("/tools", "src/page/tools.rs"),
@@ -431,6 +456,7 @@ fn production_wasm_does_not_reinsert_ssg_document_assets() {
 fn shared_footer_reinforces_rust_cheminformatics_context() {
     let source = fs::read_to_string("src/component/navbar.rs").expect("navbar should exist");
     assert!(source.contains("Rust cheminformatics powered by COSMolKit"));
+    assert!(!source.contains("COSMolkit"));
 }
 
 #[test]

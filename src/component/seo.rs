@@ -12,6 +12,7 @@ pub fn Seo(
     #[props(default)] published_at: Option<String>,
     #[props(default)] author_name: Option<String>,
     #[props(default)] author_email: Option<String>,
+    #[props(default)] headline: Option<String>,
 ) -> Element {
     let json_ld = json_ld(
         &title,
@@ -20,6 +21,7 @@ pub fn Seo(
         published_at.as_deref(),
         author_name.as_deref(),
         author_email.as_deref(),
+        headline.as_deref(),
     );
 
     #[cfg(target_arch = "wasm32")]
@@ -86,7 +88,9 @@ fn json_ld(
     published_at: Option<&str>,
     author_name: Option<&str>,
     author_email: Option<&str>,
+    headline: Option<&str>,
 ) -> String {
+    let headline = json_escape(headline.unwrap_or(title));
     let title = json_escape(title);
     let description = json_escape(description);
     let website_id = json_escape("https://tools.cosmol.org/#website");
@@ -95,10 +99,10 @@ fn json_ld(
     let canonical = json_escape(canonical);
     let page = match (published_at, author_name, author_email) {
         (Some(published_at), Some(author_name), Some(author_email)) => format!(
-            r#"{{"@type":"BlogPosting","@id":{webpage_id},"url":{canonical},"headline":{title},"description":{description},"datePublished":{published_at},"author":{{"@type":"Person","name":{author_name},"email":{author_email}}},"publisher":{{"@type":"Organization","name":"COSMol Studio","url":"https://github.com/cosmol-studio"}},"mainEntityOfPage":{{"@id":{webpage_id}}},"about":{{"@id":{software_id}}},"isPartOf":{{"@id":{website_id}}},"inLanguage":"en"}}"#,
+            r#"{{"@type":"BlogPosting","@id":{webpage_id},"url":{canonical},"headline":{headline},"description":{description},"datePublished":{published_at},"author":{{"@type":"Person","name":{author_name},"email":{author_email}}},"publisher":{{"@type":"Organization","name":"COSMol Studio","url":"https://github.com/cosmol-studio"}},"mainEntityOfPage":{{"@id":{webpage_id}}},"about":{{"@id":{software_id}}},"isPartOf":{{"@id":{website_id}}},"inLanguage":"en"}}"#,
             webpage_id = webpage_id,
             canonical = canonical,
-            title = title,
+            headline = headline,
             description = description,
             published_at = json_escape(published_at),
             author_name = json_escape(author_name),
@@ -123,6 +127,49 @@ fn json_ld(
         software_id = software_id,
         page = page,
     )
+}
+
+#[cfg(test)]
+mod tests {
+    use super::json_ld;
+
+    #[test]
+    fn article_headline_is_independent_of_seo_title_and_safely_escaped() {
+        let headline = "Full article: \"Rust\" & </script>";
+        let output = json_ld(
+            "Short title | COSMolKit",
+            "Article description",
+            "https://tools.cosmol.org/validation",
+            Some("2026-09-07T08:00:00+08:00"),
+            Some("95028"),
+            Some("wjt@cosmol.org"),
+            Some(headline),
+        );
+        assert!(!output.contains("</script>"));
+        let data: serde_json::Value = serde_json::from_str(&output).unwrap();
+        let article = &data["@graph"][2];
+        assert_eq!(article["@type"], "BlogPosting");
+        assert_eq!(article["headline"], headline);
+        assert_eq!(article["datePublished"], "2026-09-07T08:00:00+08:00");
+    }
+
+    #[test]
+    fn non_article_pages_keep_the_seo_title() {
+        let output = json_ld(
+            "Molecular tools | COSMolKit",
+            "Tool description",
+            "https://tools.cosmol.org/tools",
+            None,
+            None,
+            None,
+            None,
+        );
+        let data: serde_json::Value = serde_json::from_str(&output).unwrap();
+        let page = &data["@graph"][2];
+        assert_eq!(page["@type"], "WebPage");
+        assert_eq!(page["name"], "Molecular tools | COSMolKit");
+        assert!(page.get("headline").is_none());
+    }
 }
 
 #[cfg(target_arch = "wasm32")]

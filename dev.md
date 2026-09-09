@@ -67,6 +67,6 @@ When a tool becomes usable and public:
 
 1. Add its route and page.
 2. Add unique title, description, canonical URL, and Open Graph metadata with `Seo`.
-3. Add the canonical production URL to `sitemap.xml` and the route expectations to `tests/seo.rs`.
+3. Add the canonical production URL to `deployment/public/sitemap.xml` and the route expectations to `tests/seo.rs`.
 4. Add the generated title expectation to `scripts/check_ssg_output.py`.
 5. Keep unfinished routes out of the sitemap until their core capability is available.
