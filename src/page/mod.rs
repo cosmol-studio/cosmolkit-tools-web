@@ -12,7 +12,8 @@ mod smiles_to_svg;
 mod tools;
 
 pub(crate) use blog::{
-    Blog, RdkitAlternativeRust, RustCheminformatics, RustCheminformaticsLibraries, Validation,
+    Blog, RustCheminformatics, RustCheminformaticsSourcePorting,
+    RustCheminformaticsStateManagement, Validation,
 };
 pub(crate) use check_pains::CheckPains;
 pub(crate) use conformer_generator::ConformerGenerator;

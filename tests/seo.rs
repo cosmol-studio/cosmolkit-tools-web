@@ -122,6 +122,21 @@ fn robots_allows_crawling_and_references_the_production_sitemap() {
         fs::read_to_string("deployment/public/robots.txt").expect("robots.txt should exist");
     assert!(robots.contains("User-agent: *"));
     assert!(robots.contains("Allow: /"));
+    let directives: Vec<_> = robots
+        .lines()
+        .map(str::trim)
+        .filter(|line| !line.is_empty() && !line.starts_with('#'))
+        .collect();
+    assert_eq!(
+        directives,
+        vec![
+            "User-agent: *",
+            "Allow: /",
+            "Content-Signal: search=yes,ai-train=yes,ai-input=yes,use=full",
+            "Sitemap: https://tools.cosmol.org/sitemap.xml",
+        ],
+        "all crawlers must remain allowed without restrictive overrides"
+    );
     assert!(robots.contains("Sitemap: https://tools.cosmol.org/sitemap.xml"));
 }
 
@@ -144,6 +159,47 @@ fn indexnow_key_and_deployment_notification_are_configured() {
     assert!(notifier.contains("https://api.indexnow.org/indexnow"));
     assert!(notifier.contains("sitemap_urls(args.sitemap)"));
     assert!(!notifier.contains("/check-pains"));
+}
+
+#[test]
+fn renamed_blog_routes_redirect_directly_to_the_new_canonicals() {
+    let redirects = fs::read_to_string("deployment/public/_redirects").unwrap();
+    let public_sources = [
+        "src/route.rs",
+        "src/page/blog.rs",
+        "content/articles.json",
+        "deployment/public/sitemap.xml",
+        "scripts/check_ssg_output.py",
+    ];
+    for (old, new) in [
+        (
+            "/rdkit-alternative-rust",
+            "/rust-cheminformatics-state-management",
+        ),
+        (
+            "/rust-cheminformatics-libraries",
+            "/rust-cheminformatics-source-porting",
+        ),
+    ] {
+        for source in [old.to_string(), format!("{old}/"), format!("{new}/")] {
+            let rules: Vec<_> = redirects
+                .lines()
+                .filter(|line| line.split_whitespace().next() == Some(source.as_str()))
+                .collect();
+            assert_eq!(rules, vec![format!("{source} {new} 301")]);
+        }
+        for path in public_sources {
+            let contents = fs::read_to_string(path).unwrap();
+            assert!(
+                !contents.contains(old),
+                "stale article URL in {path}: {old}"
+            );
+            assert!(
+                contents.contains(new),
+                "missing article URL in {path}: {new}"
+            );
+        }
+    }
 }
 
 #[test]
@@ -188,8 +244,8 @@ fn sitemap_contains_each_finished_route_once_and_excludes_pains() {
     for route in [
         "/blog",
         "/rust-cheminformatics",
-        "/rdkit-alternative-rust",
-        "/rust-cheminformatics-libraries",
+        "/rust-cheminformatics-state-management",
+        "/rust-cheminformatics-source-porting",
         "/validation",
     ] {
         let url = production_url(route);
@@ -310,8 +366,8 @@ fn blog_routes_distinguish_published_and_placeholder_content() {
     for route in [
         "/blog",
         "/rust-cheminformatics",
-        "/rdkit-alternative-rust",
-        "/rust-cheminformatics-libraries",
+        "/rust-cheminformatics-state-management",
+        "/rust-cheminformatics-source-porting",
         "/validation",
     ] {
         assert!(routes.contains(&format!("#[route(\"{route}\")]")));

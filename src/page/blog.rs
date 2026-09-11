@@ -46,14 +46,14 @@ pub fn Blog() -> Element {
                         published: true,
                     }
                     BlogCard {
-                        route: crate::route::Route::RdkitAlternativeRust {},
+                        route: crate::route::Route::RustCheminformaticsStateManagement {},
                         category: "STATE SEMANTICS",
                         title: "Rust Cheminformatics State Management",
                         summary: "Operation contracts, in-place mutation, cache invalidation, state migration, and semantic safety.",
                         published: true,
                     }
                     BlogCard {
-                        route: crate::route::Route::RustCheminformaticsLibraries {},
+                        route: crate::route::Route::RustCheminformaticsSourcePorting {},
                         category: "SOURCE PORTING",
                         title: "Rust Cheminformatics Porting",
                         summary: "Why COSMolKit ports pinned RDKit source semantics instead of fitting reimplementations to an output corpus.",
@@ -123,14 +123,14 @@ pub fn RustCheminformatics() -> Element {
 }
 
 #[component]
-pub fn RdkitAlternativeRust() -> Element {
+pub fn RustCheminformaticsStateManagement() -> Element {
     rsx! {
         Seo {
             title: "Rust Cheminformatics State Management | COSMolKit",
             description: "Learn how COSMolKit uses operation contracts, strict CI, and source-backed ports to make AI-assisted Rust cheminformatics state management safer.",
-            canonical: "https://tools.cosmol.org/rdkit-alternative-rust",
-            published_at: article_published_at("/rdkit-alternative-rust").to_string(),
-            headline: article_headline("/rdkit-alternative-rust").to_string(),
+            canonical: "https://tools.cosmol.org/rust-cheminformatics-state-management",
+            published_at: article_published_at("/rust-cheminformatics-state-management").to_string(),
+            headline: article_headline("/rust-cheminformatics-state-management").to_string(),
             author_name: "95028".to_string(),
             author_email: "wjt@cosmol.org".to_string(),
         }
@@ -144,14 +144,14 @@ pub fn RdkitAlternativeRust() -> Element {
 }
 
 #[component]
-pub fn RustCheminformaticsLibraries() -> Element {
+pub fn RustCheminformaticsSourcePorting() -> Element {
     rsx! {
         Seo {
             title: "Porting RDKit Chemistry Semantics to Rust | COSMolKit",
             description: "Learn why COSMolKit uses source-backed Rust cheminformatics ports to preserve RDKit semantics, trace mismatches upstream, and retain exact regression evidence.",
-            canonical: "https://tools.cosmol.org/rust-cheminformatics-libraries",
-            published_at: article_published_at("/rust-cheminformatics-libraries").to_string(),
-            headline: article_headline("/rust-cheminformatics-libraries").to_string(),
+            canonical: "https://tools.cosmol.org/rust-cheminformatics-source-porting",
+            published_at: article_published_at("/rust-cheminformatics-source-porting").to_string(),
+            headline: article_headline("/rust-cheminformatics-source-porting").to_string(),
             author_name: "95028".to_string(),
             author_email: "wjt@cosmol.org".to_string(),
         }

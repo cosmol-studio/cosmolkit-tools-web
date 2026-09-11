@@ -4,9 +4,9 @@ use crate::{
     component::Navbar,
     page::{
         Blog, CheckPains, ConformerGenerator, ConversionSlug, Ecosystem, FormatConversion,
-        FormatConverter, Home, InchiTool, MolecularProperties, RdkitAlternativeRust,
-        RustCheminformatics, RustCheminformaticsLibraries, SmilesCanonicalizer, SmilesToSvg,
-        ToolDirectory, Validation,
+        FormatConverter, Home, InchiTool, MolecularProperties, RustCheminformatics,
+        RustCheminformaticsSourcePorting, RustCheminformaticsStateManagement, SmilesCanonicalizer,
+        SmilesToSvg, ToolDirectory, Validation,
     },
 };
 
@@ -24,10 +24,10 @@ pub enum Route {
     Blog {},
     #[route("/rust-cheminformatics")]
     RustCheminformatics {},
-    #[route("/rdkit-alternative-rust")]
-    RdkitAlternativeRust {},
-    #[route("/rust-cheminformatics-libraries")]
-    RustCheminformaticsLibraries {},
+    #[route("/rust-cheminformatics-state-management")]
+    RustCheminformaticsStateManagement {},
+    #[route("/rust-cheminformatics-source-porting")]
+    RustCheminformaticsSourcePorting {},
     #[route("/validation")]
     Validation {},
     #[route("/smiles-to-svg")]
@@ -68,6 +68,23 @@ mod tests {
     use std::str::FromStr;
 
     use super::*;
+
+    #[test]
+    fn article_routes_match_their_content_topics() {
+        for (path, route) in [
+            (
+                "/rust-cheminformatics-state-management",
+                Route::RustCheminformaticsStateManagement {},
+            ),
+            (
+                "/rust-cheminformatics-source-porting",
+                Route::RustCheminformaticsSourcePorting {},
+            ),
+        ] {
+            assert_eq!(Route::from_str(path).unwrap(), route);
+            assert_eq!(route.to_string(), path);
+        }
+    }
 
     #[test]
     fn conversion_slugs_do_not_shadow_existing_routes() {

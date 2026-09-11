@@ -73,8 +73,8 @@ PAGES = {
     "/ecosystem": "COSMol Ecosystem | Browser-Native Rust Cheminformatics",
     "/blog": "COSMolKit Blog — Rust Cheminformatics Notes",
     "/rust-cheminformatics": "Rust Cheminformatics Beyond RDKit | COSMolKit",
-    "/rdkit-alternative-rust": "Rust Cheminformatics State Management | COSMolKit",
-    "/rust-cheminformatics-libraries": "Porting RDKit Chemistry Semantics to Rust | COSMolKit",
+    "/rust-cheminformatics-state-management": "Rust Cheminformatics State Management | COSMolKit",
+    "/rust-cheminformatics-source-porting": "Porting RDKit Chemistry Semantics to Rust | COSMolKit",
     "/validation": "COSMolKit Validation: ChEMBL 37 vs RDKit | COSMolKit",
 }
 PLACEHOLDER_PAGES = {}
@@ -596,7 +596,7 @@ def main():
                     failures.append(
                         f"{route}: prerendered article is missing {phrase!r}"
                     )
-        if route == "/rdkit-alternative-rust":
+        if route == "/rust-cheminformatics-state-management":
             for phrase in (
                 "operation contracts",
                 "opparts",
@@ -606,7 +606,7 @@ def main():
                     failures.append(
                         f"{route}: prerendered article is missing {phrase!r}"
                     )
-        if route == "/rust-cheminformatics-libraries":
+        if route == "/rust-cheminformatics-source-porting":
             for phrase in (
                 "corpus acts as auditor",
                 "source-reproduction protocol",

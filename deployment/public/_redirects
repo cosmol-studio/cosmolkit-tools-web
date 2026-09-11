@@ -61,6 +61,10 @@
 /ecosystem/ /ecosystem 301
 /blog/ /blog 301
 /rust-cheminformatics/ /rust-cheminformatics 301
-/rdkit-alternative-rust/ /rdkit-alternative-rust 301
-/rust-cheminformatics-libraries/ /rust-cheminformatics-libraries 301
+/rdkit-alternative-rust /rust-cheminformatics-state-management 301
+/rdkit-alternative-rust/ /rust-cheminformatics-state-management 301
+/rust-cheminformatics-libraries /rust-cheminformatics-source-porting 301
+/rust-cheminformatics-libraries/ /rust-cheminformatics-source-porting 301
+/rust-cheminformatics-state-management/ /rust-cheminformatics-state-management 301
+/rust-cheminformatics-source-porting/ /rust-cheminformatics-source-porting 301
 /validation/ /validation 301

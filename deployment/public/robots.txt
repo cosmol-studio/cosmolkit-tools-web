@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Content-Signal: search=yes,ai-train=yes,ai-input=yes,use=full
 
 Sitemap: https://tools.cosmol.org/sitemap.xml
