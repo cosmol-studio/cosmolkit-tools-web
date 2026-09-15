@@ -38,8 +38,8 @@ pub fn DepictionCardIcon(class: &'static str, label: &'static str) -> Element {
             role: "img",
             "aria-label": label,
             "data-card-icon": "depiction",
-            path { d: "M16 10h16l8 14-8 14H16L8 24l8-14Z" }
-            path { d: "M18 14h12M35.5 24l-6 10M18 34l-5.5-10" }
+            path { d: "M24 6 39.6 15v18L24 42 8.4 33V15Z" }
+            path { d: "M24 11.2 35.1 17.6M35.1 30.4 24 36.8M12.9 30.4V17.6" }
         }
     }
 }
@@ -58,9 +58,9 @@ pub fn FormatCardIcon(class: &'static str, label: &'static str) -> Element {
             role: "img",
             "aria-label": label,
             "data-card-icon": "format",
-            path { d: "M13 5h15l8 8v30H13V5Z" }
-            path { d: "M28 5v8h8" }
-            path { d: "M18 23h13l-3-3M31 23l-3 3M31 33H18l3-3M18 33l3 3" }
+            path { d: "M28 6H13a3 3 0 0 0-3 3v30a3 3 0 0 0 3 3h22a3 3 0 0 0 3-3V16Z" }
+            path { d: "M28 6v7a3 3 0 0 0 3 3h7" }
+            path { d: "M16 24h16m-4-4 4 4-4 4M32 34H16m4-4-4 4 4 4" }
         }
     }
 }
@@ -79,13 +79,13 @@ pub fn ConformerCardIcon(class: &'static str, label: &'static str) -> Element {
             role: "img",
             "aria-label": label,
             "data-card-icon": "conformer",
-            path { d: "M12 34l11-10M23 24l13 8M23 24l5-13" }
-            path { d: "M15 12l8 12", stroke_dasharray: "2.5 3", opacity: "0.7" }
-            circle { cx: "10", cy: "36", r: "4" }
-            circle { cx: "23", cy: "24", r: "4.5" }
-            circle { cx: "38", cy: "33", r: "4" }
-            circle { cx: "29", cy: "9", r: "3.5" }
-            circle { cx: "13", cy: "9", r: "3" }
+            path { d: "M20.2 26.4 12.7 32.6M27.8 26.4 35.3 32.6M25.8 18.3 28.7 11.7" }
+            path { d: "M20.8 19.2 15.3 12.7" }
+            circle { cx: "24", cy: "23", r: "5", fill: "currentColor", fill_opacity: "0.12" }
+            circle { cx: "9.5", cy: "35.2", r: "4" }
+            circle { cx: "38.5", cy: "35.2", r: "4" }
+            circle { cx: "30.3", cy: "8", r: "4" }
+            circle { cx: "13", cy: "10", r: "3.5" }
         }
     }
 }
@@ -104,10 +104,8 @@ pub fn IdentifierCardIcon(class: &'static str, label: &'static str) -> Element {
             role: "img",
             "aria-label": label,
             "data-card-icon": "identifier",
-            circle { cx: "16", cy: "20", r: "8" }
-            circle { cx: "16", cy: "20", r: "2.5" }
-            path { d: "M23 24l14 14M31 32l4-4M35 36l4-4" }
-            path { d: "M9 38h14M9 42h21", opacity: "0.65" }
+            path { d: "M25 20a10 10 0 1 0-6 6l15 15h7v-7h-5v-5h-5Z" }
+            circle { cx: "13", cy: "14", r: "2.5" }
         }
     }
 }
@@ -126,11 +124,9 @@ pub fn PropertiesCardIcon(class: &'static str, label: &'static str) -> Element {
             role: "img",
             "aria-label": label,
             "data-card-icon": "properties",
-            rect { x: "9", y: "6", width: "30", height: "36", rx: "3" }
-            path { d: "M15 12h18v7H15zM16 35v-5M24 35V25M32 35V22" }
-            circle { cx: "16", cy: "35", r: "1.5", fill: "currentColor", stroke: "none" }
-            circle { cx: "24", cy: "25", r: "1.5", fill: "currentColor", stroke: "none" }
-            circle { cx: "32", cy: "22", r: "1.5", fill: "currentColor", stroke: "none" }
+            rect { x: "10", y: "6", width: "28", height: "36", rx: "4" }
+            rect { x: "16", y: "12", width: "16", height: "8", rx: "1" }
+            path { d: "M16 27h2m6 0h2m-10 8h2m6 0h2M32 27v8" }
         }
     }
 }
@@ -149,13 +145,10 @@ pub fn CanonicalCardIcon(class: &'static str, label: &'static str) -> Element {
             role: "img",
             "aria-label": label,
             "data-card-icon": "canonical",
-            path { d: "M8 14h8l5 6 6-12 6 6h7" }
-            circle { cx: "8", cy: "14", r: "2.5" }
-            circle { cx: "40", cy: "14", r: "2.5" }
-            path { d: "M18 25l6 5 6-5M24 29v7" }
-            path { d: "M10 39h28" }
-            circle { cx: "10", cy: "39", r: "2.5" }
-            circle { cx: "38", cy: "39", r: "2.5" }
+            circle { cx: "10", cy: "10", r: "3.5" }
+            circle { cx: "10", cy: "38", r: "3.5" }
+            path { d: "M10 13.5V16a8 8 0 0 0 8 8h13M10 34.5V32a8 8 0 0 1 8-8M27 20l4 4-4 4" }
+            circle { cx: "40", cy: "24", r: "4" }
         }
     }
 }
@@ -174,9 +167,10 @@ pub fn FilterAlertCardIcon(class: &'static str, label: &'static str) -> Element 
             role: "img",
             "aria-label": label,
             "data-card-icon": "filter-alert",
-            path { d: "M7 9h34L28 25v13l-8 4V25L7 9Z" }
-            circle { cx: "37", cy: "35", r: "7", fill: "currentColor", fill_opacity: "0.08" }
-            path { d: "M37 31v5M37 39h.01" }
+            path { d: "M6 8h30v4L24 25v13l-6 3V25L6 12Z" }
+            circle { cx: "36", cy: "34", r: "8", fill: "currentColor", fill_opacity: "0.08" }
+            path { d: "M36 30v4" }
+            circle { cx: "36", cy: "38", r: "1", fill: "currentColor", stroke: "none" }
         }
     }
 }

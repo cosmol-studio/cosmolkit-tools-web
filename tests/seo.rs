@@ -127,14 +127,35 @@ fn robots_allows_crawling_and_references_the_production_sitemap() {
         .map(str::trim)
         .filter(|line| !line.is_empty() && !line.starts_with('#'))
         .collect();
+    let mut expected = Vec::new();
+    for agent in [
+        "*",
+        "OAI-SearchBot",
+        "GPTBot",
+        "ChatGPT-User",
+        "ClaudeBot",
+        "Claude-SearchBot",
+        "Claude-User",
+        "PerplexityBot",
+        "Perplexity-User",
+        "Googlebot",
+        "Google-Extended",
+        "bingbot",
+        "Applebot",
+        "Applebot-Extended",
+        "Amazonbot",
+        "Bytespider",
+        "CCBot",
+        "CloudflareBrowserRenderingCrawler",
+        "meta-externalagent",
+    ] {
+        expected.push(format!("User-agent: {agent}"));
+        expected.push("Allow: /".to_string());
+        expected.push("Content-Signal: search=yes,ai-train=yes,ai-input=yes,use=full".to_string());
+    }
+    expected.push("Sitemap: https://tools.cosmol.org/sitemap.xml".to_string());
     assert_eq!(
-        directives,
-        vec![
-            "User-agent: *",
-            "Allow: /",
-            "Content-Signal: search=yes,ai-train=yes,ai-input=yes,use=full",
-            "Sitemap: https://tools.cosmol.org/sitemap.xml",
-        ],
+        directives, expected,
         "all crawlers must remain allowed without restrictive overrides"
     );
     assert!(robots.contains("Sitemap: https://tools.cosmol.org/sitemap.xml"));
